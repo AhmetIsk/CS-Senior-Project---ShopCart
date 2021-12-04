@@ -1,3 +1,5 @@
+import json
+
 from django.http import JsonResponse
 from rest_framework import permissions
 from rest_framework.response import Response
@@ -11,6 +13,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 
 from .serializers import NoteSerializer
 from ..models import Note, ShoppingCart
+from django.contrib.auth.models import User
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -33,7 +36,7 @@ class MyTokenObtainPairView(TokenObtainPairView):
 def getRoutes(request):
     routes = [
         '/api/token',
-        '/api/token/refresh',
+        '/api/token/refresh'
     ]
 
     return Response(routes)
@@ -43,14 +46,10 @@ def getRoutes(request):
 @permission_classes([IsAuthenticated])
 def getNotes(request):
     user = request.user
-    notes = Note.objects.all()
-    serializer = NoteSerializer(data=notes, many=True)
-
-    if serializer.is_valid():
-        print(Response(serializer.data))
-        return Response(serializer.data)
-    else:
-        return Response({'status': 'Invalid data'}, status=status.HTTP_404_NOT_FOUND)
+    notes = Note.objects.filter(user=user)
+    print(notes)
+    serializer = NoteSerializer(notes, many=True)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])

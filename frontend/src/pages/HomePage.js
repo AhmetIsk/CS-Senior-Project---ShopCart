@@ -19,7 +19,7 @@ const HomePage = () => {
             }
         })
         let data = await response.json()
-        console.log(response.status)
+        console.log(data)
 
         if (response.status === 200) {
             setNotes(data)
