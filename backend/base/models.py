@@ -1,9 +1,43 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Create your models here.
-
 
 class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     body = models.TextField()
+
+
+class Home(models.Model):
+    home_owner = models.OneToOneField(User, on_delete=models.RESTRICT)
+
+
+class ProductBase(models.Model):
+    barcode = models.CharField(max_length=200)
+    name = models.TextField(max_length=100, null=True)
+
+
+class Store(models.Model):
+    name = models.TextField(max_length=50, null=True)
+    available_products = models.ManyToManyField(ProductBase)
+
+
+class PriceInStore(models.Model):
+    product = models.ForeignKey(ProductBase, on_delete=models.RESTRICT)
+    store = models.ForeignKey(Store, on_delete=models.RESTRICT)
+    price = models.FloatField()
+
+
+class ProductInCart(models.Model):
+    product = models.ForeignKey(ProductBase, on_delete=models.RESTRICT)
+    quantity = models.PositiveIntegerField(default=1)
+    adding_date = models.DateTimeField(auto_now_add=True)
+
+
+class ShoppingCart(models.Model):
+    products = models.ManyToManyField(ProductInCart)
+
+
+class UserMeta(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    home = models.OneToOneField(Home, on_delete=models.RESTRICT, null=True)
+    shopping_cart = models.OneToOneField(ShoppingCart, on_delete=models.CASCADE)

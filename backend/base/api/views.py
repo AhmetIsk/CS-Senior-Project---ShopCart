@@ -1,15 +1,16 @@
 from django.http import JsonResponse
 from rest_framework import permissions
 from rest_framework.response import Response
+from rest_framework.parsers import JSONParser
+from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-
 from .serializers import NoteSerializer
-from base.models import Note
+from ..models import Note, ShoppingCart
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -42,6 +43,20 @@ def getRoutes(request):
 @permission_classes([IsAuthenticated])
 def getNotes(request):
     user = request.user
-    notes = user.note_set.all()
-    serializer = NoteSerializer(notes, many=True)
+    notes = Note.objects.all()
+    serializer = NoteSerializer(data=notes, many=True)
+
+    if serializer.is_valid():
+        print(Response(serializer.data))
+        return Response(serializer.data)
+    else:
+        return Response({'status': 'Invalid data'}, status=status.HTTP_404_NOT_FOUND)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def addNote(request):
+    user = request.user
+    print(request.data)
+    serializer = NoteSerializer(data=request.data, many=True)
     return Response(serializer.data)

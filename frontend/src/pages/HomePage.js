@@ -5,27 +5,28 @@ const HomePage = () => {
     let [notes, setNotes] = useState([])
     let {authTokens, logoutUser} = useContext(AuthContext)
 
-    useEffect(()=> {
+    useEffect(() => {
         getNotes()
     }, [])
 
 
-    let getNotes = async() =>{
+    let getNotes = async () => {
         let response = await fetch('http://127.0.0.1:8000/api/notes/', {
-            method:'GET',
-            headers:{
-                'Content-Type':'application/json',
-                'Authorization':'Bearer ' + String(authTokens.access)
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + String(authTokens.access)
             }
         })
         let data = await response.json()
+        console.log(response.status)
 
-        if(response.status === 200){
+        if (response.status === 200) {
             setNotes(data)
-        }else if(response.statusText === 'Unauthorized'){
+        } else if (response.statusText === 'Unauthorized') {
             logoutUser()
         }
-        
+
     }
 
     return (
@@ -35,7 +36,7 @@ const HomePage = () => {
 
             <ul>
                 {notes.map(note => (
-                    <li key={note.id} >{note.body}</li>
+                    <li key={note.id}>{note.body}</li>
                 ))}
             </ul>
         </div>
