@@ -1,8 +1,9 @@
 import { toast } from "toastify-react-native";
 import jwtDecode from "jwt-decode";
+import { AsyncStorage } from 'react-native';
 
 const initialState = {
-  token: localStorage.getItem("token"),
+  token: null,
   name: null,
   email: null,
   _id: null,
@@ -13,9 +14,6 @@ const authReducer = (state = initialState, action) => {
     case "SIGN_IN":
     case "SIGN_UP":
     case "USER_LOADED":
-      toast("Welcome...", {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
       const user = jwtDecode(action.token);
       return {
         ...initialState,
@@ -25,10 +23,7 @@ const authReducer = (state = initialState, action) => {
         _id: user._id,
       };
     case "SIGN_OUT":
-      localStorage.removeItem("token");
-      toast("Goodbye...", {
-        position: toast.POSITION.BOTTOM_RIGHT,
-      });
+      AsyncStorage.removeItem("token");
       return {
         token: null,
         name: null,

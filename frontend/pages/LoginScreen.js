@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { useDispatch, useSelector } from 'react-redux'
 import { signIn } from '../store/actions/authActions'
 
 
@@ -10,7 +11,8 @@ const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
-    dispatch(signIn(email, password));
+    // dispatch(signIn(email, password));
+    signIn(email, password);
     setEmail('');
     setPassword('');
   };
