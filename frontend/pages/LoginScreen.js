@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import { signIn } from "../store/actions/authActions";
+import { signIn } from '../store/actions/authActions'
+
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('')

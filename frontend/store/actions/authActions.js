@@ -27,7 +27,7 @@ export const signUp = (user) => {
 export const signIn = (email, password) => {
   return (dispatch) => {
     axios
-      .post(`${url}/token`, { email, password })
+      .post(`${url}/login/`, { email, password })
       .then((token) => {
         localStorage.setItem("token", token.data);
 
