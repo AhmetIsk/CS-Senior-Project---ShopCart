@@ -12,8 +12,8 @@ from .serializers import MyTokenObtainPairSerializer
 @api_view(['GET'])
 def getRoutes(request):
     routes = [
+        '/authorization/login/',
         '/authorization/login/refresh',
-        '/authorization/login/refresh/token',
         '/authorization/register'
     ]
 

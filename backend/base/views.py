@@ -2,8 +2,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-from .serializers import NoteSerializer
+from .serializers import NoteSerializer, UserSerializer, GroupSerializer
 from .models import Note, ShoppingCart
+from django.contrib.auth.models import User, Group
+from rest_framework import viewsets
+from rest_framework import permissions
 
 
 @api_view(['GET'])
@@ -16,20 +19,29 @@ def getRoutes(request):
     return Response(routes)
 
 
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def getNotes(request):
-    user = request.user
-    notes = Note.objects.filter(user=user)
-    print(notes)
-    serializer = NoteSerializer(notes, many=True)
-    return Response(serializer.data, status=status.HTTP_200_OK)
+class UserViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows users to be viewed or edited.
+    """
+    queryset = User.objects.all().order_by('-date_joined')
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
 
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def addNote(request):
-    user = request.user
-    print(request.data)
-    serializer = NoteSerializer(data=request.data, many=True)
-    return Response(serializer.data)
+class GroupViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows groups to be viewed or edited.
+    """
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
+class NoteViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows notes to be viewed or edited.
+    """
+    queryset = Note.objects.all()
+    serializer_class = NoteSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
