@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'base.apps.BaseConfig',
+    'authorization.apps.AuthorizationConfig',
+
 
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
