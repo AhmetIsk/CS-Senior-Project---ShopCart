@@ -9,7 +9,7 @@ First,
 3. python manage.py createsuperuser
 4. python manage.py makemigrations
 5. python manage.py migrate
-6. python manage.py runserver
+6. python manage.py runserver <YOUR_IP_ADDRESS>:8000
 
 #Setup Frontend
 first open an android emulator from android studio
