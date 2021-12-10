@@ -11,8 +11,7 @@ const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
-    // dispatch(signIn(email, password));
-    signIn(email, password);
+    dispatch(signIn(email, password));
     setEmail('');
     setPassword('');
   };

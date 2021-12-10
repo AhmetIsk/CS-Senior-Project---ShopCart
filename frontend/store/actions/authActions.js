@@ -1,14 +1,12 @@
 import axios from "axios";
 import { url } from "../../api";
-import { toast } from "toastify-react-native";
-import { AsyncStorage } from 'react-native';
 
 export const signUp = (user) => {
   return (dispatch) => {
     axios
       .post(`${url}/signup`, user)
       .then((token) => {
-        AsyncStorage.setItem("token", token.data);
+        localStorage.setItem("token", token.data);
 
         dispatch({
           type: "SIGN_UP",
@@ -23,16 +21,13 @@ export const signUp = (user) => {
 
 export const signIn = (email, password) => {
   console.log(email, password)
+  console.log("SIGNING IN")
   return (dispatch) => {
     axios
       .post(`${url}/login/`, { email, password })
       .then((token) => {
-        AsyncStorage.setItem("token", token.data);
+        localStorage.setItem("token", token.data);
         console.log(token.data);
-        dispatch({
-          type: "SIGN_IN",
-          token: token.data,
-        });
       })
       .catch((error) => {
         console.log(error.response);

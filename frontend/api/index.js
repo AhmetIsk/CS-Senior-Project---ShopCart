@@ -1,10 +1,9 @@
-export const url = 'http://localhost:8000/authorization';
+export const url = 'http://<YOUR_IP_ADDRESS>:8000/authorization';
 // export const url = "http://localhost:5000/api";
-import { AsyncStorage } from 'react-native';
 export const setHeaders = () => {
   const headers = {
     headers: {
-      "x-auth-token": AsyncStorage.getItem("token"),
+      "x-auth-token": localStorage.getItem("token"),
     },
   };
 

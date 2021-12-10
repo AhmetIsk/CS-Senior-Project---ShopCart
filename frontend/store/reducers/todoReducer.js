@@ -1,5 +1,3 @@
-import { toast } from "toastify-react-native";
-
 const todoReducer = (todos = [], action) => {
   switch (action.type) {
     case "GET_TODOS":

@@ -1,6 +1,5 @@
 import axios from "axios";
 import { url, setHeaders } from "../../api";
-import { toast } from "toastify-react-native";
 
 export const getTodos = () => {
   return (dispatch) => {

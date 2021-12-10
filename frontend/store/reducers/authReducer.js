@@ -1,6 +1,4 @@
-import { toast } from "toastify-react-native";
 import jwtDecode from "jwt-decode";
-import { AsyncStorage } from 'react-native';
 
 const initialState = {
   token: null,
@@ -23,7 +21,7 @@ const authReducer = (state = initialState, action) => {
         _id: user._id,
       };
     case "SIGN_OUT":
-      AsyncStorage.removeItem("token");
+      localStorage.removeItem("token");
       return {
         token: null,
         name: null,

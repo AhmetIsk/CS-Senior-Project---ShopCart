@@ -1,5 +1,8 @@
 # Installation guide
 
+First,
+1. Change "<YOUR_IP_ADDRESS>" to your actual IP address from [backend/backend/settings.py](backend/backend/settings.py) and [frontend/api/index.js](frontend/api/index.js).
+
 #Setup Backend
 1. cd backend
 2. pip install -r requirements.txt
