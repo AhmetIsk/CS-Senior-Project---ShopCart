@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { login } from '../store/actions/auth';
+import { signUp } from '../store/actions/auth';
 import HomeScreen from './HomeScreen';
 
-const LoginScreen = ({ navigation }) => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+const SignUpScreen = ({ navigation }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const auth= useSelector((state) => state.auth);
   const { errorMessageLogin } = auth;
   // const dispatch = useDispatch();
 
   const handleSubmit = () => {
-    login(username, password);
+    signUp(username, password, email, firstName, lastName);
     setUsername('');
     setPassword('');
   };
@@ -40,18 +43,38 @@ const LoginScreen = ({ navigation }) => {
           style={styles.input}
           secureTextEntry
         />
+        <TextInput
+          placeholder="Password Again"
+          value={password}
+          onChangeText={text => setPassword(text)}
+          style={styles.input}
+          secureTextEntry
+        />
+        <TextInput
+          placeholder="Email"
+          value={email}
+          onChangeText={text => setEmail(text)}
+          style={styles.input}
+        />
+        <TextInput
+          placeholder="First Name"
+          value={firstName}
+          onChangeText={text => setFirstName(text)}
+          style={styles.input}
+          secureTextEntry
+        />
+        <TextInput
+          placeholder="Last Name"
+          value={lastName}
+          onChangeText={text => setLastName(text)}
+          style={styles.input}
+          secureTextEntry
+        />
       </View>
+
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           onPress={handleSubmit}
-          style={styles.button}
-        >
-          <Text style={styles.buttonText}>Login</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={()  => navigation.navigate('Sign Up')}
           style={styles.button}
         >
           <Text style={styles.buttonText}>Sign Up</Text>
@@ -61,7 +84,7 @@ const LoginScreen = ({ navigation }) => {
   )
 }
 
-export default LoginScreen
+export default SignUpScreen
 
 const styles = StyleSheet.create({
   container: {

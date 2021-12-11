@@ -40,6 +40,19 @@ export const login = (username, password)  => {
   });
 };
 
+export const signUp = (username, password, email, firstName, lastName )  => {
+  // dispatch(loggingIn(true));
+  userService.signUp(username, password, email, firstName, lastName).then(async (res) => {
+    // await dispatch(loggedIn(JSON.stringify(res.data)));
+    console.log(" bakin bu response dur: ", JSON.stringify(res.data));
+    await navigate('Login');
+  }).catch(() => {
+    // dispatch(errorLogIn('Wrong username or password'));
+  }).finally(() => {
+    // dispatch(loggingIn(false));
+  });
+};
+
 export const loggedOut = () => ({
   type: AUTH_LOGOUT,
 });
