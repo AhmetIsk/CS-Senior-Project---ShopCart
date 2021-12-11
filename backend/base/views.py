@@ -45,3 +45,8 @@ class NoteViewSet(viewsets.ModelViewSet):
     serializer_class = NoteSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
+@api_view(['GET'])
+def current_user(request):
+    serializer = UserSerializer(request.user, context={'request': request})
+    return Response(serializer.data)
