@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from .models import Note
+from .models import Note, ProductBase
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 
@@ -10,10 +10,17 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'first_name', 'last_name', 'username', 'email', 'groups', 'last_login', 'date_joined']
 
 
+class ProductBaseSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ProductBase
+        fields = ['barcode', 'name', 'photo']
+
+
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
         fields = ['url', 'name']
+
 
 class NoteSerializer(ModelSerializer):
     class Meta:
