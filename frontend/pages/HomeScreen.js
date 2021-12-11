@@ -8,19 +8,19 @@ import store from "../store/reducers";
 const HomeScreen = ({ navigation }) => {
   const auth = useSelector((state) => state.auth);
   const [tag, setTag] = useState(null);
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   useEffect(() => {
     const load = async () => {
       const userStorage = await getAuthAsyncStorage();
       console.log('bu user storage homedaki',userStorage, auth);
       setTag({  user: userStorage.user, token: userStorage.token});
-      if (userStorage.user && userStorage.token) {
-        await store.dispatch(loggedIn({
-          user: userStorage.user,
-          token: userStorage.token,
-        }));
-      }
+      // if (userStorage.user && userStorage.token) {
+      //   await store.dispatch(loggedIn({
+      //     user: userStorage.user,
+      //     token: userStorage.token,
+      //   }));
+      // }
     }
     load();
   }, []);
@@ -32,7 +32,7 @@ const HomeScreen = ({ navigation }) => {
   return (
     <View>
       <Text>Home Screen</Text>
-      <Button title="Sign out" onPress={() => dispatch(logout())} />
+      <Button title="Sign out" onPress={() => logout()} />
     </View>
   );
 };

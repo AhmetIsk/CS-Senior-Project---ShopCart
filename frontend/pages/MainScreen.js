@@ -8,16 +8,23 @@ import { getAuthAsyncStorage } from '../services/getAuthAsyncStorage';
 const Stack = createNativeStackNavigator();
 
 const MainScreen = () => {
-  const auth = useSelector((state) => state.auth);
+  // const [isLoading, setIsLoadingFromAsyncStorage] = useState(true);
+
+  // useEffect(()=> {
+  //   const load = async () => {
+  //     setIsLoadingFromAsyncStorage(true);
+  //     const userStorage = await getAuthAsyncStorage();
+  //     if (userStorage.user && userStorage.token) {
+  //       setIsLoadingFromAsyncStorage(false);
+  //     }
+  //   }
+  //   load();
+  // }, []);
+  // console.log('bu da isloading', isLoading)
   return (
     <Stack.Navigator>
-      {auth.token === null ? (
-        <>
-          <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
-        </>
-      ) : (
+        <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
-      )}
     </Stack.Navigator>
   )
 }

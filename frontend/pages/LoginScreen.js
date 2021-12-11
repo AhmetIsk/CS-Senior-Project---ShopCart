@@ -9,10 +9,10 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState('')
   const auth= useSelector((state) => state.auth);
   const { errorMessageLogin } = auth;
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const handleSubmit = () => {
-    dispatch(login(username, password));
+    login(username, password);
     setUsername('');
     setPassword('');
   };

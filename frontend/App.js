@@ -10,26 +10,26 @@ import store from './store/reducers';
 import { navigationRef } from './services/navRef';
 
 export default function App() {
-  const [isLoading, setIsLoadingFromAsyncStorage] = useState(true);
+  // const [isLoading, setIsLoadingFromAsyncStorage] = useState(true);
 
-  useEffect(()=> {
-    const load = async () => {
-      await setIsLoadingFromAsyncStorage(true);
-      const userStorage = await getAuthAsyncStorage();
-      if (userStorage.user && userStorage.token) {
-        await store.dispatch(loggedIn({
-          user: userStorage.user,
-          token: userStorage.token,
-        }));
-      }
-      await setIsLoadingFromAsyncStorage(false);
-    }
-    load();
-  }, []);
+  // useEffect(()=> {
+  //   const load = async () => {
+  //     await setIsLoadingFromAsyncStorage(true);
+  //     const userStorage = await getAuthAsyncStorage();
+  //     if (userStorage.user && userStorage.token) {
+  //       await store.dispatch(loggedIn({
+  //         user: userStorage.user,
+  //         token: userStorage.token,
+  //       }));
+  //     }
+  //     await setIsLoadingFromAsyncStorage(false);
+  //   }
+  //   load();
+  // }, []);
 
-  if (isLoading) {
-    return null;
-  }
+  // if (isLoading) {
+  //   return null;
+  // }
   return (
     <Provider store={ store }>
       <NavigationContainer ref={navigationRef}>
