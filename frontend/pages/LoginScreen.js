@@ -1,22 +1,25 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import { useDispatch, useSelector } from 'react-redux'
-import { signIn } from '../store/actions/authActions'
-
+import { login } from '../store/actions/auth';
+import HomeScreen from './HomeScreen';
 
 const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const auth= useSelector((state) => state.auth);
+  const { errorMessageLogin } = auth;
   const dispatch = useDispatch();
 
   const handleSubmit = () => {
-    dispatch(signIn(email, password));
-    setEmail('');
+    dispatch(login(username, password));
+    setUsername('');
     setPassword('');
   };
-
-  if (auth._id) return navigation.navigate('HomeScreen');
+  // useEffect(() => {
+  //   if (auth.user)
+  //     navigation.navigate('Home');
+  // }, [auth]);
 
   return (
     <KeyboardAvoidingView
@@ -26,8 +29,8 @@ const LoginScreen = ({ navigation }) => {
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Username"
-          value={email}
-          onChangeText={text => setEmail(text)}
+          value={username}
+          onChangeText={text => setUsername(text)}
           style={styles.input}
         />
         <TextInput
