@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 
 class Note(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     body = models.TextField()
 
 
@@ -13,12 +13,12 @@ class Home(models.Model):
 
 class ProductBase(models.Model):
     barcode = models.CharField(max_length=200)
-    name = models.TextField(max_length=100, null=True)
-    photo = models.ImageField(upload_to='products', null=True)
+    name = models.TextField(max_length=100, blank=True, null=True)
+    photo = models.ImageField(upload_to='products', blank=True, null=True)
 
 
 class Store(models.Model):
-    name = models.TextField(max_length=50, null=True)
+    name = models.TextField(max_length=50, blank=True, null=True)
     available_products = models.ManyToManyField(ProductBase)
 
 
@@ -40,5 +40,5 @@ class ShoppingCart(models.Model):
 
 class UserMeta(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    home = models.OneToOneField(Home, on_delete=models.RESTRICT, null=True)
+    home = models.OneToOneField(Home, on_delete=models.RESTRICT, blank=True, null=True)
     shopping_cart = models.OneToOneField(ShoppingCart, on_delete=models.CASCADE)

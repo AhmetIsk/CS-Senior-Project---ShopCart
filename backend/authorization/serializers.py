@@ -1,6 +1,7 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from base.models import ShoppingCart, UserMeta
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
@@ -49,5 +50,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         user.set_password(validated_data['password'])
         user.save()
+
+        # Create a shopping cart for the user and save it into users' metadata
+        cart = ShoppingCart.objects.create()
+        userMeta = UserMeta.objects.create(user=user, shopping_cart=cart)
 
         return user
