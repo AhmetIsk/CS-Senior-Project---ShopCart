@@ -1,9 +1,10 @@
 from django.urls import path, include
 from rest_framework.urlpatterns import format_suffix_patterns
-from .views import get_product_base
+from .views import get_product_base, add_product_to_cart
 
 urlpatterns = [
     path('get_product_base/<str:barcode>', get_product_base),
+    path('add_product_to_cart/', add_product_to_cart)
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

@@ -1,16 +1,17 @@
 from django.http import JsonResponse
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from base.serializers import ProductBaseSerializer
 
-from base.models import ProductBase
-
-import os
+from base.models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Home
+from .exceptions import DoesNotExistException
 
 
 @api_view(['GET'])
+@permission_classes((IsAuthenticated,))
 def get_product_base(request, barcode):
     """
     Retrieve a product base.
@@ -22,3 +23,29 @@ def get_product_base(request, barcode):
 
     serializer = ProductBaseSerializer(product)
     return JsonResponse(serializer.data)
+
+
+@api_view(['POST'])
+@permission_classes((IsAuthenticated,))
+def add_product_to_cart(request):
+    user = request.user
+    product_id = request.data['product_id']
+    quantity = request.data['quantity']
+    if not ProductBase.objects.filter(id=product_id).exists():
+        raise DoesNotExistException("A base product with this ID does not exist.")
+
+    product_base = ProductBase.objects.get(id=product_id)
+    print("Product Base: ", product_base)
+
+    product_to_add = ProductInCart.objects.create(product=product_base, quantity=quantity)
+
+    if not UserMeta.objects.filter(user=user.id).exists():
+        raise DoesNotExistException("Metadata of this user does not exist. Register a new user or create metadata"
+                                    " for the current one!")
+
+    # no object satisfying query exists
+    user_meta = UserMeta.objects.get(user=user.id)
+    cart = user_meta.shopping_cart
+    cart.products.add(product_to_add)
+
+    return Response({"Success": "Product added to shopping cart"}, status=status.HTTP_200_OK)

@@ -17,3 +17,21 @@ first open an android emulator from android studio
 2. npm install
 3. npm start
 4. press a to open android
+
+
+-----------
+
+#To See base Endpoints:
+1. Go to "/admin" and login.
+2. Visit "/base".
+
+#Testing API Endpoints (curl):
+Getting Product Base:
+* curl -H "Authorization: Bearer <ACCESS_TOKEN>" http://<YOUR_IP_ADDRESS>:8000/productManager/get_product_base/<barcode>
+OR
+* Login with your admin account and visit "http://<YOUR_IP_ADDRESS>:8000/productManager/get_product_base/"
+
+Adding new product into shopping cart:
+* curl -H "Authorization: Bearer <ACCESS_TOKEN>" http://<YOUR_IP_ADDRESS>:8000/productManager/add_product_to_cart/ -X POST -d '{"product_id": 1, "quantity": 2}'
+OR
+* Login with your admin account and visit "http://<YOUR_IP_ADDRESS>:8000/productManager/add_product_to_cart/"
