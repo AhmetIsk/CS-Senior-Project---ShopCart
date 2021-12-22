@@ -39,6 +39,7 @@ INSTALLED_APPS = [
 
     'base.apps.BaseConfig',
     'authorization.apps.AuthorizationConfig',
+    'productManager.apps.ProductmanagerConfig',
 
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
