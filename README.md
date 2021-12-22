@@ -20,18 +20,20 @@ first open an android emulator from android studio
 
 
 -----------
+#To Add Mock Data:
+1. Run `backend/base/tests.py` after starting up the server (Change the IP address in that file to your own IP). Created users' username & password is: "testqwerty". Do not forget to migrate before.
 
-#To See base Endpoints:
-1. Go to "/admin" and login.
-2. Visit "/base".
+#To See "base" Endpoints:
+1. Go to `"/admin"` and login.
+2. Visit `"/base"`.
 
 #Testing API Endpoints (curl):
 Getting Product Base:
-* curl -H "Authorization: Bearer <ACCESS_TOKEN>" http://<YOUR_IP_ADDRESS>:8000/productManager/get_product_base/<barcode>
+* `curl -H "Authorization: Bearer <ACCESS_TOKEN>" http://<YOUR_IP_ADDRESS>:8000/productManager/get_product_base/<barcode>`
 OR
-* Login with your admin account and visit "http://<YOUR_IP_ADDRESS>:8000/productManager/get_product_base/"
+* Login with your admin account and visit `"http://<YOUR_IP_ADDRESS>:8000/productManager/get_product_base/"`
 
 Adding new product into shopping cart:
-* curl -H "Authorization: Bearer <ACCESS_TOKEN>" http://<YOUR_IP_ADDRESS>:8000/productManager/add_product_to_cart/ -X POST -d '{"product_id": 1, "quantity": 2}'
+* `curl -H "Authorization: Bearer <ACCESS_TOKEN>" http://<YOUR_IP_ADDRESS>:8000/productManager/add_product_to_cart/ -X POST -d '{"product_id": 1, "quantity": 2}'`
 OR
-* Login with your admin account and visit "http://<YOUR_IP_ADDRESS>:8000/productManager/add_product_to_cart/"
+* Login with your admin account and visit `"http://<YOUR_IP_ADDRESS>:8000/productManager/add_product_to_cart/"`
