@@ -37,7 +37,10 @@ def insert_mock_data():
                       data=data)
     print(json.loads(r.text))
 
-
+    # Get contents of shopping cart
+    r = requests.get("http://{}:8000/productManager/get_shopping_cart/".format(IP_ADDRESS),
+                     headers={'Authorization': 'Bearer {}'.format(access_token)})
+    print(json.loads(r.text))
 
 
 insert_mock_data()

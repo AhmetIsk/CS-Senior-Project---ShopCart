@@ -37,3 +37,8 @@ Adding new product into shopping cart:
 * `curl -H "Authorization: Bearer <ACCESS_TOKEN>" http://<YOUR_IP_ADDRESS>:8000/productManager/add_product_to_cart/ -X POST -d '{"product_id": 1, "quantity": 2}'`
 OR
 * Login with your admin account and visit `"http://<YOUR_IP_ADDRESS>:8000/productManager/add_product_to_cart/"`
+
+Getting current users' shopping cart:
+* `curl -H "Authorization: Bearer <ACCESS_TOKEN>" http://<YOUR_IP_ADDRESS>:8000/productManager/get_shopping_cart/`
+OR
+* Login with your admin account and visit `"http://<YOUR_IP_ADDRESS>:8000/productManager/get_shopping_cart/"`
