@@ -1,0 +1,22 @@
+from django.urls import path, include
+from . import views
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register(r'users', views.UserViewSet)
+router.register(r'homes', views.HomeViewSet)
+router.register(r'productBases', views.ProductBaseViewSet)
+router.register(r'stores', views.StoreViewSet)
+router.register(r'priceInStore', views.PriceInStoreViewSet)
+router.register(r'productInCart', views.ProductInCartViewSet)
+router.register(r'shoppingCart', views.ShoppingCartViewSet)
+router.register(r'userMeta', views.UserMetaViewSet)
+router.register(r'groups', views.GroupViewSet)
+router.register(r'notes', views.NoteViewSet)
+
+# Wire up our API using automatic URL routing.
+# Additionally, we include login URLs for the browsable API.
+urlpatterns = [
+    path('', include(router.urls)),
+    path('current_user', views.current_user),
+]

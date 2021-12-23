@@ -1,21 +1,41 @@
-import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Provider } from 'react-redux';
+import MainScreen from './pages/MainScreen/MainScreen';
+import { NavigationContainer } from '@react-navigation/native';
+
+// buralar duzenlencek
+// import {loggedIn} from "./store/actions/auth";
+// import {getAuthAsyncStorage} from "./services/getAuthAsyncStorage";
+import store from './store/reducers';
+import { navigationRef } from './services/navRef';
 
 export default function App() {
+  // const [isLoading, setIsLoadingFromAsyncStorage] = useState(true);
+
+  // useEffect(()=> {
+  //   const load = async () => {
+  //     await setIsLoadingFromAsyncStorage(true);
+  //     const userStorage = await getAuthAsyncStorage();
+  //     if (userStorage.user && userStorage.token) {
+  //       await store.dispatch(loggedIn({
+  //         user: userStorage.user,
+  //         token: userStorage.token,
+  //       }));
+  //     }
+  //     await setIsLoadingFromAsyncStorage(false);
+  //   }
+  //   load();
+  // }, []);
+
+  // if (isLoading) {
+  //   return null;
+  // }
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <Provider store={ store }>
+      <NavigationContainer ref={navigationRef}>
+        <MainScreen />
+      </NavigationContainer>
+    </Provider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
