@@ -41,14 +41,15 @@ def get_shopping_cart(request):
 
     products = []
     for item in cart.products.all():
+        photo_url = item.product.photo.url if item.product.photo else None
         products.append({'id': item.id,
                          'product': {'id': item.product.id, 'barcode': item.product.barcode, 'name': item.product.name,
-                                     'photo': item.product.photo.url}, 'quantity': item.quantity,
+                                     'photo': photo_url}, 'quantity': item.quantity,
                          'adding_date': str(item.adding_date)})
 
-    print(products)
-
+    #print(products)
     #serializer = ShoppingCartSerializer(cart, context={'request': request})
+    
     return JsonResponse(json.dumps(products), safe=False)
 
 
