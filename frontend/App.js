@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Provider } from 'react-redux';
-import MainScreen from './pages/MainScreen';
+import MainScreen from './pages/MainScreen/MainScreen';
 import { NavigationContainer } from '@react-navigation/native';
 
 // buralar duzenlencek
-import {loggedIn} from "./store/actions/auth";
-import {getAuthAsyncStorage} from "./services/getAuthAsyncStorage";
+// import {loggedIn} from "./store/actions/auth";
+// import {getAuthAsyncStorage} from "./services/getAuthAsyncStorage";
 import store from './store/reducers';
 import { navigationRef } from './services/navRef';
 

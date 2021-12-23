@@ -1,10 +1,10 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react'
-import { useSelector } from "react-redux";
-import LoginScreen from './LoginScreen';
-import HomeScreen from './HomeScreen';
-import { getAuthAsyncStorage } from '../services/getAuthAsyncStorage';
-import SignUpScreen from './SignUpScreen';
+import React from 'react'
+// import { useSelector } from "react-redux";
+import LoginScreen from '../LoginScreen/LoginScreen';
+import HomeScreen from '../HomeScreen/HomeScreen';
+// import { getAuthAsyncStorage } from '../../services/getAuthAsyncStorage';
+import SignUpScreen from '../SignUpScreen/SignUpScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,7 +26,7 @@ const MainScreen = () => {
     <Stack.Navigator>
         <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
         <Stack.Screen options={{ headerShown: false }} name="Sign Up" component={SignUpScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="Home" component={HomeScreen} />
     </Stack.Navigator>
   )
 }

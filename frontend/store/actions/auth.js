@@ -1,4 +1,4 @@
-import { InvalidTokenError } from "jwt-decode";
+// import { InvalidTokenError } from "jwt-decode";
 import {
   AUTH_ERR_LOG_IN,
   AUTH_ERR_LOG_OUT,
@@ -7,7 +7,7 @@ import {
   AUTH_LOGGING_OUT,
   AUTH_LOGOUT
 } from "../../constants/auth";
-import { setAuthAsyncStorage } from "../../services/getAuthAsyncStorage";
+import { resetAuthAsyncStorage, setAuthAsyncStorage } from "../../services/getAuthAsyncStorage";
 import {navigate} from "../../services/navRef";
 import {userService} from "../../services/userService";
 
@@ -77,4 +77,5 @@ export const logout = async () => {
   }).finally(() => {
     // dispatch(loggingOut(false));
   });
+  await resetAuthAsyncStorage();
 };
