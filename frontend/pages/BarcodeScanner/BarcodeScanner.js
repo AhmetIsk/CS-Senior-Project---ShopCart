@@ -1,0 +1,56 @@
+import React, { useEffect, useState } from 'react';
+import { Button, Text, View } from 'react-native';
+import { BarCodeScanner } from 'expo-barcode-scanner';
+import ApprovalScreen from './ApprovalScreen';
+import { styles } from './styles';
+import { userService } from '../../services/userService';
+import { useSelector } from 'react-redux';
+import { userToken } from '../../store/slices/token';
+
+const BarcodeScanner = () => {
+  const [hasPermission, setHasPermission] = useState(null);
+  const [scanned, setScanned] = useState(false);
+  const [barcodeId, setBarcodeId] = useState('');
+  const token = useSelector(userToken);
+  useEffect(() => {
+    (async () => {
+      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      setHasPermission(status === 'granted');
+    })();
+  }, []);
+
+  const handleBarCodeScanned = ({ data }) => {
+    setScanned(true);
+    setBarcodeId(data);
+    userService.addProduct(1, 1, token);
+  };
+
+  if (hasPermission === null) {
+    return <Text>Requesting for camera permission</Text>;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
+  }
+  if (scanned) {
+    return <ApprovalScreen barcodeId={barcodeId}/>;
+  }
+  else {
+    return (
+        <>
+          <View style={styles.headerContainer}>
+            <Text style={styles.barcodeNotifier}>Scan Barcode to Camera</Text>
+          </View>
+          <View style={styles.container}>
+              <BarCodeScanner
+                onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+                style={styles.cameraFit}
+              />
+            {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
+          </View>
+        </>
+    );
+  }
+}
+
+export default BarcodeScanner;
+

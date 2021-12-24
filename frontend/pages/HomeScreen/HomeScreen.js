@@ -1,24 +1,26 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
 import { Text, KeyboardAvoidingView, Image } from "react-native";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import { AddProductButton, ButtonLabel, EditButton, EditButtonLabel, ShoppingListButton, SignOut } from "../../components/Buttons";
 import { ButtonContainer } from "../../components/Containers";
 import { colors } from "../../constants/styles";
 import { getAuthAsyncStorage } from "../../services/getAuthAsyncStorage";
 import { logout } from "../../store/actions/auth";
+import { setToken } from "../../store/slices/token";
 import { styles } from "./styles";
 // import store from "../store/reducers";
 
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
   const auth = useSelector((state) => state.auth);
   const [tag, setTag] = useState(null);
-  // const dispatch = useDispatch();
-
+  const dispatch = useDispatch();
   useEffect(() => {
     const load = async () => {
       const userStorage = await getAuthAsyncStorage();
       console.log('bu user storage homedaki',userStorage, auth);
       setTag({  user: userStorage.user, token: userStorage.token});
+      dispatch(setToken(userStorage.token));
       // if (userStorage.user && userStorage.token) {
       //   await store.dispatch(loggedIn({
       //     user: userStorage.user,
@@ -50,11 +52,11 @@ const HomeScreen = () => {
         >
           <EditButtonLabel>Edit My Profile</EditButtonLabel>
         </EditButton>
-        <ShoppingListButton onPress={() => {}}>
+        <ShoppingListButton onPress={() => navigation.navigate('Shopping List')}>
           <ButtonLabel color={colors.white}>My Shopping List</ButtonLabel>
         </ShoppingListButton>
         <Text style={styles.addProduct}>Add product to list:</Text>
-        <AddProductButton onPress={() => {}} color={colors.green}>
+        <AddProductButton onPress={() => navigation.navigate('Add Product via Barcode')} color={colors.green}>
           <ButtonLabel color={colors.white}>Scan Barcode</ButtonLabel>
         </AddProductButton>
       </ButtonContainer>

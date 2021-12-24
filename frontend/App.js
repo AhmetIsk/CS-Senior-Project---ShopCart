@@ -6,7 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 // buralar duzenlencek
 // import {loggedIn} from "./store/actions/auth";
 // import {getAuthAsyncStorage} from "./services/getAuthAsyncStorage";
-import store from './store/reducers';
+import store from './store/reducers/index';
 import { navigationRef } from './services/navRef';
 
 export default function App() {

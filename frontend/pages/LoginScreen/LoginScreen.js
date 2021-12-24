@@ -29,11 +29,12 @@ const LoginScreen = ({ navigation }) => {
     //   }));
     // }
   }
-  load();
-  if (tag != null) {
-    console.log(tag);
-    navigate('Home');
-  }
+  load().then(() => {
+    if (tag != null) {
+      console.log(tag);
+      navigate('Home');
+    }
+  });
   // const auth= useSelector((state) => state.auth);
   // const { errorMessageLogin } = auth;
   // const dispatch = useDispatch();

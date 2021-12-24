@@ -1,1 +1,1 @@
-export const API_URL = 'http://<auth>:8000/authorization';
+export const API_URL = 'http://139.179.203.62:8000';

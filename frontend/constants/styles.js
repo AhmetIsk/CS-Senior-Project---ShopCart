@@ -10,6 +10,7 @@ export const colors = {
   white: '#FFFFFF',
   black: '#000',
   green: '#41A426',
+  softGreen: '#70e45a',
 }
 
 export const fontWeights = {

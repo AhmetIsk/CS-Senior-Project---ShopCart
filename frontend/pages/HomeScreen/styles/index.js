@@ -20,5 +20,5 @@ export const styles = StyleSheet.create({
     fontWeight: "200",
     padding: 20,
     fontSize: 20
-  },
+  }
 })

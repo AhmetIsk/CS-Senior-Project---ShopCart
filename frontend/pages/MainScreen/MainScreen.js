@@ -5,6 +5,8 @@ import LoginScreen from '../LoginScreen/LoginScreen';
 import HomeScreen from '../HomeScreen/HomeScreen';
 // import { getAuthAsyncStorage } from '../../services/getAuthAsyncStorage';
 import SignUpScreen from '../SignUpScreen/SignUpScreen';
+import BarcodeScanner from '../BarcodeScanner/BarcodeScanner';
+import ShoppingListScreen from '../ShoppingListScreen/ShoppingListScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +29,8 @@ const MainScreen = () => {
         <Stack.Screen options={{ headerShown: false }} name="Login" component={LoginScreen} />
         <Stack.Screen options={{ headerShown: false }} name="Sign Up" component={SignUpScreen} />
         <Stack.Screen options={{ headerShown: false }} name="Home" component={HomeScreen} />
+        <Stack.Screen options={{ headerShown: false }} name="Add Product via Barcode" component={BarcodeScanner} />
+        <Stack.Screen options={{ headerShown: false }} name="Shopping List" component={ShoppingListScreen} />
     </Stack.Navigator>
   )
 }

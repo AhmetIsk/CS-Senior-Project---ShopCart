@@ -10,6 +10,10 @@ export async function getAuthAsyncStorage() {
   };
 }
 
+export function getToken() {
+  return AsyncStorage.getItem('userToken');
+}
+
 export async function setAuthAsyncStorage(response) {
   await AsyncStorage.setItem('userToken', response.data.access);
   await AsyncStorage.setItem('userData', JSON.stringify(jwt_decode(response.data.access)));
