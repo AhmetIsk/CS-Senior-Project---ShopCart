@@ -34,7 +34,7 @@ OR
 * Login with your admin account and visit `"http://<YOUR_IP_ADDRESS>:8000/productManager/get_product_base/"`
 
 Adding new product into shopping cart:
-* `curl -H "Authorization: Bearer <ACCESS_TOKEN>" http://<YOUR_IP_ADDRESS>:8000/productManager/add_product_to_cart/ -X POST -d '{"barcode": "12123123", "quantity": 2}'`
+* `curl -H "Authorization: Bearer <ACCESS_TOKEN>" http://<YOUR_IP_ADDRESS>:8000/productManager/add_product_to_cart/ -X POST -d 'barcode=12123123&quantity=2'`
 OR
 * Login with your admin account and visit `"http://<YOUR_IP_ADDRESS>:8000/productManager/add_product_to_cart/"`
 

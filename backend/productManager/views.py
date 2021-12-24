@@ -57,12 +57,13 @@ def get_shopping_cart(request):
 @permission_classes((IsAuthenticated,))
 def add_product_to_cart(request):
     user = request.user
-    barcode = request.data['barcode']
-    quantity = request.data['quantity']
-    if not ProductBase.objects.filter(barcode=barcode).exists():
-        raise DoesNotExistException("A base product with this ID does not exist.")
+    barcode = request.data.get('barcode')
+    quantity = request.data.get('quantity')
 
-    product_base = ProductBase.objects.get(id=barcode)
+    if not ProductBase.objects.filter(barcode=barcode).exists():
+        raise DoesNotExistException("A base product with this barcode does not exist.")
+
+    product_base = ProductBase.objects.get(barcode=barcode)
     print("Product Base: ", product_base)
 
     product_to_add = ProductInCart.objects.create(product=product_base, quantity=quantity)
