@@ -50,7 +50,7 @@ def get_shopping_cart(request):
     #print(products)
     #serializer = ShoppingCartSerializer(cart, context={'request': request})
 
-    return JsonResponse(json.dumps(products), safe=False)
+    return JsonResponse(products, safe=False)
 
 
 @api_view(['POST'])
