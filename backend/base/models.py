@@ -29,9 +29,10 @@ class PriceInStore(models.Model):
 
 
 class ProductInCart(models.Model):
-    product = models.ForeignKey(ProductBase, on_delete=models.RESTRICT)
+    product = models.OneToOneField(ProductBase, on_delete=models.RESTRICT)
     quantity = models.PositiveIntegerField(default=1)
     adding_date = models.DateTimeField(auto_now_add=True)
+    update_date = models.DateTimeField(null=True, blank=True)
 
 
 class ShoppingCart(models.Model):
