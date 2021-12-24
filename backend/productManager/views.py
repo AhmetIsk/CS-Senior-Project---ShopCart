@@ -5,6 +5,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from django.contrib.auth.models import User
 
 from base.serializers import ProductBaseSerializer, ShoppingCartSerializer
 
@@ -91,10 +92,11 @@ def add_product_to_cart(request):
 
 
 @api_view(['POST'])
+@permission_classes((IsAuthenticated,))
 def remove_from_cart(request):
     user = request.user
     barcode = request.data.get('barcode')
-    quantity = request.data.get('quantity')
+    quantity = int(request.data.get('quantity'))
 
     if not ProductBase.objects.filter(barcode=barcode).exists():
         raise DoesNotExistException("A base product with this barcode does not exist.")
@@ -102,21 +104,28 @@ def remove_from_cart(request):
     product_base = ProductBase.objects.get(barcode=barcode)
     print("Product Base: ", product_base)
 
-    existing_products = ProductInCart.objects.get(product=product_base)
-
     if not UserMeta.objects.filter(user=user.id).exists():
         raise DoesNotExistException("Metadata of this user does not exist. Register a new user or create metadata"
                                     " for the current one!")
 
-    if existing_products.quantity < quantity:
-        existing_products.quantity = quantity
-        existing_products.save()
+    # If this product is already in the cart, increase its quantity. Else, create new pic instance
+    user_meta = UserMeta.objects.get(user=user)
+    cart = user_meta.shopping_cart
+    if cart.products.filter(product=product_base).exists():
+        pic = cart.products.get(product=product_base)
+    else:
+        raise DoesNotExistException("No product with this barcode inside shopping cart")
 
-    if existing_products.quantity == quantity:
+    if pic.quantity > quantity:
+        pic.quantity -= quantity
+        pic.save()
+    elif pic.quantity == quantity:
         # no object satisfying query exists
         user_meta = UserMeta.objects.get(user=user.id)
         cart = user_meta.shopping_cart
-        cart.products.remove(existing_products)
+        cart.products.remove(pic)
         cart.save()
+    else:
+        raise DoesNotExistException("Quantity cannot be bigger than current qty in the cart")
 
     return Response({"Success": "Removed from cart, shopping cart updated."}, status=status.HTTP_200_OK)
