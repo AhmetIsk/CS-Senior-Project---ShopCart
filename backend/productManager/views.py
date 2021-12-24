@@ -49,7 +49,7 @@ def get_shopping_cart(request):
 
     #print(products)
     #serializer = ShoppingCartSerializer(cart, context={'request': request})
-    
+
     return JsonResponse(json.dumps(products), safe=False)
 
 
@@ -57,12 +57,12 @@ def get_shopping_cart(request):
 @permission_classes((IsAuthenticated,))
 def add_product_to_cart(request):
     user = request.user
-    product_id = request.data['product_id']
+    barcode = request.data['barcode']
     quantity = request.data['quantity']
-    if not ProductBase.objects.filter(id=product_id).exists():
+    if not ProductBase.objects.filter(barcode=barcode).exists():
         raise DoesNotExistException("A base product with this ID does not exist.")
 
-    product_base = ProductBase.objects.get(id=product_id)
+    product_base = ProductBase.objects.get(id=barcode)
     print("Product Base: ", product_base)
 
     product_to_add = ProductInCart.objects.create(product=product_base, quantity=quantity)
