@@ -1,3 +1,7 @@
+# Website
+You can reach the details of the app from the following url:
+https://ahmetisk.github.io/CS-Senior-Project---ShopCart/Website/
+
 # Installation guide
 
 First,
