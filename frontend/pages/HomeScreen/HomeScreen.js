@@ -6,8 +6,9 @@ import { AddProductButton, ButtonLabel, EditButton, EditButtonLabel, ShoppingLis
 import { ButtonContainer } from "../../components/Containers";
 import { colors } from "../../constants/styles";
 import { getAuthAsyncStorage } from "../../services/getAuthAsyncStorage";
+import { userService } from "../../services/userService";
 import { logout } from "../../store/actions/auth";
-import { setToken } from "../../store/slices/token";
+import { setToken, userToken } from "../../store/slices/token";
 import { styles } from "./styles";
 // import store from "../store/reducers";
 
@@ -15,12 +16,14 @@ const HomeScreen = ({ navigation }) => {
   const auth = useSelector((state) => state.auth);
   const [tag, setTag] = useState(null);
   const dispatch = useDispatch();
+  const token = useSelector(userToken);
   useEffect(() => {
     const load = async () => {
       const userStorage = await getAuthAsyncStorage();
       console.log('bu user storage homedaki',userStorage, auth);
       setTag({  user: userStorage.user, token: userStorage.token});
       dispatch(setToken(userStorage.token));
+      console.log('bu da redux tokeni', token);
       // if (userStorage.user && userStorage.token) {
       //   await store.dispatch(loggedIn({
       //     user: userStorage.user,
@@ -53,6 +56,9 @@ const HomeScreen = ({ navigation }) => {
           <EditButtonLabel>Edit My Profile</EditButtonLabel>
         </EditButton>
         <ShoppingListButton onPress={() => navigation.navigate('Shopping List')}>
+          <ButtonLabel color={colors.white}>My Shopping List</ButtonLabel>
+        </ShoppingListButton>
+        <ShoppingListButton onPress={() => userService.addProduct("8690525041316", 1, token)}>
           <ButtonLabel color={colors.white}>My Shopping List</ButtonLabel>
         </ShoppingListButton>
         <Text style={styles.addProduct}>Add product to list:</Text>

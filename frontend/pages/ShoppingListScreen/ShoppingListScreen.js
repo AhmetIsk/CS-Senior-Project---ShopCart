@@ -7,15 +7,26 @@ import { styles } from '../BarcodeScanner/styles';
 
 export default function ShoppingListScreen() {
   const token = useSelector(userToken);
-  const [items, setItems] = useState(null);
-  userService.getShoppingList(token).then(products => setItems(products.data[0]["id"])).then(console.log("BAKIN BYRAI ITEMS", items));
+  const [itemName, setItemName] = useState("");
+  const [itemQuantity, setItemQuantity] = useState("");
+  userService.getShoppingList(token).then(products => {
+    console.log(products.length)
+    for(let i = 0; i < products.length; i++) {
+      setItemName(products[i].product.name);
+      setItemQuantity(products[i].quantity);
+    }
+    // forEach(product => {
+    //   setItemName(...itemName, product[0].product.name);
+    //   setItemQuantity(...itemQuantity, product[0].quantity);
+    // });
+  });
   return (
     <View style={styles.container}>
       <Text>
-        {items}
-
-        burasi nobosfsds
-        {items}
+        {itemName}
+      </Text>
+      <Text>
+        {itemQuantity}
       </Text>
     </View>
   )

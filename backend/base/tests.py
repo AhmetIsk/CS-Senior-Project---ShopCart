@@ -18,7 +18,7 @@ def insert_mock_data():
 
     # Get Access Token
     r = requests.post("http://{}:8000/authorization/login/".format(IP_ADDRESS),
-                      data={'username': 'testqwerty', 'password': 'testqwerty'})
+                      data={'username': 'testqwerty', 'password':'testqwerty'})
     print(json.loads(r.text))
     access_token = json.loads(r.text)['access']
 
@@ -38,11 +38,11 @@ def insert_mock_data():
     print(json.loads(r.text))
 
     # Add a base product into shopping cart
-    # data = {'product_id': 1, 'quantity': 2}
-    # r = requests.post("http://{}:8000/productManager/add_product_to_cart/".format(IP_ADDRESS),
-    #                   headers={'Authorization': 'Bearer {}'.format(access_token)},
-    #                   data=data)
-    # print(json.loads(r.text))
+    data = {'barcode': "12123123", 'quantity': 2}
+    r = requests.post("http://{}:8000/productManager/add_product_to_cart/".format(IP_ADDRESS),
+                      headers={'Authorization': 'Bearer {}'.format(access_token)},
+                      data=data)
+    print(json.loads(r.text))
     # data = {'product_id': 2, 'quantity': 2}
     # r = requests.post("http://{}:8000/productManager/add_product_to_cart/".format(IP_ADDRESS),
     #                   headers={'Authorization': 'Bearer {}'.format(access_token)},

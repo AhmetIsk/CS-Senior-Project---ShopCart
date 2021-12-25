@@ -55,7 +55,7 @@ function addProduct(product_id, quantity, token) {
   return new Promise((resolve, reject) => {
     console.log(product_id, quantity, token)
     axios.post(`${API_URL}/productManager/add_product_to_cart/`, {
-      "product_id": product_id,
+      "barcode": product_id,
       "quantity": quantity
     }, {headers: {'Authorization': `Bearer ${token}`}}).then(async (response) => {
       let usernameOb = JSON.stringify(response.data)
@@ -75,9 +75,9 @@ function getShoppingList(token) {
     axios.get(`${API_URL}/productManager/get_shopping_cart/`,
      {headers: {'Authorization': `Bearer ${token}`}}).then(async (response) => {
       let usernameOb = JSON.stringify(response.data)
-      console.log('bu da response', JSON.parse(usernameOb))
+      console.log('bu da response', usernameOb)
       try {
-        resolve(response);
+        resolve(JSON.parse(usernameOb));
       } catch (e) { reject(e) }
     }).catch((err) => {
       console.log('error', err);
