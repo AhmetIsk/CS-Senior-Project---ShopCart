@@ -58,7 +58,7 @@ def get_shopping_cart(request):
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def add_product_to_cart(request):
-    user = request.user
+    user = request.user  # User.objects.get(username='testqwerty')
     barcode = request.data.get('barcode')
     quantity = request.data.get('quantity')
 
@@ -70,12 +70,13 @@ def add_product_to_cart(request):
     # If this product is already in the cart, increase its quantity. Else, create new pic instance
     user_meta = UserMeta.objects.get(user=user)
     cart = user_meta.shopping_cart
-    pic = None
+    product_in_cart = None
     if cart.products.filter(product=product_base).exists():
-        pic = cart.products.get(product=product_base)
-    if pic:
-        pic.quantity += int(quantity)
-        pic.save()
+        product_in_cart = cart.products.get(product=product_base)
+
+    if product_in_cart:
+        product_in_cart.quantity += int(quantity)
+        product_in_cart.save()
     else:
         product_to_add = ProductInCart.objects.create(product=product_base, quantity=quantity)
 
@@ -94,7 +95,7 @@ def add_product_to_cart(request):
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def remove_from_cart(request):
-    user = request.user
+    user = request.user  # User.objects.get(username='testqwerty')
     barcode = request.data.get('barcode')
     quantity = int(request.data.get('quantity'))
 
@@ -124,6 +125,7 @@ def remove_from_cart(request):
         user_meta = UserMeta.objects.get(user=user.id)
         cart = user_meta.shopping_cart
         cart.products.remove(pic)
+        pic.delete()
         cart.save()
     else:
         raise DoesNotExistException("Quantity cannot be bigger than current qty in the cart")

@@ -4,7 +4,7 @@ import json
 from django.test import TestCase
 import requests
 
-IP_ADDRESS = '139.179.203.62'
+IP_ADDRESS = '127.0.0.1'
 
 
 def insert_mock_data():
