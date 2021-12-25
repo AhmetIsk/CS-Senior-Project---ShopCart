@@ -1,9 +1,4 @@
-# one-page-website-html-css-project-for-practice
-## Watch The Complete Tutorial : https://youtu.be/ZFQkb26UD1Y
+# This is the website for Shopcart
 
-This project is for html &amp; css practice. We made this for youtube tutorial purpose.
-<b>coded by [Shaif Arfan](https://github.com/shaifarfan)</b>
-### 👍 HAVE FUN 👍
-Thanks, Arfan
-
+Enjoy! To go, please click: https://ahmetisk.github.io/CS-Senior-Project---ShopCart/Website/
 
