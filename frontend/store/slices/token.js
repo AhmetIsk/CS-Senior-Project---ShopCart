@@ -3,16 +3,19 @@ import { createSlice } from '@reduxjs/toolkit';
 export const slice = createSlice({
   name: 'token',
   initialState: {
-    value: "",
+    value: null,
   },
   reducers: {
     setToken: (state, action) => {
       state.value = action.payload;
     },
+    resetToken: state  => {
+      state.value = null;
+    }
   },
 });
 
-export const { setToken } = slice.actions;
+export const { setToken, resetToken } = slice.actions;
 
 // // The function below is called a thunk and allows us to perform async logic. It
 // // can be dispatched like a regular action: `dispatch(incrementAsync(10))`. This

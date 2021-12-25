@@ -23,8 +23,8 @@ def insert_mock_data():
     access_token = json.loads(r.text)['access']
 
     # Add a base product
-    image_file = '../static/images/products/Screen_Shot_2021-12-22_at_14.39.58.png'
-    data = {'barcode': '12123123', 'name': 'Erikli'}
+    image_file = '../static/images/products/nivea-soft-krem.jpg'
+    data = {'barcode': '4005900009371', 'name': 'Nivea Soft Krem 300 ml'}
     r = requests.post("http://{}:8000/base/productBases/".format(IP_ADDRESS),
                       headers={'Authorization': 'Bearer {}'.format(access_token)},
                       data=data, files={'photo': open(image_file, 'rb')})
@@ -38,11 +38,11 @@ def insert_mock_data():
     print(json.loads(r.text))
 
     # Add a base product into shopping cart
-    data = {'barcode': "12123123", 'quantity': 2}
-    r = requests.post("http://{}:8000/productManager/add_product_to_cart/".format(IP_ADDRESS),
-                      headers={'Authorization': 'Bearer {}'.format(access_token)},
-                      data=data)
-    print(json.loads(r.text))
+    # data = {'barcode': "12123123", 'quantity': 2}
+    # r = requests.post("http://{}:8000/productManager/add_product_to_cart/".format(IP_ADDRESS),
+    #                   headers={'Authorization': 'Bearer {}'.format(access_token)},
+    #                   data=data)
+    # print(json.loads(r.text))
     # data = {'product_id': 2, 'quantity': 2}
     # r = requests.post("http://{}:8000/productManager/add_product_to_cart/".format(IP_ADDRESS),
     #                   headers={'Authorization': 'Bearer {}'.format(access_token)},

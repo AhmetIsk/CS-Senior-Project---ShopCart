@@ -22,7 +22,8 @@ const BarcodeScanner = () => {
   const handleBarCodeScanned = ({ data }) => {
     setScanned(true);
     setBarcodeId(data);
-    userService.addProduct(1, 1, token);
+    const barcode = `${data}`;
+    userService.addProduct(barcode, 1, token);
   };
 
   if (hasPermission === null) {
@@ -39,6 +40,7 @@ const BarcodeScanner = () => {
         <>
           <View style={styles.headerContainer}>
             <Text style={styles.barcodeNotifier}>Scan Barcode to Camera</Text>
+            <Button onPress={() => setScanned(true)} title='Click me'/>
           </View>
           <View style={styles.container}>
               <BarCodeScanner

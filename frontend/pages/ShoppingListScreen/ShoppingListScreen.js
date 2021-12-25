@@ -1,33 +1,30 @@
-import React, { useState } from 'react'
+/* eslint-disable react/jsx-key */
+import React, { useEffect, useState } from 'react'
 import { View, Text } from 'react-native'
 import { useSelector } from 'react-redux';
 import { userService } from '../../services/userService';
 import { userToken } from '../../store/slices/token';
 import { styles } from '../BarcodeScanner/styles';
 
-export default function ShoppingListScreen() {
+const ShoppingListScreen = () => {
+  const [items, setItems] = useState([]);
   const token = useSelector(userToken);
-  const [itemName, setItemName] = useState("");
-  const [itemQuantity, setItemQuantity] = useState("");
-  userService.getShoppingList(token).then(products => {
-    console.log(products.length)
-    for(let i = 0; i < products.length; i++) {
-      setItemName(products[i].product.name);
-      setItemQuantity(products[i].quantity);
-    }
-    // forEach(product => {
-    //   setItemName(...itemName, product[0].product.name);
-    //   setItemQuantity(...itemQuantity, product[0].quantity);
-    // });
-  });
+  const ListProducts = () => {
+    userService.getShoppingList(token).then(products => {
+      console.log(products.length)
+      const mappedItems = products.map(product => {
+        return <Text key={product.id} >Name: {product.product.name} Quantity: {product.quantity}</Text>
+      });
+      setItems(mappedItems);
+    });
+  }
+  useEffect(() => {
+    ListProducts();
+  }, [])
   return (
     <View style={styles.container}>
-      <Text>
-        {itemName}
-      </Text>
-      <Text>
-        {itemQuantity}
-      </Text>
+        {items}
     </View>
   )
 }
+export default ShoppingListScreen;

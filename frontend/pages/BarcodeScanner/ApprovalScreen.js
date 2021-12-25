@@ -4,16 +4,13 @@ import { Animated, Text, View, TouchableOpacity, StyleSheet } from 'react-native
 import { styles } from './styles/index';
 import LottieView from 'lottie-react-native';
 import { colors } from '../../constants/styles';
+import { navigate } from '../../services/navRef';
 
 function useInterval(callback, delay) {
   const savedCallback = useRef();
-
-  // Remember the latest callback.
   useEffect(() => {
     savedCallback.current = callback;
   }, [callback]);
-
-  // Set up the interval.
   useEffect(() => {
     function tick() {
       savedCallback.current();
@@ -24,7 +21,7 @@ function useInterval(callback, delay) {
     }
   }, [delay]);
 }
-export default function ApprovalScreen({ barcodeId, navigation }) {
+export default function ApprovalScreen({ barcodeId }) {
   let animation = useRef(new Animated.Value(0));
   const [progress, setProgress] = useState(0);
   useInterval(() => {
@@ -40,7 +37,7 @@ export default function ApprovalScreen({ barcodeId, navigation }) {
       useNativeDriver: true
     }).start();
     if (progress == 100) {
-      navigation.navigate('Home');
+      navigate('Home');
     }
   },[progress])
   return (
@@ -52,7 +49,7 @@ export default function ApprovalScreen({ barcodeId, navigation }) {
         loop
       />
       <Text style={styles.successNotifier}>Product with barcode id {barcodeId} is successfully added!</Text>
-      <TouchableOpacity onPress={ () => navigation.navigate('Home')} style={styles.bar}>
+      <TouchableOpacity onPress={ () => navigate('Home')} style={styles.bar}>
         <View style={styles.progressBar}>
             <Animated.View style={[StyleSheet.absoluteFill], {backgroundColor: `${colors.green}`, width: progress + '%', borderRadius: 10 }}>
               <Text style={styles.successNotifier}>Click Me to Pass</Text>

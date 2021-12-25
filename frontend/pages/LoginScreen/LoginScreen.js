@@ -1,53 +1,37 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Image, KeyboardAvoidingView, Text, TextInput, View } from 'react-native'
 import { styles } from './styles';
-// import { useDispatch, useSelector } from 'react-redux'
 import { login } from '../../store/actions/auth';
 import { ButtonLabel, StyledSignInUpButton } from '../../components/Buttons';
 import { colors } from '../../constants/styles';
+import { useDispatch } from 'react-redux';
 import { getAuthAsyncStorage } from '../../services/getAuthAsyncStorage';
-import { navigate } from '../../services/navRef';
-// import HomeScreen from '../HomeScreen/HomeScreen';
+import { setToken } from '../../store/slices/token';
+
 
 
 // TODO: Input alinacak kisimlar yeni bir child componentte verilecek rerender sayisini azaltmak icin
 const LoginScreen = ({ navigation }) => {
+  const dispatch = useDispatch();
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [tag, setTag] = useState(null);
-  // const dispatch = useDispatch();
-  const load = async () => {
-    const userStorage = await getAuthAsyncStorage();
-    setTag(userStorage.token);
-    console.log('bunun sonucu budur', userStorage)
-    // if (userStorage.user && userStorage.token) {
-    //   await store.dispatch(loggedIn({
-    //     user: userStorage.user,
-    //     token: userStorage.token,
-    //   }));
-    // }
-  }
-  load().then(() => {
-    if (tag != null) {
-      console.log(tag);
-      navigate('Home');
+
+  useEffect(() => {
+    const load = async () => {
+      const userStorage = await getAuthAsyncStorage();
+      console.log('bu user storage homedaki',userStorage);
+      dispatch(setToken(userStorage.token));
     }
-  });
-  // const auth= useSelector((state) => state.auth);
-  // const { errorMessageLogin } = auth;
-  // const dispatch = useDispatch();
+    load();
+  }, []);
 
   const handleSubmit = () => {
-    login(username, password);
+    login(username, password, dispatch);
     setUsername('');
     setPassword('');
   };
-  // useEffect(() => {
-  //   if (auth.user)
-  //     navigation.navigate('Home');
-  // }, [auth]);
 
   return (
     <KeyboardAvoidingView
