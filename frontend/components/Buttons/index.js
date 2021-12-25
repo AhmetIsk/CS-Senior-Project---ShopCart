@@ -21,6 +21,15 @@ export const SignOut = styled.TouchableOpacity`
   top:0;
   right:0;
 `
+
+export const GoBack = styled.TouchableOpacity`
+  margin-top: 60px;
+  margin-left: 15px;
+  position:absolute;
+  top:0;
+  left:0;
+`
+
 export const EditButton = styled.TouchableOpacity`
   background-color: ${props => props.color || '#0782F9'};
   width: 80%;
@@ -49,4 +58,8 @@ export const AddProductButton = styled.TouchableOpacity`
   border-radius: 10px;
   align-items: center;
   padding: 10px;
+`
+export const DecreaseProduct = styled.TouchableOpacity`
+  justify-content: center;
+  align-items: center;
 `
