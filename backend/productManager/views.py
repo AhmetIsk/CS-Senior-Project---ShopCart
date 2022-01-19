@@ -64,6 +64,8 @@ def add_product_to_cart(request):
 
     if not ProductBase.objects.filter(barcode=barcode).exists():
         raise DoesNotExistException("A base product with this barcode does not exist.")
+        # we will look for http://m.barkodoku.com/
+
 
     product_base = ProductBase.objects.get(barcode=barcode)
 
