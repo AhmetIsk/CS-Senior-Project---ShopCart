@@ -1,5 +1,3 @@
-import json
-
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
@@ -36,7 +34,6 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         data['user'] = {**user_data, **user_metadata}
 
         return data
-
 
 
 class RegisterSerializer(serializers.ModelSerializer):
