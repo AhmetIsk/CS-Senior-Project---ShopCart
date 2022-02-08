@@ -1,9 +1,12 @@
+import json
+
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from base.models import ShoppingCart, UserMeta
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
+from django.forms.models import model_to_dict
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -13,8 +16,27 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         # Add custom claims
         token['username'] = user.username
+        token['test'] = "asdadss"
 
         return token
+
+    def validate(self, attrs):
+        data = super().validate(attrs)
+
+        refresh = self.get_token(self.user)
+
+        data['refresh'] = str(refresh)
+        data['access'] = str(refresh.access_token)
+
+        user_data = model_to_dict(self.user)
+        del user_data['password']
+
+        user_metadata = model_to_dict(UserMeta.objects.get(user=self.user.id))
+
+        data['user'] = {**user_data, **user_metadata}
+
+        return data
+
 
 
 class RegisterSerializer(serializers.ModelSerializer):
