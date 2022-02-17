@@ -15,6 +15,7 @@ class ProductBase(models.Model):
     barcode = models.CharField(max_length=200, unique=True)
     name = models.TextField(max_length=100, blank=True, null=True)
     photo = models.ImageField(upload_to='products', blank=True, null=True)
+    category = models.CharField(max_length=200, blank=True, null=True)
 
 
 class Store(models.Model):

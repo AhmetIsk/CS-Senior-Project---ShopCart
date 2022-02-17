@@ -1,6 +1,8 @@
 from django.urls import path, include
 from . import views
 from rest_framework import routers
+from django.conf.urls.static import static
+from django.conf import settings
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
@@ -20,3 +22,6 @@ urlpatterns = [
     path('', include(router.urls)),
     path('current_user', views.current_user),
 ]
+
+# for images
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

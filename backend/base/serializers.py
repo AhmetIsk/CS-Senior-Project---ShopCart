@@ -19,7 +19,7 @@ class HomeSerializer(serializers.HyperlinkedModelSerializer):
 class ProductBaseSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ProductBase
-        fields = ['id', 'barcode', 'name', 'photo']
+        fields = ['id', 'barcode', 'name', 'photo', 'category']
 
 
 class StoreSerializer(serializers.HyperlinkedModelSerializer):

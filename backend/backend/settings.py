@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-ifo8u$qv@&7z7b%u5&^p$lci6@7a(j^x61p7pw8#zi15v66!&6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '139.179.203.62', '92.44.148.148']
+ALLOWED_HOSTS = ['127.0.0.1', 'https://shopcart-s.herokuapp.com/']
 
 # Application definition
 
@@ -43,7 +43,8 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
-    "corsheaders",
+    'corsheaders',
+    'storages',
 ]
 
 REST_FRAMEWORK = {
@@ -119,11 +120,24 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+"""
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'shopcart',
+        'USER': 'admin_senior',
+        'PASSWORD': os.environ['DB_PASSWORD'],
+        'HOST': os.environ['DB_HOST'],
+        'PORT': '3306',
     }
 }
 
@@ -178,3 +192,29 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'static/images')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.0/howto/static-files/
+
+#S3 BUCKETS CONFIG
+AWS_ACCESS_KEY_ID = os.environ["ACCESS_KEY_ID"]
+AWS_SECRET_ACCESS_KEY = os.environ["SECRET_ACCESS_KEY"]
+AWS_STORAGE_BUCKET_NAME = "shopcart-senior"
+AWS_S3_FILE_OVERWRITE = True
+AWS_DEFAULT_ACL = None
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+'''
+<?xml version="1.0" encoding="UTF-8"?>
+<CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+<CORSRule>
+    <AllowedOrigin>*</AllowedOrigin>
+    <AllowedMethod>GET</AllowedMethod>
+    <AllowedMethod>POST</AllowedMethod>
+    <AllowedMethod>PUT</AllowedMethod>
+    <AllowedHeader>*</AllowedHeader>
+</CORSRule>
+</CORSConfiguration>
+'''

@@ -72,6 +72,6 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         # Create a shopping cart for the user and save it into users' metadata
         cart = ShoppingCart.objects.create()
-        userMeta = UserMeta.objects.create(user=user, shopping_cart=cart)
+        UserMeta.objects.create(user=user, shopping_cart=cart)
 
         return user
