@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-ifo8u$qv@&7z7b%u5&^p$lci6@7a(j^x61p7pw8#zi15v66!&6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'https://shopcart-s.herokuapp.com/']
+ALLOWED_HOSTS = ['127.0.0.1', 'shopcart-s.herokuapp.com']
 
 # Application definition
 
@@ -89,6 +89,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
 
     "corsheaders.middleware.CorsMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -175,6 +176,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
