@@ -24,6 +24,7 @@ first open an android emulator from android studio
 
 
 -----------
+
 #To Add Mock Data:
 1. Run `backend/base/tests.py` after starting up the server (Change the IP address in that file to your own IP). Created users' username & password is: "testqwerty". Do not forget to migrate before.
 
