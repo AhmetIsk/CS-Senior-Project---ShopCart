@@ -4,17 +4,6 @@ https://ahmetisk.github.io/CS-Senior-Project---ShopCart/Website/
 
 # Installation guide
 
-First,
-1. Change "<YOUR_IP_ADDRESS>" to your actual IP address from [backend/backend/settings.py](backend/backend/settings.py) and [frontend/api/index.js](frontend/api/index.js).
-
-#Setup Backend
-1. cd backend
-2. pip install -r requirements.txt
-3. python manage.py createsuperuser
-4. python manage.py makemigrations
-5. python manage.py migrate
-6. python manage.py runserver <YOUR_IP_ADDRESS>:8000
-
 #Setup Frontend
 first open an android emulator from android studio
 1. cd frontend
@@ -22,11 +11,11 @@ first open an android emulator from android studio
 3. npm start
 4. press a to open android
 
+#Setup Backend
+1. Backend is [hosted on Heroku](https://shopcart-s.herokuapp.com/), so there is no need to run it locally.
+    * Admin Username = "test", Password = "0000"
 
 -----------
-
-#To Add Mock Data:
-1. Run `backend/base/tests.py` after starting up the server (Change the IP address in that file to your own IP). Created users' username & password is: "testqwerty". Do not forget to migrate before.
 
 #To See "base" Endpoints:
 1. Go to `"/admin"` and login.
@@ -34,16 +23,16 @@ first open an android emulator from android studio
 
 #Testing API Endpoints (curl):
 Getting Product Base:
-* `curl -H "Authorization: Bearer <ACCESS_TOKEN>" http://<YOUR_IP_ADDRESS>:8000/productManager/get_product_base/<barcode>`
+* `curl -H "Authorization: Bearer <ACCESS_TOKEN>" https://shopcart-s.herokuapp.com/productManager/get_product_base/<barcode>`
 OR
-* Login with your admin account and visit `"http://<YOUR_IP_ADDRESS>:8000/productManager/get_product_base/"`
+* Login with your admin account and visit `"https://shopcart-s.herokuapp.com/productManager/get_product_base/"`
 
 Adding new product into shopping cart:
-* `curl -H "Authorization: Bearer <ACCESS_TOKEN>" http://<YOUR_IP_ADDRESS>:8000/productManager/add_product_to_cart/ -X POST -d 'barcode=12123123&quantity=2'`
+* `curl -H "Authorization: Bearer <ACCESS_TOKEN>" https://shopcart-s.herokuapp.com/productManager/add_product_to_cart/ -X POST -d 'barcode=12123123&quantity=2'`
 OR
-* Login with your admin account and visit `"http://<YOUR_IP_ADDRESS>:8000/productManager/add_product_to_cart/"`
+* Login with your admin account and visit `"https://shopcart-s.herokuapp.com/productManager/add_product_to_cart/"`
 
 Getting current users' shopping cart:
-* `curl -H "Authorization: Bearer <ACCESS_TOKEN>" http://<YOUR_IP_ADDRESS>:8000/productManager/get_shopping_cart/`
+* `curl -H "Authorization: Bearer <ACCESS_TOKEN>" https://shopcart-s.herokuapp.com/productManager/get_shopping_cart/`
 OR
-* Login with your admin account and visit `"http://<YOUR_IP_ADDRESS>:8000/productManager/get_shopping_cart/"`
+* Login with your admin account and visit `"https://shopcart-s.herokuapp.com/productManager/get_shopping_cart/"`
