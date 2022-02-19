@@ -12,7 +12,5 @@ django-selenium
 mysqlclient
 django-storages
 boto3
-boto
-botocore
 gunicorn
 whitenoise
