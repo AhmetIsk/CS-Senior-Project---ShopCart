@@ -9,6 +9,7 @@ class Note(models.Model):
 
 class Home(models.Model):
     home_owner = models.OneToOneField(User, on_delete=models.RESTRICT)
+    users = models.ManyToManyField(User)
 
 
 class ProductBase(models.Model):
