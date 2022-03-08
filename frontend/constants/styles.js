@@ -11,6 +11,8 @@ export const colors = {
   black: '#000',
   green: '#41A426',
   softGreen: '#70e45a',
+  blue:'#1C5AC7',
+  purple:'#A020F0',
 }
 
 export const fontWeights = {
