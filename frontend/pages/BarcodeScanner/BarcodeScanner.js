@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Text, View } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import { useSelector } from 'react-redux';
 import ApprovalScreen from './ApprovalScreen';
 import { styles } from './styles';
 import { userService } from '../../services/userService';
-import { useSelector } from 'react-redux';
 import { userToken } from '../../store/slices/token';
 
 const BarcodeScanner = () => {
@@ -35,7 +35,7 @@ const BarcodeScanner = () => {
   if (scanned) {
     return <ApprovalScreen barcodeId={barcodeId}/>;
   }
-  else {
+  
     return (
         <>
           <View style={styles.headerContainer}>
@@ -47,11 +47,11 @@ const BarcodeScanner = () => {
                 onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
                 style={styles.cameraFit}
               />
-            {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />}
+            {scanned && <Button title="Tap to Scan Again" onPress={() => setScanned(false)} />}
           </View>
         </>
     );
-  }
+  
 }
 
 export default BarcodeScanner;
