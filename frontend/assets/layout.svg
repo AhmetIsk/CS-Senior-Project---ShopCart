@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="414px" height="245.5px" viewBox="0 0 414 245.5" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient x1="0.47971112" y1="-0.17083466" x2="0.47971112" y2="1.1014426" id="gradient_1">
+      <stop offset="0%" stop-color="#F5611C" />
+      <stop offset="100%" stop-color="#F7BDA1" />
+    </linearGradient>
+    <filter filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB" id="filter_1">
+      <feFlood flood-opacity="0" result="BackgroundImageFix" />
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" />
+      <feOffset dx="4" dy="6" />
+      <feGaussianBlur stdDeviation="11.5" />
+      <feColorMatrix type="matrix" values="0 0 0 0 0.6627451 0 0 0 0 0.6627451 0 0 0 0 0.6627451 0 0 0 0.06666667 0" />
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect0_dropShadow" />
+      <feBlend mode="normal" in="SourceGraphic" in2="effect0_dropShadow" result="shape" />
+    </filter>
+    <path d="M300.128 328C463.526 328 595.987 274.332 595.987 208.13C595.987 141.927 653.094 0 297.302 0C-58.4901 1.73186e-14 4.26797 141.927 4.26797 208.13C4.26797 274.332 136.729 328 300.128 328Z" id="path_1" />
+    <clipPath id="mask_1">
+      <use xlink:href="#path_1" />
+    </clipPath>
+  </defs>
+  <g id="个人中心背景插画" transform="translate(-93 -83)">
+    <path d="M300.128 328C463.526 328 595.987 274.332 595.987 208.13C595.987 141.927 653.094 0 297.302 0C-58.4901 1.73186e-14 4.26797 141.927 4.26797 208.13C4.26797 274.332 136.729 328 300.128 328Z" id="Mask" fill="url(#gradient_1)" fill-rule="evenodd" stroke="none" filter="url(#filter_1)" />
+    <g clip-path="url(#mask_1)">
+      <path d="M490.807 457.467C584.286 457.467 660.065 381.688 660.065 288.209C660.065 194.731 584.286 118.952 490.807 118.952C397.329 118.952 321.55 194.731 321.55 288.209C321.55 381.688 397.329 457.467 490.807 457.467Z" id="Oval-Copy" fill="#FEC5AA" fill-opacity="0.3" fill-rule="evenodd" stroke="none" />
+      <path d="M182.097 217.787C259.316 217.787 321.915 155.188 321.915 77.969C321.915 0.749783 259.316 -61.8488 182.097 -61.8488C104.878 -61.8488 42.2791 0.749783 42.2791 77.969C42.2791 155.188 104.878 217.787 182.097 217.787Z" id="Oval" fill="#FEC5AA" fill-opacity="0.4354771" fill-rule="evenodd" stroke="none" />
+    </g>
+  </g>
+</svg>
