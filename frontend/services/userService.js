@@ -10,6 +10,11 @@ import { resetAuthAsyncStorage, setAuthAsyncStorage } from './getAuthAsyncStorag
 function login(username, password) {
   return new Promise((resolve, reject) => {
     console.log(username, password);
+    console.log({
+      username,
+      password,
+    });
+    console.log(`${API_URL}/authorization/login/`);
     axios
       .post(`${API_URL}/authorization/login/`, {
         username,
