@@ -13,6 +13,7 @@ import {
 } from '../../components/Buttons';
 import { ButtonContainer } from '../../components/Containers';
 import { colors } from '../../constants/styles';
+import SVGImg from '../../assets/logo.svg';
 import { logout } from '../../store/actions/auth';
 import { styles } from './styles';
 
@@ -24,10 +25,7 @@ const HomeScreen = ({ navigation }) => {
       <SignOut onPress={() => logout(dispatch)}>
         <Image source={require('../../images/logout.png')} style={{ width: 50, height: 50 }} />
       </SignOut>
-      <Image
-        source={require('../../images/defaultAvatar.png')}
-        style={{ width: 150, height: 150 }}
-      />
+      <SVGImg width={118} height={134} />
       <Text style={styles.welcomePage}>Welcome User!</Text>
       <ButtonContainer>
         <EditButton color={colors.white} onPress={() => {}}>
