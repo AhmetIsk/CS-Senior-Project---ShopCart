@@ -1,1 +1,2 @@
-export const API_URL = 'http://139.179.203.62:8000';
+// eslint-disable-next-line import/prefer-default-export
+export const API_URL = 'https://shopcart-s.herokuapp.com/';

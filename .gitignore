@@ -140,6 +140,7 @@ cython_debug/
 .idea
 
 node_modules/
+yarn.lock
 .expo/
 dist/
 npm-debug.*
