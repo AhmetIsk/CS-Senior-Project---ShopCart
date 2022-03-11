@@ -15,12 +15,12 @@ from .exceptions import DoesNotExistException
 
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
-def get_product_base(request, barcode):
+def get_product_base(request):
     """
     Retrieve a product base.
     """
     try:
-        product = ProductBase.objects.get(barcode=barcode)
+        product = ProductBase.objects.get(barcode=request.data.get('barcode'))
     except ProductBase.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 

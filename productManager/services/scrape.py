@@ -40,7 +40,12 @@ def scrape_barcode(barcode):
     storesoup = productsoup.find("span", string="Şu an en ucuz")
 
     store_name = storesoup.findNext("span")
+    
+    # this gives price per unit
     price = store_name.findNext("span")
+    price = price.findNext("span")
+
+    print(price)
 
     store = {
         store_name.text: price.text
@@ -52,4 +57,5 @@ def scrape_barcode(barcode):
         "photo": photo
     }
 
+### test
 print(scrape_barcode("8690973030450"))
