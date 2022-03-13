@@ -69,6 +69,10 @@ class ShoppingCartSerializer(serializers.HyperlinkedModelSerializer):
                 if Community.objects.filter(id=cid['id']).exists():
                     sc.communities.add(Community.objects.get(id=cid['id']))
                 sc.save()
+
+        # Add to UserMeta too
+        UserMeta.objects.get(user=validated_data['user']).shopping_carts.add(sc).save()
+
         return sc
 
 
