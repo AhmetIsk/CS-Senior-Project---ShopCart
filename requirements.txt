@@ -16,3 +16,5 @@ gunicorn
 whitenoise
 dj-database-url
 psycopg2
+drf_yasg
+Pillow
