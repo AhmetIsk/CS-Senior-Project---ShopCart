@@ -5,6 +5,7 @@ from base.models import ShoppingCart, UserMeta
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from django.forms.models import model_to_dict
+from base.serializers import UserMetaSerializer
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -29,9 +30,10 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         user_data = model_to_dict(self.user)
         del user_data['password']
 
-        user_metadata = model_to_dict(UserMeta.objects.get(user=self.user.id))
+        qs = UserMeta.objects.get(user=self.user.id)
+        serializer = UserMetaSerializer(qs, context={'request': self.context['request']})
 
-        data['user'] = {**user_data, **user_metadata}
+        data['userMeta'] = {**serializer.data}
 
         return data
 
@@ -71,7 +73,9 @@ class RegisterSerializer(serializers.ModelSerializer):
         user.save()
 
         # Create a shopping cart for the user and save it into users' metadata
-        cart = ShoppingCart.objects.create()
-        UserMeta.objects.create(user=user, shopping_cart=cart)
+        cart = ShoppingCart.objects.create(name='My Shopping Cart', user=user)
+        um = UserMeta.objects.create(user=user)
+        um.shopping_carts.add(cart)
+        um.save()
 
         return user

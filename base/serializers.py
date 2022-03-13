@@ -1,5 +1,7 @@
+import json
+
 from rest_framework.serializers import ModelSerializer
-from .models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Home
+from .models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Community
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 
@@ -7,13 +9,22 @@ from rest_framework import serializers
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'url', 'first_name', 'last_name', 'username', 'email', 'groups', 'last_login', 'date_joined']
+        fields = ['id', 'first_name', 'last_name', 'username', 'email', 'groups', 'last_login', 'date_joined']
 
 
-class HomeSerializer(serializers.HyperlinkedModelSerializer):
+class CommunitySerializer(serializers.HyperlinkedModelSerializer):
+    users = UserSerializer(many=True)
+    community_owner = UserSerializer()
+
     class Meta:
-        model = Home
-        fields = ['id', 'home_owner']
+        model = Community
+        fields = ['id', 'name', 'community_code', 'community_owner', 'users']
+
+
+class ShortCommunitySerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Community
+        fields = ['id']
 
 
 class ProductBaseSerializer(serializers.HyperlinkedModelSerializer):
@@ -31,25 +42,44 @@ class StoreSerializer(serializers.HyperlinkedModelSerializer):
 class PriceInStoreSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = PriceInStore
-        fields = ['id', 'product', 'quantity', 'adding_date']
+        fields = ['id', 'product', 'price']
 
 
 class ProductInCartSerializer(serializers.HyperlinkedModelSerializer):
+    product = ProductBaseSerializer()
     class Meta:
         model = ProductInCart
         fields = ['id', 'product', 'quantity', 'adding_date']
 
 
 class ShoppingCartSerializer(serializers.HyperlinkedModelSerializer):
+    # user = UserSerializer()
+    communities = ShortCommunitySerializer(many=True, required=False) #, read_only=True
+    products = ProductInCartSerializer(many=True, required=False)
+
     class Meta:
         model = ShoppingCart
-        fields = ['id', 'products']
+        fields = ['id', 'products', 'priority', 'communities', 'name']  # 'user'
+
+    def create(self, validated_data):
+        sc = ShoppingCart(priority=validated_data['priority'], name=validated_data['name'], user=validated_data['user'])
+        sc.save()
+        if validated_data['communities']:
+            for cid in validated_data['communities']:
+                if Community.objects.filter(id=cid['id']).exists():
+                    sc.communities.add(Community.objects.get(id=cid['id']))
+                sc.save()
+        return sc
 
 
 class UserMetaSerializer(serializers.HyperlinkedModelSerializer):
+    communities = CommunitySerializer(many=True)
+    shopping_carts = ShoppingCartSerializer(many=True)
+    user = UserSerializer()
+
     class Meta:
         model = UserMeta
-        fields = ['id', 'user', 'home', 'shopping_cart']
+        fields = ['id', 'user', 'communities', 'shopping_carts']
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
