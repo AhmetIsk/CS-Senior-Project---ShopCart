@@ -71,7 +71,9 @@ class ShoppingCartSerializer(serializers.HyperlinkedModelSerializer):
                 sc.save()
 
         # Add to UserMeta too
-        UserMeta.objects.get(user=validated_data['user']).shopping_carts.add(sc).save()
+        um = UserMeta.objects.get(user=validated_data['user'])
+        um.shopping_carts.add(sc)
+        um.save()
 
         return sc
 
