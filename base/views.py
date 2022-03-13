@@ -3,8 +3,9 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from .serializers import NoteSerializer, UserSerializer, GroupSerializer, ProductBaseSerializer, StoreSerializer, \
+    CommunitySerializer, \
     PriceInStoreSerializer, ProductInCartSerializer, ShoppingCartSerializer, UserMetaSerializer
-from .models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Home
+from .models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Community
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
@@ -29,12 +30,12 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-class HomeViewSet(viewsets.ModelViewSet):
+class CommunityViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
     """
-    queryset = Home.objects.all()
-    serializer_class = UserSerializer
+    queryset = Community.objects.all()
+    serializer_class = CommunitySerializer
     permission_classes = [permissions.IsAuthenticated]
 
 
@@ -81,6 +82,22 @@ class ShoppingCartViewSet(viewsets.ModelViewSet):
     queryset = ShoppingCart.objects.all()
     serializer_class = ShoppingCartSerializer
     permission_classes = [permissions.IsAuthenticated]
+
+class UsersShoppingCartViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows products to be viewed or edited.
+    """
+    queryset = ShoppingCart.objects.all()
+    serializer_class = ShoppingCartSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return super().get_queryset().filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        print(self.request.data)
+        serializer.save(user=self.request.user, communities=self.request.data.get('communities'))
+
 
 
 class UserMetaViewSet(viewsets.ModelViewSet):

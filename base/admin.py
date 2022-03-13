@@ -5,7 +5,7 @@ from django.contrib import admin
 from .models import *
 
 admin.site.register(Note)
-admin.site.register(Home)
+admin.site.register(Community)
 admin.site.register(ProductBase)
 admin.site.register(Store)
 admin.site.register(PriceInStore)

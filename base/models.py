@@ -7,8 +7,10 @@ class Note(models.Model):
     body = models.TextField()
 
 
-class Home(models.Model):
-    home_owner = models.OneToOneField(User, on_delete=models.RESTRICT, related_name='owner')
+class Community(models.Model):
+    name = models.CharField(max_length=100)
+    community_code = models.CharField(max_length=100, blank=True, null=True)
+    community_owner = models.OneToOneField(User, on_delete=models.RESTRICT, related_name='owner')
     users = models.ManyToManyField(User)
 
 
@@ -31,17 +33,27 @@ class PriceInStore(models.Model):
 
 
 class ProductInCart(models.Model):
-    product = models.OneToOneField(ProductBase, on_delete=models.RESTRICT)
+    product = models.ForeignKey(ProductBase, on_delete=models.RESTRICT)
     quantity = models.PositiveIntegerField(default=1)
     adding_date = models.DateTimeField(auto_now_add=True)
     update_date = models.DateTimeField(null=True, blank=True)
 
 
 class ShoppingCart(models.Model):
-    products = models.ManyToManyField(ProductInCart)
+    CHOICES = (
+        ('High', 'High'),
+        ('Medium', 'Medium'),
+        ('Low', 'Low')
+    )
+
+    name = models.CharField(max_length=100, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    products = models.ManyToManyField(ProductInCart, null=True, blank=True)
+    priority = models.CharField(choices=CHOICES, max_length=300)
+    communities = models.ManyToManyField(Community, null=True, blank=True)
 
 
 class UserMeta(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    home = models.OneToOneField(Home, on_delete=models.RESTRICT, blank=True, null=True)
-    shopping_cart = models.OneToOneField(ShoppingCart, on_delete=models.CASCADE)
+    communities = models.ManyToManyField(Community, blank=True, null=True)
+    shopping_carts = models.ManyToManyField(ShoppingCart)

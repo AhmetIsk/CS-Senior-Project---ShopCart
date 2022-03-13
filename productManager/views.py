@@ -1,6 +1,8 @@
 import json
 
 from django.http import JsonResponse
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -9,7 +11,7 @@ from django.contrib.auth.models import User
 
 from base.serializers import ProductBaseSerializer, ShoppingCartSerializer
 
-from base.models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Home
+from base.models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Community
 from .exceptions import DoesNotExistException
 
 
@@ -28,18 +30,25 @@ def get_product_base(request):
     return JsonResponse(serializer.data)
 
 
+id = openapi.Parameter('id', openapi.IN_QUERY, type=openapi.TYPE_STRING,
+                       description="ID of shopping cart ")
+
+
+@swagger_auto_schema(methods=['get'], manual_parameters=[id])
 @api_view(['GET'])
 @permission_classes((IsAuthenticated,))
 def get_shopping_cart(request):
     user = request.user
-    barcode = request.data.get('barcode')
-
+    cart_id = request.query_params.get('id')
+    print("Cart id", cart_id)
     if not UserMeta.objects.filter(user=user.id).exists():
         raise DoesNotExistException("Metadata of this user does not exist. Register a new user or create metadata"
                                     " for the current one!")
 
-    user_meta = UserMeta.objects.get(user=user.id)
-    cart = user_meta.shopping_cart
+    if not ShoppingCart.objects.filter(id=cart_id).exists():
+        raise DoesNotExistException("This shopping cart DNE")
+
+    cart = ShoppingCart.objects.get(id=cart_id)
 
     products = []
     for item in cart.products.all():
@@ -55,10 +64,16 @@ def get_shopping_cart(request):
     return JsonResponse(products, safe=False)
 
 
+id = openapi.Parameter('id', openapi.IN_QUERY, type=openapi.TYPE_STRING,
+                       description="ID of shopping cart ")
+
+
+@swagger_auto_schema(methods=['post'], manual_parameters=[id])
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def add_product_to_cart(request):
-    user = request.user  # User.objects.get(username='testqwerty')
+    user = request.user
+    cart_id = request.data.get('id')
     barcode = request.data.get('barcode')
     quantity = request.data.get('quantity')
 
@@ -67,9 +82,11 @@ def add_product_to_cart(request):
 
     product_base = ProductBase.objects.get(barcode=barcode)
 
+    if not ShoppingCart.objects.filter(id=cart_id).exists():
+        raise DoesNotExistException("This shopping cart DNE")
+
     # If this product is already in the cart, increase its quantity. Else, create new pic instance
-    user_meta = UserMeta.objects.get(user=user)
-    cart = user_meta.shopping_cart
+    cart = ShoppingCart.objects.get(id=cart_id)
     product_in_cart = None
     if cart.products.filter(product=product_base).exists():
         product_in_cart = cart.products.get(product=product_base)
@@ -85,9 +102,9 @@ def add_product_to_cart(request):
                                         " for the current one!")
 
         # no object satisfying query exists
-        user_meta = UserMeta.objects.get(user=user)
-        cart = user_meta.shopping_cart
+        cart = ShoppingCart.objects.get(id=cart_id)
         cart.products.add(product_to_add)
+        cart.save()
 
     return Response({"Success": "Product added to shopping cart"}, status=status.HTTP_200_OK)
 
@@ -97,6 +114,7 @@ def add_product_to_cart(request):
 def remove_from_cart(request):
     user = request.user  # User.objects.get(username='testqwerty')
     barcode = request.data.get('barcode')
+    cart_id = request.data.get('id')
     quantity = int(request.data.get('quantity'))
 
     if not ProductBase.objects.filter(barcode=barcode).exists():
@@ -110,8 +128,7 @@ def remove_from_cart(request):
                                     " for the current one!")
 
     # If this product is already in the cart, increase its quantity. Else, create new pic instance
-    user_meta = UserMeta.objects.get(user=user)
-    cart = user_meta.shopping_cart
+    cart = ShoppingCart.objects.get(id=cart_id)
     if cart.products.filter(product=product_base).exists():
         pic = cart.products.get(product=product_base)
     else:
@@ -122,8 +139,7 @@ def remove_from_cart(request):
         pic.save()
     elif pic.quantity == quantity:
         # no object satisfying query exists
-        user_meta = UserMeta.objects.get(user=user.id)
-        cart = user_meta.shopping_cart
+        cart = ShoppingCart.objects.get(id=cart_id)
         cart.products.remove(pic)
         pic.delete()
         cart.save()
