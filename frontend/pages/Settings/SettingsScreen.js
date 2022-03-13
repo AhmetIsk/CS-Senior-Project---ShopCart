@@ -19,12 +19,12 @@ const buttonStyle = {
   marginBottom: 15,
 };
 
-const SettingsScreen = () => (
+const SettingsScreen = ({navigation}) => (
   <KeyboardAvoidingView style={styles.container} behavior="padding">
     <LayoutSVG width={414} height={245} style={{ position: 'absolute', top: 0 }} />
     <ButtonContainer style={{ marginTop: 245 }}>
       <SettingsButtons style={buttonStyle}>
-        <ButtonLabel color={colors.black}>Edit Profile</ButtonLabel>
+        <ButtonLabel color={colors.black} onPress={() => navigation.navigate('Edit Profile')}>Edit Profile</ButtonLabel>
       </SettingsButtons>
       <SettingsButtons style={buttonStyle}>
         <ButtonLabel color={colors.black}>Home Location</ButtonLabel>

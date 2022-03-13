@@ -8,6 +8,7 @@ import { userToken } from '../../store/slices/token';
 import ApprovalScreen from '../BarcodeScanner/ApprovalScreen';
 import InitialScreen from '../InitialScreen/InitialScreen';
 import ShopCartBottomTabs from '../TabNavigator/TabNavigator';
+import EditProfile from '../EditScreens/EditProfile';
 
 const Stack = createNativeStackNavigator();
 
@@ -36,6 +37,11 @@ const MainScreen = () => {
             options={{ headerShown: false }}
             name="Approval"
             component={ApprovalScreen}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Edit Profile"
+            component={EditProfile}
           />
         </>
       ) : (
