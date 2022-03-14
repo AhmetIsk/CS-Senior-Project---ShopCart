@@ -4,10 +4,6 @@ from bs4 import BeautifulSoup as bs
 import re
 import json
 
-from numpy import product
-
-# TODO fix the name of seller
-
 # returns name, store{url: price}, photo url
 def scrape_barcode(barcode):
     url = "http://m.barkodoku.com/" + barcode
@@ -18,17 +14,12 @@ def scrape_barcode(barcode):
     product_name = barcodesoup.find(id="lblSonuclar").find("a").text
 
     # searching the cimri.com
-    # searching the market
-    url = "https://www.cimri.com/market/arama?q=" + product_name
+    url = "https://www.cimri.com/arama?q=" + product_name
     url = url.replace(" ","&")
     cimrisite = urllib.request.urlopen(url)
     cimrisoup = bs(cimrisite.read(), 'html.parser')
 
-    # without market in url
-    # product = cimrisoup.find_all(class_="link-detail")[0]["href"]
-    product = cimrisoup.find(class_="Wrapper_productCard__1act7")
-    product = product.find("a")["href"]
-    print(product)
+    product = cimrisoup.find_all(class_="link-detail")[0]["href"]
     product_url = "https://www.cimri.com/" + urllib.parse.quote(product)
 
     productsite = urllib.request.urlopen(product_url)
@@ -61,10 +52,10 @@ def scrape_barcode(barcode):
             photo_url = jsons[i]["image"][0]
         elif jsons_type[i] == "string":
             # this is not a correct json this is a string so we will use regex
-            # ?<= look behind, ?= look ahead, .+? is not greedy
-            result = re.findall(r'(?<=https://www.)(.+?)(?=.com)', jsons[i])
+            search = re.escape('(?<="https://www.)(.*)(?=.com)')
+            print(search)
+            result = re.search(search, jsons[i])
             print(result)
-            print(result[3])
 
 
     # # finding the photo which is 240px
@@ -102,4 +93,4 @@ def scrape_barcode(barcode):
     # }
 
 ### test
-scrape_barcode("8690504186687")
+scrape_barcode("8690973030450")
