@@ -8,7 +8,7 @@ from numpy import product
 
 # TODO fix the name of seller
 
-# returns name, store{url: price}, photo url
+# returns name, store{url: price}, photo url, category
 def scrape_barcode(barcode):
     url = "http://m.barkodoku.com/" + barcode
 
@@ -49,7 +49,7 @@ def scrape_barcode(barcode):
             if jsons[i]["@type"] == "BreadcrumbList":
                 jsons_type[i] = "breadcrumb"
             elif jsons[i]["@type"] == "Product":
-                    jsons_type[i] = "product" 
+                jsons_type[i] = "product" 
         
         except TypeError:
             jsons_type[i] = "string"
@@ -66,6 +66,14 @@ def scrape_barcode(barcode):
             print(result)
             print(result[3])
 
+    return {
+        "name": product_name,
+        "store": {
+            "store_name": 
+        },
+        "photo_url": photo_url,
+        "category": category
+    }
 
     # # finding the photo which is 240px
     # photo = productsoup.find("img", {"sizes": "240px"})
