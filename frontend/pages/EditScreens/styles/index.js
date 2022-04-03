@@ -32,17 +32,32 @@ export const styles = StyleSheet.create({
     height: 380,
     paddingTop: 20,
     marginTop: 180,
-    borderRadius: 4,
+    // borderRadius: 4,
     width: '80%',
-    borderColor: `${colors.borderColor}`,
-    borderWidth: 1,
+    // borderColor: `${colors.borderColor}`,
+    // borderWidth: 1,
+    // shadowColor: "#fafbff",
+    // shadowOffset: {
+    //   width: -5,
+    //   height: -5
+    // },
+    // shadowRadius: 10,
+    // shadowOpacity: 1,
+    shadowColor: 'rgba(0,0,0, .4)', // IOS
+    shadowOffset: { height: -5, width: -5 }, // IOS
+    shadowOpacity: 1, // IOS
+    shadowRadius: 1, // IOS
+    backgroundColor: '#fff',
+    elevation: 5, // Android
+    justifyContent: 'center',
   },
   inputsContainer: {
     paddingLeft: 18,
     paddingRight: 18,
   },
   buttonContainer: {
-    width: '70%',
+    width: '60%',
+    marginHorizontal: 50, 
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -59,6 +74,20 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     marginBottom: 5,
+  },
+  buttonPassword:{
+    shadowColor: 'rgba(0,0,0, .4)', // IOS
+    shadowOffset: { height: -5, width: -5 }, // IOS
+    shadowOpacity: 1, // IOS
+    shadowRadius: 1, // IOS
+    backgroundColor: '#fff',
+    elevation: 5, // Android
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginBottom: 40,
+    marginTop: 40,
+    width: 250,
   },
   buttonOutline: {
     backgroundColor: 'white',

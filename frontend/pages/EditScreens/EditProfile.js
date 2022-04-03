@@ -1,4 +1,4 @@
-import { View, Text, KeyboardAvoidingView, TextInput, ScrollView } from 'react-native'
+import { View, Text, KeyboardAvoidingView, TextInput, ScrollView, Button } from 'react-native'
 import React, { useState } from 'react'
 import { styles } from './styles';
 import LayoutSVG from '../../assets/layout.svg';
@@ -43,6 +43,11 @@ const EditProfile = () => {
               onChangeText={(text) => {setEmail(text)}}
               style={styles.input}
             />
+            <ButtonContainer style= {styles.buttonContainer}>
+              <SettingsButtons style={styles.buttonPassword}>
+                <ButtonLabel color={colors.black}>Change Password</ButtonLabel>
+              </SettingsButtons>
+            </ButtonContainer>
           </View>
       </View>
     </View>
