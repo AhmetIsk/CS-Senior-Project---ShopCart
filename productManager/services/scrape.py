@@ -28,7 +28,7 @@ def scrape_barcode(barcode):
     # product = cimrisoup.find_all(class_="link-detail")[0]["href"]
     product = cimrisoup.find(class_="Wrapper_productCard__1act7")
     product = product.find("a")["href"]
-    print(product)
+    # print(product)
     product_url = "https://www.cimri.com/" + urllib.parse.quote(product)
 
     productsite = urllib.request.urlopen(product_url)
@@ -59,22 +59,25 @@ def scrape_barcode(barcode):
             category = jsons[i]["itemListElement"][2]["item"]["name"]
         elif jsons_type[i] == "product":
             photo_url = jsons[i]["image"][0]
+            price = jsons[i]["offers"]["lowPrice"]
         elif jsons_type[i] == "string":
             # this is not a correct json this is a string so we will use regex
             # ?<= look behind, ?= look ahead, .+? is not greedy
-            result = re.findall(r'(?<=https://www.)(.+?)(?=.com)', jsons[i])
-            print(result)
-            print(result[3])
+            result = re.findall(r'(?<="merchantUrl":"https://www.)(.+?)(?=.com)', jsons[i])
+            # print(result)
+            # print(result[0])
 
     return {
         "name": product_name,
         "store": {
-            "store_name": 
+            "store_name": result[0],
+            "price": price
         },
         "photo_url": photo_url,
         "category": category
     }
 
+    #### Old Version
     # # finding the photo which is 240px
     # photo = productsoup.find("img", {"sizes": "240px"})
     # photo = "https:" + photo["src"]
@@ -110,4 +113,4 @@ def scrape_barcode(barcode):
     # }
 
 ### test
-scrape_barcode("8690504186687")
+print(scrape_barcode("5449000133328"))
