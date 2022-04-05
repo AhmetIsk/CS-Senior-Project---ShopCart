@@ -4,31 +4,51 @@ from bs4 import BeautifulSoup as bs
 import re
 import json
 
-from numpy import product
-
-# TODO fix the name of seller
-
-# returns name, store{url: price}, photo url, category
+# returns name, store{name: price}, photo url, category, msg
 def scrape_barcode(barcode):
     url = "http://m.barkodoku.com/" + barcode
 
     # scraping barkodoku.com and finding the name of the product
     barcodesite = urllib.request.urlopen(url)
     barcodesoup = bs(barcodesite.read(), 'html.parser')
-    product_name = barcodesoup.find(id="lblSonuclar").find("a").text
+    try:
+        product_name = barcodesoup.find(id="lblSonuclar").find("a").text
+    except AttributeError:
+        return {
+            "name": "",
+            "store": {
+                "store_name": "",
+                "price": -1
+            },
+            "photo_url": "",
+            "category": "",
+            "msg": "Please enter manually."
+        }
 
     # searching the cimri.com
     # searching the market
-    url = "https://www.cimri.com/market/arama?q=" + product_name
+    url = "https://www.cimri.com/market/arama?q=" + urllib.parse.quote(product_name)
     url = url.replace(" ","&")
     cimrisite = urllib.request.urlopen(url)
     cimrisoup = bs(cimrisite.read(), 'html.parser')
 
     # without market in url
     # product = cimrisoup.find_all(class_="link-detail")[0]["href"]
-    product = cimrisoup.find(class_="Wrapper_productCard__1act7")
-    product = product.find("a")["href"]
-    # print(product)
+    try:
+        product = cimrisoup.find(class_="Wrapper_productCard__1act7")
+        product = product.find("a")["href"]
+    except AttributeError:
+        return {
+            "name": product_name,
+            "store": {
+                "store_name": "",
+                "price": -1
+            },
+            "photo_url": "",
+            "category": "",
+            "msg": "Please enter manually."
+        }
+
     product_url = "https://www.cimri.com/" + urllib.parse.quote(product)
 
     productsite = urllib.request.urlopen(product_url)
@@ -74,43 +94,44 @@ def scrape_barcode(barcode):
             "price": price
         },
         "photo_url": photo_url,
-        "category": category
+        "category": category,
+        "msg": "Successful."
     }
 
-    #### Old Version
-    # # finding the photo which is 240px
-    # photo = productsoup.find("img", {"sizes": "240px"})
-    # photo = "https:" + photo["src"]
+#### Old Version
+# # finding the photo which is 240px
+# photo = productsoup.find("img", {"sizes": "240px"})
+# photo = "https:" + photo["src"]
 
-    # # this downloads the photo and saves it
-    # # urllib.request.urlretrieve(photo, "photo.png")
+# # this downloads the photo and saves it
+# # urllib.request.urlretrieve(photo, "photo.png")
 
-    # # scraping the categories
-    # categories = []
-    # for category in productsoup.findAll(id=re.compile("^breadcrumbList")):
-    #     categories.append(category.find("a").text)
-    # categories = categories[1:-1]
+# # scraping the categories
+# categories = []
+# for category in productsoup.findAll(id=re.compile("^breadcrumbList")):
+#     categories.append(category.find("a").text)
+# categories = categories[1:-1]
 
-    # # finding the cheapest store, the site name and the price
-    # storesoup = productsoup.find("span", string="Şu an en ucuz")
+# # finding the cheapest store, the site name and the price
+# storesoup = productsoup.find("span", string="Şu an en ucuz")
 
-    # store_name = storesoup.findNext("span")
-    
-    # # this gives price per unit
-    # price = store_name.findNext("span")
-    # price = price.findNext("span")
+# store_name = storesoup.findNext("span")
 
-    # print(price)
+# # this gives price per unit
+# price = store_name.findNext("span")
+# price = price.findNext("span")
 
-    # store = {
-    #     store_name.text: price.text
-    # }
+# print(price)
 
-    # return {
-    #     "name": product_name,
-    #     "store": store,
-    #     "photo": photo
-    # }
+# store = {
+#     store_name.text: price.text
+# }
+
+# return {
+#     "name": product_name,
+#     "store": store,
+#     "photo": photo
+# }
 
 ### test
-print(scrape_barcode("5449000133328"))
+print(scrape_barcode("8690637035067"))
