@@ -38,16 +38,7 @@ def scrape_barcode(barcode):
         product = cimrisoup.find(class_="Wrapper_productCard__1act7")
         product = product.find("a")["href"]
     except AttributeError:
-        return {
-            "name": product_name,
-            "store": {
-                "store_name": "",
-                "price": -1
-            },
-            "photo_url": "",
-            "category": "",
-            "msg": "Please enter manually."
-        }
+        product = recursive_search(product_name)
 
     product_url = "https://www.cimri.com/" + urllib.parse.quote(product)
 
@@ -97,6 +88,23 @@ def scrape_barcode(barcode):
         "category": category,
         "msg": "Successful."
     }
+
+# this function splits the name of a product and iteratively looks for the name starting from the
+# least significant word to the most significant
+def recursive_search(product_name):
+    splitting = product_name.split(" ")
+    for i in range(len(splitting) - 1):
+        try:
+            url = "https://www.cimri.com/market/arama?q=" + urllib.parse.quote("".join(splitting[:i-1]))
+            url = url.replace(" ","&")
+            cimrisite = urllib.request.urlopen(url)
+            cimrisoup = bs(cimrisite.read(), 'html.parser')
+            product = cimrisoup.find(class_="Wrapper_productCard__1act7")
+            product = product.find("a")["href"]
+        except AttributeError:
+            continue
+        
+        return product
 
 #### Old Version
 # # finding the photo which is 240px
