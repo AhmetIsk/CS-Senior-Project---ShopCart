@@ -93,9 +93,11 @@ def scrape_barcode(barcode):
 # least significant word to the most significant
 def recursive_search(product_name):
     splitting = product_name.split(" ")
-    for i in range(len(splitting) - 1):
+    words_len = len(splitting)
+    for i in range(words_len - 1):
         try:
-            url = "https://www.cimri.com/market/arama?q=" + urllib.parse.quote("".join(splitting[:i-1]))
+            search_product = " ".join(splitting[:(words_len - i - 1)])
+            url = "https://www.cimri.com/market/arama?q=" + urllib.parse.quote(search_product)
             url = url.replace(" ","&")
             cimrisite = urllib.request.urlopen(url)
             cimrisoup = bs(cimrisite.read(), 'html.parser')
@@ -142,4 +144,4 @@ def recursive_search(product_name):
 # }
 
 ### test
-print(scrape_barcode("8690637035067"))
+print(scrape_barcode("8690787401019"))
