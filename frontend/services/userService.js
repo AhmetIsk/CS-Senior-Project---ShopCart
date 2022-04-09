@@ -120,6 +120,29 @@ function getShoppingList(token) {
   });
 }
 
+function getUsersShoppingCartLists(token) {
+  return new Promise((resolve, reject) => {
+    console.log(`${API_URL}/base/currentUsersShoppingCart/`);
+    axios
+      .get(`${API_URL}/base/currentUsersShoppingCart/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da response', usernameOb);
+        try {
+          resolve(JSON.parse(usernameOb));
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        reject(err);
+      });
+  });
+}
+
 function removeFromList(product_id, quantity, token) {
   return new Promise((resolve, reject) => {
     console.log(product_id, quantity, token);
@@ -155,4 +178,5 @@ export const userService = {
   addProduct,
   getShoppingList,
   removeFromList,
+  getUsersShoppingCartLists,
 };

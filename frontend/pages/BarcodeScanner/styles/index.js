@@ -1,5 +1,6 @@
-import { StyleSheet } from "react-native";
-import { colors, fontStyles } from "../../../constants/styles";
+/* eslint-disable import/prefer-default-export */
+import { StyleSheet } from 'react-native';
+import { colors, fontStyles } from '../../../constants/styles';
 
 export const styles = StyleSheet.create({
   container: {
@@ -13,15 +14,15 @@ export const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 100
+    height: 100,
   },
   successNotifier: {
-  color: `${colors.softGreen}`,
-  fontFamily: `${fontStyles.Arial}`,
-  fontWeight: "bold",
-  fontSize: 20,
-  padding: 10,
-  alignSelf: 'center',
+    color: `${colors.softGreen}`,
+    fontFamily: `${fontStyles.Arial}`,
+    fontWeight: 'bold',
+    fontSize: 20,
+    padding: 10,
+    alignSelf: 'center',
   },
   cameraFit: {
     ...StyleSheet.absoluteFillObject,
@@ -47,7 +48,7 @@ export const styles = StyleSheet.create({
   barcodeNotifier: {
     color: `${colors.headerRed}`,
     fontFamily: `${fontStyles.Arial}`,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 24,
     padding: 20,
   },

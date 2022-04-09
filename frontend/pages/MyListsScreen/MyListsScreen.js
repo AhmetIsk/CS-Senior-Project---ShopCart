@@ -3,36 +3,25 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-key */
 import React, { useEffect, useState } from 'react';
-import { Image, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import { useSelector } from 'react-redux';
 import { DataTable } from 'react-native-paper';
 import { Entypo } from '@expo/vector-icons';
 import { userService } from '../../services/userService';
 import { userToken } from '../../store/slices/token';
-import { styles } from './styles/index';
-import ProductRow from './ProductRow';
 import { MyShoppingList } from '../../components/Headers';
-import { GoBack } from '../../components/Buttons';
 import NOLists from '../../assets/noLists.svg';
 import { colors } from '../../constants/styles';
+import { styles } from './styles/index';
 
-const ShoppingListScreen = ({ navigation }) => {
+const MyListsScreen = ({ navigation }) => {
   const [items, setItems] = useState([]);
   const token = useSelector(userToken);
   const [rerender, setRerender] = useState(false);
   const ListProducts = () => {
     userService.getShoppingList(token).then((products) => {
       console.log(products.length);
-      const mappedItems = products.map((product) => (
-        <ProductRow
-          key={product.id}
-          name={product.product.name}
-          quantity={product.quantity}
-          barcode={product.product.barcode}
-          trigger={setRerender}
-          value={rerender}
-        />
-      ));
+      const mappedItems = products.map(() => <View />);
       setItems(mappedItems);
     });
   };
@@ -69,4 +58,4 @@ const ShoppingListScreen = ({ navigation }) => {
     </View>
   );
 };
-export default ShoppingListScreen;
+export default MyListsScreen;

@@ -145,4 +145,9 @@ export const styles = StyleSheet.create({
     opacity: 0.3,
     backgroundColor: '#fec5aa',
   },
+  checkbox: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
 });
