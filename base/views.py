@@ -83,6 +83,7 @@ class ShoppingCartViewSet(viewsets.ModelViewSet):
     serializer_class = ShoppingCartSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
 class UsersShoppingCartViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows products to be viewed or edited.
@@ -97,7 +98,6 @@ class UsersShoppingCartViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         print(self.request.data)
         serializer.save(user=self.request.user, communities=self.request.data.get('communities'))
-
 
 
 class UserMetaViewSet(viewsets.ModelViewSet):
@@ -132,12 +132,13 @@ def current_user(request):
     serializer = UserSerializer(request.user, context={'request': request})
     return Response(serializer.data)
 
+
 import csv
 from productManager.services.scrape import scrape_barcode
 
+
 @api_view(['GET'])
 def add_base_products(request):
-
     with open('base/market-barkod-listesi.csv', newline='') as csvfile:
         csvreader = csv.reader(csvfile, delimiter=';', quotechar='|')
 
@@ -156,8 +157,9 @@ def add_base_products(request):
                     pb = ProductBase.objects.get(barcode=barcode)
                 else:
                     pb = ProductBase.objects.create(barcode=barcode, name=product_data['name'],
-                                               external_photo_url=product_data['photo_url'],
-                                               category=product_data['category'])
+                                                    external_photo_url=product_data['photo_url'],
+                                                    category=product_data['category'],
+                                                    min_price=float(product_data['store']['price']))
 
                 # Add product to Store (Best Price)
                 if not s.available_products.filter(store__available_products__exact=pb).exists():
@@ -169,11 +171,6 @@ def add_base_products(request):
                     pis = PriceInStore.objects.get(product=pb, store=s)
                 else:
                     pis = PriceInStore.objects.create(product=pb, store=s, price=float(product_data['store']['price']))
-
-
-
-
-
 
     serializer = UserSerializer(request.user, context={'request': request})
     return Response(serializer.data)

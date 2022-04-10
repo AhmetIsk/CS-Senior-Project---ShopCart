@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup as bs
 import re
 import json
 
+
 # returns name, store{name: price}, photo url, category, msg
 def scrape_barcode(barcode):
     url = "http://m.barkodoku.com/" + barcode
@@ -28,7 +29,7 @@ def scrape_barcode(barcode):
     # searching the cimri.com
     # searching the market
     url = "https://www.cimri.com/market/arama?q=" + urllib.parse.quote(product_name)
-    url = url.replace(" ","&")
+    url = url.replace(" ", "&")
     cimrisite = urllib.request.urlopen(url)
     cimrisoup = bs(cimrisite.read(), 'html.parser')
 
@@ -53,7 +54,7 @@ def scrape_barcode(barcode):
         else:
         """
 
-        product = recursive_search(product_name)
+        product = iterative_search(product_name)
 
     if product is None:
         return
@@ -110,6 +111,7 @@ def scrape_barcode(barcode):
     else:
         return
 
+
 # this function splits the name of a product and iteratively looks for the name starting from the
 # least significant word to the most significant
 def iterative_search(product_name):
@@ -121,7 +123,7 @@ def iterative_search(product_name):
         if product is None:
             search_product = " ".join(splitting[:(words_len - i - 1)])
             url = "https://www.cimri.com/market/arama?q=" + urllib.parse.quote(search_product)
-            url = url.replace(" ","&")
+            url = url.replace(" ", "&")
             cimrisite = urllib.request.urlopen(url)
             cimrisoup = bs(cimrisite.read(), 'html.parser')
             product = cimrisoup.find(class_="Wrapper_productCard__1act7")
@@ -137,7 +139,6 @@ def iterative_search(product_name):
                 product = cimrisoup.find(class_="z7ntrt-0 cLlfW s1a29zcm-11 ggOMjb")
                 if product is not None:
                     product = product.find("a")["href"]
-
 
         return product
 
@@ -177,5 +178,5 @@ def iterative_search(product_name):
 # }
 
 ### test
-#print(scrape_barcode("8690787401019"))
-#print(scrape_barcode('8690555511520'))
+# print(scrape_barcode("8690787401019"))
+# print(scrape_barcode('8690555511520'))
