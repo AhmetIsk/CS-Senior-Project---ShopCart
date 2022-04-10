@@ -7,6 +7,7 @@ import { userService } from '../../services/userService';
 import EmptyListsScreen from './EmptyListsScreen';
 import MyListsScreen from './MyListsScreen';
 import AddShoppingListScreen from './AddShoppingListScreen';
+import ShoppingListScreen from '../ShoppingListScreen/ShoppingListScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -37,6 +38,11 @@ const MyListsNavigator = () => {
         options={{ headerShown: false }}
         name="Add a Shopping List"
         component={AddShoppingListScreen}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Shopping List"
+        component={ShoppingListScreen}
       />
     </Stack.Navigator>
   );
