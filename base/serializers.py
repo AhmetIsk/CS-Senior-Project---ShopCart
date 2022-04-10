@@ -30,7 +30,7 @@ class ShortCommunitySerializer(serializers.HyperlinkedModelSerializer):
 class ProductBaseSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ProductBase
-        fields = ['id', 'barcode', 'name', 'photo', 'category']
+        fields = ['id', 'barcode', 'name', 'photo', 'external_photo_url', 'category']
 
 
 class StoreSerializer(serializers.HyperlinkedModelSerializer):
@@ -42,7 +42,7 @@ class StoreSerializer(serializers.HyperlinkedModelSerializer):
 class PriceInStoreSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = PriceInStore
-        fields = ['id', 'product', 'price']
+        fields = ['id', 'product', 'price', 'currency']
 
 
 class ProductInCartSerializer(serializers.HyperlinkedModelSerializer):

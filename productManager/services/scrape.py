@@ -38,7 +38,25 @@ def scrape_barcode(barcode):
         product = cimrisoup.find(class_="Wrapper_productCard__1act7")
         product = product.find("a")["href"]
     except AttributeError:
+        """
+        # Look at cimri.com First, if DNE, do search
+        url = "https://www.cimri.com/arama?q=" + urllib.parse.quote(product_name)
+        url = url.replace(" ", "&")
+        cimrisite = urllib.request.urlopen(url)
+        cimrisoup = bs(cimrisite.read(), 'html.parser')
+        product = cimrisoup.find(class_="top-offers").find(class_="s14oa9nh-0 lihtyI")
+
+        if product:
+            purchase_link = product["href"]
+            product_store = str(product.find(class_="tag").contents[0])
+            product_price = float(re.sub(r'[a-zA-Z ]+', '', str(product.find(class_="tag").next_sibling)).replace(',', '.'))
+        else:
+        """
+
         product = recursive_search(product_name)
+
+    if product is None:
+        return
 
     product_url = "https://www.cimri.com/" + urllib.parse.quote(product)
 
@@ -78,33 +96,48 @@ def scrape_barcode(barcode):
             # print(result)
             # print(result[0])
 
-    return {
-        "name": product_name,
-        "store": {
-            "store_name": result[0],
-            "price": price
-        },
-        "photo_url": photo_url,
-        "category": category,
-        "msg": "Successful."
-    }
+    if result:
+        return {
+            "name": product_name,
+            "store": {
+                "store_name": result[0],
+                "price": price
+            },
+            "photo_url": photo_url,
+            "category": category,
+            "msg": "Successful."
+        }
+    else:
+        return
 
 # this function splits the name of a product and iteratively looks for the name starting from the
 # least significant word to the most significant
 def recursive_search(product_name):
     splitting = product_name.split(" ")
     words_len = len(splitting)
+
+    product = None
     for i in range(words_len - 1):
-        try:
+        if product is None:
             search_product = " ".join(splitting[:(words_len - i - 1)])
             url = "https://www.cimri.com/market/arama?q=" + urllib.parse.quote(search_product)
             url = url.replace(" ","&")
             cimrisite = urllib.request.urlopen(url)
             cimrisoup = bs(cimrisite.read(), 'html.parser')
             product = cimrisoup.find(class_="Wrapper_productCard__1act7")
-            product = product.find("a")["href"]
-        except AttributeError:
-            continue
+            if product is not None:
+                product = product.find("a")["href"]
+
+            # Search regular cimri too
+            if product is None:
+                url = "https://www.cimri.com/arama?q=" + urllib.parse.quote(search_product)
+                url = url.replace(" ", "&")
+                cimrisite = urllib.request.urlopen(url)
+                cimrisoup = bs(cimrisite.read(), 'html.parser')
+                product = cimrisoup.find(class_="z7ntrt-0 cLlfW s1a29zcm-11 ggOMjb")
+                if product is not None:
+                    product = product.find("a")["href"]
+
         
         return product
 
@@ -144,4 +177,5 @@ def recursive_search(product_name):
 # }
 
 ### test
-print(scrape_barcode("8690787401019"))
+#print(scrape_barcode("8690787401019"))
+#print(scrape_barcode('8690555511520'))
