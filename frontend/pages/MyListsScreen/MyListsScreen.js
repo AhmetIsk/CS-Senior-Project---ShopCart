@@ -3,31 +3,39 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-key */
 import React, { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { useSelector } from 'react-redux';
-import { DataTable } from 'react-native-paper';
 import { Entypo } from '@expo/vector-icons';
 import { userService } from '../../services/userService';
 import { userToken } from '../../store/slices/token';
-import { MyShoppingList } from '../../components/Headers';
-import NOLists from '../../assets/noLists.svg';
 import { colors } from '../../constants/styles';
 import { styles } from './styles/index';
+import ShoppingListContainer from '../../components/Containers/ShoppingListContainer';
+import AddShopListButton from '../../components/Buttons/AddShopListButton';
 
 const MyListsScreen = ({ navigation }) => {
-  const [items, setItems] = useState([]);
   const token = useSelector(userToken);
-  const [rerender, setRerender] = useState(false);
-  const ListProducts = () => {
-    userService.getShoppingList(token).then((products) => {
-      console.log(products.length);
-      const mappedItems = products.map(() => <View />);
-      setItems(mappedItems);
+  const [shopLists, setShopLists] = useState([]);
+  const ListShopLists = () => {
+    userService.getUsersShoppingCartLists(token).then((products) => {
+      const mappedItems = products.map((product) => (
+        <ShoppingListContainer
+          key={product.id}
+          id={product.id}
+          priority={product.priority}
+          name={product.name}
+          communities={product.communities}
+          navigation={navigation}
+        />
+      ));
+      setShopLists(mappedItems);
     });
   };
   useEffect(() => {
-    ListProducts();
-  }, [rerender]);
+    ListShopLists();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  console.log('this page shows shopping lists');
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -41,20 +49,8 @@ const MyListsScreen = ({ navigation }) => {
         <Text style={styles.headerTitle}>My Lists</Text>
         <Text style={{ width: 33 }} />
       </View>
-      <NOLists />
-      <MyShoppingList>My Shopping List</MyShoppingList>
-      <DataTable>
-        <DataTable.Header>
-          <DataTable.Title>Product Name</DataTable.Title>
-          <DataTable.Title>Add</DataTable.Title>
-          <DataTable.Title numeric sortDirection="descending">
-            Quantity
-          </DataTable.Title>
-          <DataTable.Title numeric>Buy</DataTable.Title>
-          <DataTable.Title numeric>NN</DataTable.Title>
-        </DataTable.Header>
-        {items}
-      </DataTable>
+      <ScrollView style={styles.scrollView}>{shopLists}</ScrollView>
+      <AddShopListButton onPress={() => navigation.navigate('Add a Shopping List')} />
     </View>
   );
 };
