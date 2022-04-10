@@ -44,7 +44,7 @@ Getting current users' shopping cart(s):
 
 Getting a particular shopping cart:
 
-* `GET /base/currentUsersShoppingCart/id`
+* `GET /base/shoppingCart/shopping-cart-id/`
 
 Add New Shopping Cart for the current user:
 

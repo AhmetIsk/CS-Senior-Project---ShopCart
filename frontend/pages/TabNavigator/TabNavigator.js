@@ -7,6 +7,7 @@ import HomeScreen from '../HomeScreen/HomeScreen';
 import { styles } from '../HomeScreen/styles';
 import { colors } from '../../constants/styles';
 import SettingsScreen from '../Settings/SettingsScreen';
+import MyListsNavigator from '../MyListsScreen/MyListsNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -20,11 +21,9 @@ function Notifications() {
 const ShopCartBottomTabs = () => (
   <Tab.Navigator
     initialRouteName="Feed"
-    tabBarOptions={{
-      showLabel: false,
-    }}
     screenOptions={{
       tabBarActiveTintColor: `${colors.orange}`,
+      tabBarShowLabel: false,
     }}
   >
     <Tab.Screen
@@ -36,10 +35,10 @@ const ShopCartBottomTabs = () => (
       }}
     />
     <Tab.Screen
-      name="Notifications"
-      component={Notifications}
+      name="My Lists Navigator"
+      component={MyListsNavigator}
       options={{
-        tabBarLabel: 'Updates',
+        headerShown: false,
         tabBarIcon: ({ color, size }) => (
           <FontAwesome name="shopping-basket" color={color} size={size} />
         ),

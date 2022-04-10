@@ -2,7 +2,8 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Text, KeyboardAvoidingView, Image } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import {
   AddProductButton,
   ButtonLabel,
@@ -16,50 +17,17 @@ import { colors } from '../../constants/styles';
 import SVGImg from '../../assets/logo.svg';
 import { logout } from '../../store/actions/auth';
 import { styles } from './styles';
+import { userInfoToken } from '../../store/slices/user';
 
 const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
-
+  const userInfo = useSelector(userInfoToken);
+  console.log('This is user info', userInfo);
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
-      <SignOut onPress={() => logout(dispatch)}>
-        <Image source={require('../../images/logout.png')} style={{ width: 50, height: 50 }} />
-      </SignOut>
       <SVGImg width={118} height={134} />
-      <Text style={styles.welcomePage}>Welcome User!</Text>
-      <ButtonContainer>
-        <EditButton color={colors.white} onPress={() => {}}>
-          <EditButtonLabel>Edit My Profile</EditButtonLabel>
-        </EditButton>
-        <ShoppingListButton onPress={() => navigation.navigate('Shopping List')}>
-          <ButtonLabel color={colors.white}>My Shopping List</ButtonLabel>
-        </ShoppingListButton>
-        <Text style={styles.addProduct}>Add product to list:</Text>
-        <AddProductButton
-          onPress={() => navigation.navigate('Add Product via Barcode')}
-          color={colors.blue}
-        >
-          <ButtonLabel color={colors.white}>Scan Product Image</ButtonLabel>
-        </AddProductButton>
-        <AddProductButton
-          onPress={() => navigation.navigate('Add Product via Barcode')}
-          color={colors.green}
-        >
-          <ButtonLabel color={colors.white}>Scan Barcode</ButtonLabel>
-        </AddProductButton>
-        <AddProductButton
-          onPress={() => navigation.navigate('Add Product via Barcode')}
-          color={colors.purple}
-        >
-          <ButtonLabel color={colors.white}>Talk to me</ButtonLabel>
-        </AddProductButton>
-        <AddProductButton
-          onPress={() => navigation.navigate('Add Product via Barcode')}
-          color={colors.headerRed}
-        >
-          <ButtonLabel color={colors.white}>Type Product</ButtonLabel>
-        </AddProductButton>
-      </ButtonContainer>
+      <Text style={styles.welcomePage}>Welcome, {userInfo?.first_name} !</Text>
+      <ButtonContainer />
     </KeyboardAvoidingView>
   );
 };

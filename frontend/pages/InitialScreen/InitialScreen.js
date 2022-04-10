@@ -2,33 +2,20 @@
 /* eslint-disable global-require */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/prop-types */
-import React, { useEffect, useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import { KeyboardAvoidingView, Text, View } from 'react-native';
-import { useDispatch } from 'react-redux';
 import BottomSheet from '@gorhom/bottom-sheet';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import SVGImg from '../../assets/logo.svg';
 import { ButtonLabel, StyledSignInUpButton } from '../../components/Buttons';
 import { colors } from '../../constants/styles';
-import { getAuthAsyncStorage } from '../../services/getAuthAsyncStorage';
-import { setToken } from '../../store/slices/token';
 import SignUpScreen from '../SignUpScreen/SignUpScreen';
 import LoginScreen from '../LoginScreen/LoginScreen';
 import { styles } from '../LoginScreen/styles';
 // TODO: Input alinacak kisimlar yeni bir child componentte verilecek rerender sayisini azaltmak icin
 
 const InitialScreen = ({ navigation }) => {
-  const dispatch = useDispatch();
   const Tab = createMaterialTopTabNavigator();
-
-  useEffect(() => {
-    const load = async () => {
-      const userStorage = await getAuthAsyncStorage();
-      // console.log('bu user storage homedaki',userStorage);
-      dispatch(setToken(userStorage.token));
-    };
-    load();
-  }, []);
 
   const handleSheetChange = useCallback(() => {}, []);
   const handleSnapPress = useCallback((index) => {

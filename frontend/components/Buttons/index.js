@@ -5,7 +5,9 @@ export const StyledSignInUpButton = styled.TouchableOpacity`
   background-color: ${(props) => props.color || '#0782F9'};
   width: 100%;
   border-radius: 12px;
+  flex-direction: row;
   align-items: center;
+  justify-content: center;
   margin-bottom: 15px;
   padding: 15px;
 `;
@@ -13,6 +15,7 @@ export const ButtonLabel = styled.Text`
   color: ${(props) => props.color || '#0782F9'};
   font-style: normal;
   text-align: center;
+  padding-left: 15px;
 `;
 export const SignOut = styled.TouchableOpacity`
   margin-top: 60px;

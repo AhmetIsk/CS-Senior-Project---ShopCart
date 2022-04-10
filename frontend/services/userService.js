@@ -98,10 +98,34 @@ function addProduct(product_id, quantity, token) {
   });
 }
 
-function getShoppingList(token) {
+function getShoppingList(id, token) {
   return new Promise((resolve, reject) => {
+    console.log(`${API_URL}/base/currentUsersShoppingCart/${id}/`, token);
     axios
-      .get(`${API_URL}/productManager/get_shopping_cart/`, {
+      .get(`${API_URL}/base/currentUsersShoppingCart/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da response', usernameOb);
+        try {
+          resolve(JSON.parse(usernameOb));
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        reject(err);
+      });
+  });
+}
+
+function getUsersShoppingCartLists(token) {
+  return new Promise((resolve, reject) => {
+    console.log(`${API_URL}/base/currentUsersShoppingCart/`);
+    axios
+      .get(`${API_URL}/base/currentUsersShoppingCart/`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(async (response) => {
@@ -148,6 +172,35 @@ function removeFromList(product_id, quantity, token) {
   });
 }
 
+function addShoppingList(name, priority, token, communities = []) {
+  return new Promise((resolve, reject) => {
+    console.log(name, priority, token, communities);
+    axios
+      .post(
+        `${API_URL}/base/currentUsersShoppingCart/`,
+        {
+          name,
+          priority,
+          communities,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da response', usernameOb);
+        try {
+          resolve(response);
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        reject(err);
+      });
+  });
+}
+
 export const userService = {
   login,
   logout,
@@ -155,4 +208,6 @@ export const userService = {
   addProduct,
   getShoppingList,
   removeFromList,
+  getUsersShoppingCartLists,
+  addShoppingList,
 };

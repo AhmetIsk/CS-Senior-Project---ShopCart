@@ -22,7 +22,7 @@ const LoginScreen = () => {
   useEffect(() => {
     const load = async () => {
       const userStorage = await getAuthAsyncStorage();
-      // console.log('bu user storage homedaki',userStorage);
+      console.log('bu user storage homedaki', userStorage);
       dispatch(setToken(userStorage.token));
     };
     load();
