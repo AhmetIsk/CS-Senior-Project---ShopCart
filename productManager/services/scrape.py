@@ -34,6 +34,7 @@ def scrape_barcode(barcode):
         cimrisite = urllib.request.urlopen(url)
         cimrisoup = bs(cimrisite.read(), 'html.parser')
     except Exception as e:
+        print(e)
         return
 
     # without market in url
@@ -105,6 +106,7 @@ def scrape_barcode(barcode):
                 # print(result)
                 # print(result[0])
     except Exception as e:
+        print(e)
         return
 
     if result:
@@ -151,6 +153,7 @@ def iterative_search(product_name):
                     if product is not None:
                         product = product.find("a")["href"]
     except Exception as e:
+        print(e)
         return None
 
     return product
