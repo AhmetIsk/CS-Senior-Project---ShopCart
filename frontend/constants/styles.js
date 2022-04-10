@@ -1,5 +1,5 @@
 export const fontStyles = {
-  Arial: 'Roboto',
+  Arial: 'Arial',
   Andale: 'Andale Mono, monospace',
   Lucida: '"Lucida Console", Courier, monospace',
 };
@@ -25,6 +25,7 @@ export const colors = {
   disabled: '#f4f4f4',
   buttonLabel: '#535353',
   emptyListText: 'rgba(83, 83, 83, 0.7)',
+  inputBorder: '#979797',
 };
 export const fontWeights = {
   thin: 200,
