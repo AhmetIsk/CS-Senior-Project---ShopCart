@@ -13,8 +13,8 @@ export const login = (username, password, dispatch) => {
       // await dispatch(loggedIn(JSON.stringify(res.data)));
       await setAuthAsyncStorage(res);
       dispatch(setToken(res.data.access));
-      dispatch(setUser(res.data.user));
-      console.log(res.data.user);
+      dispatch(setUser(res.data.userMeta.user));
+      console.log(res.data.userMeta.user);
       console.log(' bakin bu response dur: ', JSON.stringify(res.data));
       // await navigate('Home');
     })
