@@ -1,3 +1,5 @@
+from time import sleep
+
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -144,6 +146,8 @@ def add_base_products(request):
 
         for row in csvreader:
             barcode = row[0]
+            print("Adding: ", barcode)
+            sleep(30)
             product_data = scrape_barcode(barcode)
             if product_data is not None and product_data['msg'] == 'Successful.':
                 # Insert the store
