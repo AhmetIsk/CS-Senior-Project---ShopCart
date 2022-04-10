@@ -1,3 +1,4 @@
+import traceback
 import urllib.request
 import urllib.parse
 from bs4 import BeautifulSoup as bs
@@ -17,6 +18,7 @@ def scrape_barcode(barcode):
     print("Barcodesite OK")
 
     barcodesoup = bs(barcodesite.read(), 'html.parser')
+    print("bs OK")
     try:
         product_name = barcodesoup.find(id="lblSonuclar").find("a").text
     except AttributeError:
@@ -120,6 +122,7 @@ def scrape_barcode(barcode):
                 # print(result[0])
     except Exception as e:
         print(e)
+        traceback.print_exc()
         return
 
     if result:
