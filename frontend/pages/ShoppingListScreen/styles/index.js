@@ -67,4 +67,11 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     color: `${colors.emptyListText}`,
   },
+  contentContainer: {
+    borderRadius: 30,
+    backgroundColor: `${colors.white}`,
+    width: '95%',
+    height: '100%',
+    marginTop: -50,
+  },
 });

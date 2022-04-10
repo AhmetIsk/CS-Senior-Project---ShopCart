@@ -67,4 +67,11 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     color: `${colors.emptyListText}`,
   },
+  discardChanges: {
+    marginTop: 30,
+  },
+  scrollView: {
+    marginTop: 100,
+    height: 300,
+  },
 });
