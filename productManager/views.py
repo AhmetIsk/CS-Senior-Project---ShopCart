@@ -13,6 +13,7 @@ from base.serializers import ProductBaseSerializer, ShoppingCartSerializer
 
 from base.models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Community
 from .exceptions import DoesNotExistException
+from productManager.services.scrape import scrape_barcode
 
 
 @api_view(['GET'])
@@ -78,7 +79,37 @@ def add_product_to_cart(request):
     quantity = request.data.get('quantity')
 
     if not ProductBase.objects.filter(barcode=barcode).exists():
-        raise DoesNotExistException("A base product with this barcode does not exist.")
+        # Look for the barcode online!
+        product_data = scrape_barcode(barcode)
+        if product_data is None or product_data['msg'] != 'Successful.':
+            raise DoesNotExistException(
+                "A base product with this barcode does not exist AND could not find the product online. Try to add this product manually")
+        else:
+            # Insert the store
+            if Store.objects.filter(name=product_data['store']['store_name']).exists():
+                s = Store.objects.get(name=product_data['store']['store_name'])
+            else:
+                s = Store.objects.create(name=product_data['store']['store_name'])
+
+            # Add product base
+            if ProductBase.objects.filter(barcode=barcode).exists():
+                pb = ProductBase.objects.get(barcode=barcode)
+            else:
+                pb = ProductBase.objects.create(barcode=barcode, name=product_data['name'],
+                                                external_photo_url=product_data['photo_url'],
+                                                category=product_data['category'],
+                                                min_price=float(product_data['store']['price']))
+
+            # Add product to Store (Best Price)
+            if not s.available_products.filter(store__available_products__exact=pb).exists():
+                s.available_products.add(pb)
+                s.save()
+
+            # Create PriceInStore
+            if PriceInStore.objects.filter(product=pb, store=s).exists():
+                pis = PriceInStore.objects.get(product=pb, store=s)
+            else:
+                pis = PriceInStore.objects.create(product=pb, store=s, price=float(product_data['store']['price']))
 
     product_base = ProductBase.objects.get(barcode=barcode)
 
