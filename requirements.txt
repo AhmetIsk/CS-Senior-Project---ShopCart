@@ -19,3 +19,4 @@ psycopg2
 drf_yasg
 Pillow
 beautifulsoup4
+selenium

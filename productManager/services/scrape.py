@@ -6,10 +6,20 @@ import requests
 from bs4 import BeautifulSoup as bs
 import re
 import json
-
+from selenium import webdriver
+import os
 
 # returns name, store{name: price}, photo url, category, msg
 def scrape_barcode(barcode):
+
+
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--no-sandbox")
+    driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+
     url = "http://m.barkodoku.com/" + barcode
 
     # scraping barkodoku.com and finding the name of the product
@@ -42,6 +52,8 @@ def scrape_barcode(barcode):
     try:
         request = urllib.request.Request(url)
         r = requests.get(url)
+        driver.get(url)
+        print(driver.page_source)
         print(r)
         request.add_header("User-agent",
                            "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
