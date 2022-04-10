@@ -143,5 +143,6 @@ def recursive_search(product_name):
 #     "photo": photo
 # }
 
-### test
-print(scrape_barcode("8690787401019"))
+# TODO
+### test - write the barcode here
+print(scrape_barcode("3014230021404"))
