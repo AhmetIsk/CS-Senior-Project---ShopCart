@@ -30,7 +30,7 @@ class ShortCommunitySerializer(serializers.HyperlinkedModelSerializer):
 class ProductBaseSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ProductBase
-        fields = ['id', 'barcode', 'name', 'photo', 'external_photo_url', 'category']
+        fields = ['id', 'barcode', 'name', 'photo', 'external_photo_url', 'category', 'min_price']
 
 
 class StoreSerializer(serializers.HyperlinkedModelSerializer):
