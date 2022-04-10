@@ -10,7 +10,11 @@ def scrape_barcode(barcode):
     url = "http://m.barkodoku.com/" + barcode
 
     # scraping barkodoku.com and finding the name of the product
-    barcodesite = urllib.request.urlopen(url)
+    request = urllib.request.Request(url)
+    request.add_header("User-agent",
+                       "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+    barcodesite = urllib.request.urlopen(request)
+
     barcodesoup = bs(barcodesite.read(), 'html.parser')
     try:
         product_name = barcodesoup.find(id="lblSonuclar").find("a").text
@@ -31,6 +35,9 @@ def scrape_barcode(barcode):
     url = "https://www.cimri.com/market/arama?q=" + urllib.parse.quote(product_name)
     url = url.replace(" ", "&")
     try:
+        request = urllib.request.Request(url)
+        request.add_header("User-agent",
+                           "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
         cimrisite = urllib.request.urlopen(url)
         cimrisoup = bs(cimrisite.read(), 'html.parser')
     except Exception as e:
@@ -65,6 +72,9 @@ def scrape_barcode(barcode):
 
     product_url = "https://www.cimri.com/" + urllib.parse.quote(product)
 
+    request = urllib.request.Request(product_url)
+    request.add_header("User-agent",
+                       "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
     productsite = urllib.request.urlopen(product_url)
     productsoup = bs(productsite.read(), 'html.parser')
 
@@ -137,6 +147,10 @@ def iterative_search(product_name):
                 search_product = " ".join(splitting[:(words_len - i - 1)])
                 url = "https://www.cimri.com/market/arama?q=" + urllib.parse.quote(search_product)
                 url = url.replace(" ", "&")
+
+                request = urllib.request.Request(url)
+                request.add_header("User-agent",
+                                   "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
                 cimrisite = urllib.request.urlopen(url)
                 cimrisoup = bs(cimrisite.read(), 'html.parser')
                 product = cimrisoup.find(class_="Wrapper_productCard__1act7")
@@ -147,6 +161,10 @@ def iterative_search(product_name):
                 if product is None:
                     url = "https://www.cimri.com/arama?q=" + urllib.parse.quote(search_product)
                     url = url.replace(" ", "&")
+
+                    request = urllib.request.Request(url)
+                    request.add_header("User-agent",
+                                       "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
                     cimrisite = urllib.request.urlopen(url)
                     cimrisoup = bs(cimrisite.read(), 'html.parser')
                     product = cimrisoup.find(class_="z7ntrt-0 cLlfW s1a29zcm-11 ggOMjb")
