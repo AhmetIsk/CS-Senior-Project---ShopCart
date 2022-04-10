@@ -38,7 +38,7 @@ def scrape_barcode(barcode):
         product = cimrisoup.find(class_="Wrapper_productCard__1act7")
         product = product.find("a")["href"]
     except AttributeError:
-        product = recursive_search(product_name)
+        product = iterative_search(product_name)
 
     product_url = "https://www.cimri.com/" + urllib.parse.quote(product)
 
@@ -91,7 +91,7 @@ def scrape_barcode(barcode):
 
 # this function splits the name of a product and iteratively looks for the name starting from the
 # least significant word to the most significant
-def recursive_search(product_name):
+def iterative_search(product_name):
     splitting = product_name.split(" ")
     words_len = len(splitting)
     for i in range(words_len - 1):
