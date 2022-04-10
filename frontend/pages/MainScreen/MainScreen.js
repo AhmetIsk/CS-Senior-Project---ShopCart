@@ -30,11 +30,6 @@ const MainScreen = () => {
           />
           <Stack.Screen
             options={{ headerShown: false }}
-            name="Shopping List"
-            component={ShoppingListScreen}
-          />
-          <Stack.Screen
-            options={{ headerShown: false }}
             name="Approval"
             component={ApprovalScreen}
           />
