@@ -78,8 +78,8 @@ def scrape_barcode(barcode):
             if jsons[i]["@type"] == "BreadcrumbList":
                 jsons_type[i] = "breadcrumb"
             elif jsons[i]["@type"] == "Product":
-                jsons_type[i] = "product" 
-        
+                jsons_type[i] = "product"
+
         except TypeError:
             jsons_type[i] = "string"
 
@@ -112,7 +112,7 @@ def scrape_barcode(barcode):
 
 # this function splits the name of a product and iteratively looks for the name starting from the
 # least significant word to the most significant
-def recursive_search(product_name):
+def iterative_search(product_name):
     splitting = product_name.split(" ")
     words_len = len(splitting)
 
@@ -138,7 +138,7 @@ def recursive_search(product_name):
                 if product is not None:
                     product = product.find("a")["href"]
 
-        
+
         return product
 
 #### Old Version
