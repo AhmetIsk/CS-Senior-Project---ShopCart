@@ -45,6 +45,7 @@ def scrape_barcode(barcode):
         print("Cimrisite OK")
         cimrisoup = bs(cimrisite.read(), 'html.parser')
     except Exception as e:
+        traceback.print_exc()
         print(e)
         return
 
