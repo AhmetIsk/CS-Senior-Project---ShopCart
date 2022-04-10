@@ -1,6 +1,8 @@
 import traceback
 import urllib.request
 import urllib.parse
+
+import requests
 from bs4 import BeautifulSoup as bs
 import re
 import json
@@ -39,6 +41,8 @@ def scrape_barcode(barcode):
     url = url.replace(" ", "&")
     try:
         request = urllib.request.Request(url)
+        r = requests.get(url)
+        print(r)
         request.add_header("User-agent",
                            "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
         cimrisite = urllib.request.urlopen(request)
