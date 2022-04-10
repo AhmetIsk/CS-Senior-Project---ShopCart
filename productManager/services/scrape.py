@@ -41,7 +41,7 @@ def scrape_barcode(barcode):
         request = urllib.request.Request(url)
         request.add_header("User-agent",
                            "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
-        cimrisite = urllib.request.urlopen(url)
+        cimrisite = urllib.request.urlopen(request)
         print("Cimrisite OK")
         cimrisoup = bs(cimrisite.read(), 'html.parser')
     except Exception as e:
@@ -80,7 +80,7 @@ def scrape_barcode(barcode):
     request = urllib.request.Request(product_url)
     request.add_header("User-agent",
                        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
-    productsite = urllib.request.urlopen(product_url)
+    productsite = urllib.request.urlopen(request)
     print("productsite OK")
     productsoup = bs(productsite.read(), 'html.parser')
 
@@ -158,7 +158,7 @@ def iterative_search(product_name):
                 request = urllib.request.Request(url)
                 request.add_header("User-agent",
                                    "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
-                cimrisite = urllib.request.urlopen(url)
+                cimrisite = urllib.request.urlopen(request)
                 cimrisoup = bs(cimrisite.read(), 'html.parser')
                 product = cimrisoup.find(class_="Wrapper_productCard__1act7")
                 if product is not None:
@@ -172,7 +172,7 @@ def iterative_search(product_name):
                     request = urllib.request.Request(url)
                     request.add_header("User-agent",
                                        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
-                    cimrisite = urllib.request.urlopen(url)
+                    cimrisite = urllib.request.urlopen(request)
                     cimrisoup = bs(cimrisite.read(), 'html.parser')
                     product = cimrisoup.find(class_="z7ntrt-0 cLlfW s1a29zcm-11 ggOMjb")
                     if product is not None:
