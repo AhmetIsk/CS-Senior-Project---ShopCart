@@ -27,26 +27,33 @@ class ShortCommunitySerializer(serializers.HyperlinkedModelSerializer):
         fields = ['id']
 
 
-class ProductBaseSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = ProductBase
-        fields = ['id', 'barcode', 'name', 'photo', 'external_photo_url', 'category', 'min_price']
-
-
 class StoreSerializer(serializers.HyperlinkedModelSerializer):
+    #available_products = ProductBaseSerializer(many=True)
     class Meta:
         model = Store
-        fields = ['id', 'name', 'available_products']
+        fields = ['url', 'id', 'name' ]  # 'available_products'
+
+
+class ProductBaseSerializer(serializers.HyperlinkedModelSerializer):
+    store_set = StoreSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = ProductBase
+        fields = ['id', 'barcode', 'name', 'photo', 'external_photo_url', 'category', 'min_price', 'store_set']
 
 
 class PriceInStoreSerializer(serializers.HyperlinkedModelSerializer):
+    product = ProductBaseSerializer()
+    store = StoreSerializer()
+
     class Meta:
         model = PriceInStore
-        fields = ['id', 'product', 'price', 'currency']
+        fields = '__all__'
 
 
 class ProductInCartSerializer(serializers.HyperlinkedModelSerializer):
     product = ProductBaseSerializer()
+
     class Meta:
         model = ProductInCart
         fields = ['id', 'product', 'quantity', 'adding_date']
@@ -54,7 +61,7 @@ class ProductInCartSerializer(serializers.HyperlinkedModelSerializer):
 
 class ShoppingCartSerializer(serializers.HyperlinkedModelSerializer):
     # user = UserSerializer()
-    communities = ShortCommunitySerializer(many=True, required=False) #, read_only=True
+    communities = ShortCommunitySerializer(many=True, required=False)  # , read_only=True
     products = ProductInCartSerializer(many=True, required=False)
 
     class Meta:
