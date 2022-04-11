@@ -61,8 +61,8 @@ class ProductInCartSerializer(serializers.HyperlinkedModelSerializer):
 
 class ShoppingCartSerializer(serializers.HyperlinkedModelSerializer):
     # user = UserSerializer()
-    communities = ShortCommunitySerializer(many=True, required=False)  # , read_only=True
-    products = ProductInCartSerializer(many=True, required=False)
+    communities = ShortCommunitySerializer(many=True, required=False, read_only=True)  # , read_only=True
+    products = ProductInCartSerializer(many=True, required=False, read_only=True)
 
     class Meta:
         model = ShoppingCart
