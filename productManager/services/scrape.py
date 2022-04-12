@@ -145,4 +145,9 @@ def iterative_search(product_name):
 
 # TODO
 ### test - write the barcode here
-print(scrape_barcode("3014230021404"))
+print(scrape_barcode("8690787401019"))
+print(scrape_barcode("8690555511520"))
+print(scrape_barcode("8690637035067"))
+print(scrape_barcode("8690526019949"))
+print(scrape_barcode("8690504186687"))
+print(scrape_barcode("8690637805202"))
