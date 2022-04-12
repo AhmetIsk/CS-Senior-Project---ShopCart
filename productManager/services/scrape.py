@@ -1,16 +1,26 @@
+import traceback
 import urllib.request
 import urllib.parse
+
+import requests
 from bs4 import BeautifulSoup as bs
 import re
 import json
+
 
 # returns name, store{name: price}, photo url, category, msg
 def scrape_barcode(barcode):
     url = "http://m.barkodoku.com/" + barcode
 
     # scraping barkodoku.com and finding the name of the product
-    barcodesite = urllib.request.urlopen(url)
+    request = urllib.request.Request(url)
+    request.add_header("User-agent",
+                       "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+    barcodesite = urllib.request.urlopen(request)
+    print("Barcodesite OK")
+
     barcodesoup = bs(barcodesite.read(), 'html.parser')
+    print("bs OK")
     try:
         product_name = barcodesoup.find(id="lblSonuclar").find("a").text
     except AttributeError:
@@ -28,9 +38,18 @@ def scrape_barcode(barcode):
     # searching the cimri.com
     # searching the market
     url = "https://www.cimri.com/market/arama?q=" + urllib.parse.quote(product_name)
-    url = url.replace(" ","&")
-    cimrisite = urllib.request.urlopen(url)
-    cimrisoup = bs(cimrisite.read(), 'html.parser')
+    url = url.replace(" ", "&")
+    try:
+        request = urllib.request.Request(url)
+        request.add_header("User-agent",
+                           "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+        cimrisite = urllib.request.urlopen(request)
+        print("Cimrisite OK")
+        cimrisoup = bs(cimrisite.read(), 'html.parser')
+    except Exception as e:
+        traceback.print_exc()
+        print(e)
+        return
 
     # without market in url
     # product = cimrisoup.find_all(class_="link-detail")[0]["href"]
@@ -38,11 +57,33 @@ def scrape_barcode(barcode):
         product = cimrisoup.find(class_="Wrapper_productCard__1act7")
         product = product.find("a")["href"]
     except AttributeError:
+        """
+        # Look at cimri.com First, if DNE, do search
+        url = "https://www.cimri.com/arama?q=" + urllib.parse.quote(product_name)
+        url = url.replace(" ", "&")
+        cimrisite = urllib.request.urlopen(url)
+        cimrisoup = bs(cimrisite.read(), 'html.parser')
+        product = cimrisoup.find(class_="top-offers").find(class_="s14oa9nh-0 lihtyI")
+
+        if product:
+            purchase_link = product["href"]
+            product_store = str(product.find(class_="tag").contents[0])
+            product_price = float(re.sub(r'[a-zA-Z ]+', '', str(product.find(class_="tag").next_sibling)).replace(',', '.'))
+        else:
+        """
+
         product = iterative_search(product_name)
+
+    if product is None:
+        return
 
     product_url = "https://www.cimri.com/" + urllib.parse.quote(product)
 
-    productsite = urllib.request.urlopen(product_url)
+    request = urllib.request.Request(product_url)
+    request.add_header("User-agent",
+                       "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+    productsite = urllib.request.urlopen(request)
+    print("productsite OK")
     productsoup = bs(productsite.read(), 'html.parser')
 
     jsons = []
@@ -57,56 +98,92 @@ def scrape_barcode(barcode):
 
     for i in range(3):
         try:
-            if jsons[i]["@type"] == "BreadcrumbList":
-                jsons_type[i] = "breadcrumb"
-            elif jsons[i]["@type"] == "Product":
-                jsons_type[i] = "product" 
-        
+            try:
+                if jsons[i]["@type"] == "BreadcrumbList":
+                    jsons_type[i] = "breadcrumb"
+                elif jsons[i]["@type"] == "Product":
+                    jsons_type[i] = "product"
+            except IndexError:
+                return
+
         except TypeError:
             jsons_type[i] = "string"
 
-    for i in range(3):
-        if jsons_type[i] == "breadcrumb":
-            category = jsons[i]["itemListElement"][2]["item"]["name"]
-        elif jsons_type[i] == "product":
-            photo_url = jsons[i]["image"][0]
-            price = jsons[i]["offers"]["lowPrice"]
-        elif jsons_type[i] == "string":
-            # this is not a correct json this is a string so we will use regex
-            # ?<= look behind, ?= look ahead, .+? is not greedy
-            result = re.findall(r'(?<="merchantUrl":"https://www.)(.+?)(?=.com)', jsons[i])
-            # print(result)
-            # print(result[0])
+    result = None
+    try:
+        for i in range(3):
+            if jsons_type[i] == "breadcrumb":
+                category = jsons[i]["itemListElement"][2]["item"]["name"]
+            elif jsons_type[i] == "product":
+                photo_url = jsons[i]["image"][0]
+                price = jsons[i]["offers"]["lowPrice"]
+            elif jsons_type[i] == "string":
+                # this is not a correct json this is a string so we will use regex
+                # ?<= look behind, ?= look ahead, .+? is not greedy
+                result = re.findall(r'(?<="merchantUrl":"https://www.)(.+?)(?=.com)', jsons[i])
+                # print(result)
+                # print(result[0])
+    except Exception as e:
+        print(e)
+        traceback.print_exc()
+        return
 
-    return {
-        "name": product_name,
-        "store": {
-            "store_name": result[0],
-            "price": price
-        },
-        "photo_url": photo_url,
-        "category": category,
-        "msg": "Successful."
-    }
+    if result:
+        return {
+            "name": product_name,
+            "store": {
+                "store_name": result[0],
+                "price": price
+            },
+            "photo_url": photo_url,
+            "category": category,
+            "msg": "Successful."
+        }
+    else:
+        return
+
 
 # this function splits the name of a product and iteratively looks for the name starting from the
 # least significant word to the most significant
 def iterative_search(product_name):
     splitting = product_name.split(" ")
     words_len = len(splitting)
-    for i in range(words_len - 1):
-        try:
-            search_product = " ".join(splitting[:(words_len - i - 1)])
-            url = "https://www.cimri.com/market/arama?q=" + urllib.parse.quote(search_product)
-            url = url.replace(" ","&")
-            cimrisite = urllib.request.urlopen(url)
-            cimrisoup = bs(cimrisite.read(), 'html.parser')
-            product = cimrisoup.find(class_="Wrapper_productCard__1act7")
-            product = product.find("a")["href"]
-        except AttributeError:
-            continue
-        
-        return product
+
+    product = None
+    try:
+        for i in range(words_len - 1):
+            if product is None:
+                search_product = " ".join(splitting[:(words_len - i - 1)])
+                url = "https://www.cimri.com/market/arama?q=" + urllib.parse.quote(search_product)
+                url = url.replace(" ", "&")
+
+                request = urllib.request.Request(url)
+                request.add_header("User-agent",
+                                   "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+                cimrisite = urllib.request.urlopen(request)
+                cimrisoup = bs(cimrisite.read(), 'html.parser')
+                product = cimrisoup.find(class_="Wrapper_productCard__1act7")
+                if product is not None:
+                    product = product.find("a")["href"]
+
+                # Search regular cimri too
+                if product is None:
+                    url = "https://www.cimri.com/arama?q=" + urllib.parse.quote(search_product)
+                    url = url.replace(" ", "&")
+
+                    request = urllib.request.Request(url)
+                    request.add_header("User-agent",
+                                       "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+                    cimrisite = urllib.request.urlopen(request)
+                    cimrisoup = bs(cimrisite.read(), 'html.parser')
+                    product = cimrisoup.find(class_="z7ntrt-0 cLlfW s1a29zcm-11 ggOMjb")
+                    if product is not None:
+                        product = product.find("a")["href"]
+    except Exception as e:
+        print(e)
+        return None
+
+    return product
 
 #### Old Version
 # # finding the photo which is 240px

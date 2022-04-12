@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from static.currencies import CURRENCIES
 
 
 class Note(models.Model):
@@ -18,11 +19,13 @@ class ProductBase(models.Model):
     barcode = models.CharField(max_length=200, unique=True)
     name = models.TextField(max_length=100, blank=True, null=True)
     photo = models.ImageField(upload_to='products', blank=True, null=True)
+    external_photo_url = models.URLField(max_length=200, blank=True, null=True)
     category = models.CharField(max_length=200, blank=True, null=True)
+    min_price = models.FloatField()
 
 
 class Store(models.Model):
-    name = models.TextField(max_length=50, blank=True, null=True)
+    name = models.TextField(max_length=50, blank=True, null=True, unique=True)
     available_products = models.ManyToManyField(ProductBase)
 
 
@@ -30,6 +33,7 @@ class PriceInStore(models.Model):
     product = models.ForeignKey(ProductBase, on_delete=models.RESTRICT)
     store = models.ForeignKey(Store, on_delete=models.RESTRICT)
     price = models.FloatField()
+    currency = models.CharField(choices=CURRENCIES, max_length=8, blank=False, default='TRY')
 
 
 class ProductInCart(models.Model):
@@ -48,12 +52,12 @@ class ShoppingCart(models.Model):
 
     name = models.CharField(max_length=100, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    products = models.ManyToManyField(ProductInCart, null=True, blank=True)
+    products = models.ManyToManyField(ProductInCart)
     priority = models.CharField(choices=CHOICES, max_length=300)
-    communities = models.ManyToManyField(Community, null=True, blank=True)
+    communities = models.ManyToManyField(Community)
 
 
 class UserMeta(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    communities = models.ManyToManyField(Community, blank=True, null=True)
+    communities = models.ManyToManyField(Community)
     shopping_carts = models.ManyToManyField(ShoppingCart)

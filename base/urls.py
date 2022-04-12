@@ -21,7 +21,8 @@ router.register(r'notes', views.NoteViewSet)
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('', include(router.urls)),
-    path('current_user', views.current_user),
+    path('current_user/', views.current_user),
+    path('add_base_products/', views.add_base_products),
 ]
 
 # for images

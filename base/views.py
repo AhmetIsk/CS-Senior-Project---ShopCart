@@ -1,3 +1,5 @@
+from time import sleep
+
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -83,6 +85,7 @@ class ShoppingCartViewSet(viewsets.ModelViewSet):
     serializer_class = ShoppingCartSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+
 class UsersShoppingCartViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows products to be viewed or edited.
@@ -97,7 +100,6 @@ class UsersShoppingCartViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         print(self.request.data)
         serializer.save(user=self.request.user, communities=self.request.data.get('communities'))
-
 
 
 class UserMetaViewSet(viewsets.ModelViewSet):
@@ -129,5 +131,50 @@ class NoteViewSet(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 def current_user(request):
+    serializer = UserSerializer(request.user, context={'request': request})
+    return Response(serializer.data)
+
+
+import csv
+from productManager.services.scrape import scrape_barcode
+
+
+@api_view(['GET'])
+def add_base_products(request):
+    with open('base/market-barkod-listesi.csv', newline='') as csvfile:
+        csvreader = csv.reader(csvfile, delimiter=';', quotechar='|')
+
+        for row in csvreader:
+            barcode = row[0]
+            print("Adding: ", barcode)
+            sleep(30)
+            product_data = scrape_barcode(barcode)
+            if product_data is not None and product_data['msg'] == 'Successful.':
+                # Insert the store
+                if Store.objects.filter(name=product_data['store']['store_name']).exists():
+                    s = Store.objects.get(name=product_data['store']['store_name'])
+                else:
+                    s = Store.objects.create(name=product_data['store']['store_name'])
+
+                # Add product base
+                if ProductBase.objects.filter(barcode=barcode).exists():
+                    pb = ProductBase.objects.get(barcode=barcode)
+                else:
+                    pb = ProductBase.objects.create(barcode=barcode, name=product_data['name'],
+                                                    external_photo_url=product_data['photo_url'],
+                                                    category=product_data['category'],
+                                                    min_price=float(product_data['store']['price']))
+
+                # Add product to Store (Best Price)
+                if not s.available_products.filter(store__available_products__exact=pb).exists():
+                    s.available_products.add(pb)
+                    s.save()
+
+                # Create PriceInStore
+                if PriceInStore.objects.filter(product=pb, store=s).exists():
+                    pis = PriceInStore.objects.get(product=pb, store=s)
+                else:
+                    pis = PriceInStore.objects.create(product=pb, store=s, price=float(product_data['store']['price']))
+
     serializer = UserSerializer(request.user, context={'request': request})
     return Response(serializer.data)
