@@ -41,6 +41,9 @@ INSTALLED_APPS = [
     'authorization.apps.AuthorizationConfig',
     'productManager.apps.ProductmanagerConfig',
 
+    'drf_yasg',
+    'rest_framework_swagger',
+
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
