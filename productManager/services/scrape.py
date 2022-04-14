@@ -185,6 +185,7 @@ def iterative_search(product_name):
 
     return product
 
+
 #### Old Version
 # # finding the photo which is 240px
 # photo = productsoup.find("img", {"sizes": "240px"})
@@ -222,9 +223,10 @@ def iterative_search(product_name):
 
 # TODO
 ### test - write the barcode here
-print(scrape_barcode("8690787401019"))
-print(scrape_barcode("8690555511520"))
-print(scrape_barcode("8690637035067"))
-print(scrape_barcode("8690526019949"))
-print(scrape_barcode("8690504186687"))
-print(scrape_barcode("8690637805202"))
+if __name__ == '__main__':
+    print(scrape_barcode("8690787401019"))
+    print(scrape_barcode("8690555511520"))
+    print(scrape_barcode("8690637035067"))
+    print(scrape_barcode("8690526019949"))
+    print(scrape_barcode("8690504186687"))
+    print(scrape_barcode("8690637805202"))

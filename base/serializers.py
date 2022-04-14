@@ -1,9 +1,13 @@
 import json
 
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
+from rest_framework.decorators import action
+from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from .models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Community
 from django.contrib.auth.models import User, Group
-from rest_framework import serializers
+from rest_framework import serializers, exceptions
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -12,13 +16,18 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['id', 'first_name', 'last_name', 'username', 'email', 'groups', 'last_login', 'date_joined']
 
 
+class UserSerializerIDOnly(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id']
+
 class CommunitySerializer(serializers.HyperlinkedModelSerializer):
-    users = UserSerializer(many=True)
-    community_owner = UserSerializer()
+    users = UserSerializer(many=True, read_only=True)
+    community_owner = UserSerializer(read_only=True)
 
     class Meta:
         model = Community
-        fields = ['id', 'name', 'community_code', 'community_owner', 'users']
+        fields = ['id', 'name', 'community_owner', 'users']
 
 
 class ShortCommunitySerializer(serializers.HyperlinkedModelSerializer):
@@ -28,10 +37,10 @@ class ShortCommunitySerializer(serializers.HyperlinkedModelSerializer):
 
 
 class StoreSerializer(serializers.HyperlinkedModelSerializer):
-    #available_products = ProductBaseSerializer(many=True)
+    # available_products = ProductBaseSerializer(many=True)
     class Meta:
         model = Store
-        fields = ['url', 'id', 'name' ]  # 'available_products'
+        fields = ['url', 'id', 'name']  # 'available_products'
 
 
 class ProductBaseSerializer(serializers.HyperlinkedModelSerializer):
@@ -67,6 +76,7 @@ class ShoppingCartSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ShoppingCart
         fields = ['id', 'products', 'priority', 'communities', 'name']  # 'user'
+        # read_only_fields = ['communities', ]
 
     def create(self, validated_data):
         sc = ShoppingCart(priority=validated_data['priority'], name=validated_data['name'], user=validated_data['user'])
