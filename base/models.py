@@ -10,9 +10,9 @@ class Note(models.Model):
 
 class Community(models.Model):
     name = models.CharField(max_length=100)
-    community_code = models.CharField(max_length=100, blank=True, null=True)
-    community_owner = models.OneToOneField(User, on_delete=models.RESTRICT, related_name='owner')
-    users = models.ManyToManyField(User)
+    community_owner = models.ForeignKey(User, on_delete=models.RESTRICT, related_name='owner')
+    users = models.ManyToManyField(User, blank=True)
+    create_time = models.DateTimeField(auto_now_add=True)
 
 
 class ProductBase(models.Model):

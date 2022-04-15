@@ -1,8 +1,10 @@
 from time import sleep
 
+from drf_yasg import openapi
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework import status, exceptions
+from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.permissions import IsAuthenticated
 from .serializers import NoteSerializer, UserSerializer, GroupSerializer, ProductBaseSerializer, StoreSerializer, \
     CommunitySerializer, \
@@ -11,6 +13,12 @@ from .models import Note, ProductBase, Store, PriceInStore, ProductInCart, Shopp
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
+import csv
+from productManager.services.scrape import scrape_barcode
+
+community_param = openapi.Parameter('user_id', openapi.IN_QUERY, type=openapi.TYPE_STRING,
+                                    description="Point with latitude (lat) and longitude (lng). "
+                                                "Example: {\"lat\":8.123213123,\"lng\":3.8979889}")
 
 
 @api_view(['GET'])
@@ -32,6 +40,13 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
+from rest_framework import serializers
+
+
+class NameSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=200)
+
+
 class CommunityViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows users to be viewed or edited.
@@ -39,6 +54,88 @@ class CommunityViewSet(viewsets.ModelViewSet):
     queryset = Community.objects.all()
     serializer_class = CommunitySerializer
     permission_classes = [permissions.IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        serializer = NameSerializer(data=request.data)
+        if serializer.is_valid():
+            c = Community.objects.create(name=serializer.validated_data['name'],
+                                         community_owner=request.user)
+            return Response({'status': 'Community successfully created with id {}'.format(c.id)})
+        else:
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    #  Returns the service areas that intercept with the given Point
+    @swagger_auto_schema(methods=['post'], manual_parameters=[community_param])
+    @action(detail=False, methods=['post'], name='Add community user')
+    def add_user(self, request):
+        user_id = request.data.get('user_id')
+        community_id = request.data.get('community_id')
+
+        if user_id and community_id:
+            try:
+                c = Community.objects.get(id=community_id)
+                c.users.add(User.objects.get(id=user_id))
+                c.save()
+            except Exception as e:
+                return Response(e, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response({'status': 'User successfully added'})
+        else:
+            return Response('Incorrect or empty "user_id" or "community_id"',
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(methods=['post'], manual_parameters=[community_param])
+    @action(detail=False, methods=['post'], name='Remove community user')
+    def remove_user(self, request):
+        user_id = request.data.get('user_id')
+        community_id = request.data.get('community_id')
+
+        if user_id and community_id:
+            try:
+                c = Community.objects.get(id=community_id)
+                c.users.remove(User.objects.get(id=user_id))
+                c.save()
+            except Exception as e:
+                return Response(e, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response({'status': 'User successfully removed'})
+        else:
+            return Response('Incorrect or empty "user_id" or "community_id"',
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(methods=['get'], manual_parameters=[community_param])
+    @action(detail=False, methods=['get'], name='Get communities that the current user is a member of')
+    def get_memberships(self, request):
+        user = request.user
+
+        if user:
+            try:
+                communities = user.community_set.all()  # All communities of current user
+                serializer = CommunitySerializer(communities, many=True)
+                return Response(serializer.data)
+            except Exception as e:
+                return Response(e, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response('User does not exist',
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(methods=['get'], manual_parameters=[community_param])
+    @action(detail=False, methods=['get'], name='Get communities of the current user')
+    def get_owned(self, request):
+        user = request.user
+
+        if user:
+            try:
+                communities = Community.objects.filter(community_owner=user)  # All communities of current user
+                serializer = CommunitySerializer(communities, many=True)
+                return Response(serializer.data)
+            except Exception as e:
+                print(e)
+                return Response('Something is wrong. Contact Kaan', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response('User does not exist',
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 class ProductBaseViewSet(viewsets.ModelViewSet):
@@ -133,10 +230,6 @@ class NoteViewSet(viewsets.ModelViewSet):
 def current_user(request):
     serializer = UserSerializer(request.user, context={'request': request})
     return Response(serializer.data)
-
-
-import csv
-from productManager.services.scrape import scrape_barcode
 
 
 @api_view(['GET'])

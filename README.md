@@ -23,8 +23,8 @@ first open an android emulator from android studio
 
 # To See "base" Endpoints:
 
-1. Go to `"/admin"` and login.
-2. Visit `"/base"`.
+1. Go to `/admin/` and login.
+2. Visit `/base/`.
 
 # Testing API Endpoints (curl):
 
@@ -32,11 +32,28 @@ Getting Product Base:
 
 * `curl -H "Authorization: Bearer <ACCESS_TOKEN>" https://shopcart-s.herokuapp.com/productManager/get_product_base/<barcode>`
   OR
-* Login with your admin account and visit `"https://shopcart-s.herokuapp.com/productManager/get_product_base/"`
+* Login with your admin account (`/admin/`) and visit `"https://shopcart-s.herokuapp.com/productManager/get_product_base/"`
+
+---------------
+Basic Endpoints:
+For more, visit [swagger docs.](https://shopcart-s.herokuapp.com/swagger/)
+---------------
+BASE PRODUCTS
+---------------
+Seeing all Base Products:
+
+* `GET /base/productBases/`
+
+---------------
+SHOPPING CARTS
+---------------
+Seeing all Shopping Carts:
+
+* `GET /base/shoppingCart/`
 
 Adding new product into shopping cart:
 
- * `POST /productManager/add_product_to_cart/ '{"barcode": "12123123", "quantity": 2, "id": id_of_shopping_cart}'`
+ * `POST /productManager/add_product_to_cart/ '{"barcode": "12123123", "quantity": 2, "id": <id_of_shopping_cart>}'`
 
 Getting current users' shopping cart(s):
 
@@ -44,10 +61,43 @@ Getting current users' shopping cart(s):
 
 Getting a particular shopping cart:
 
-* `GET /base/shoppingCart/shopping-cart-id/`
+* `GET /base/shoppingCart/<shopping-cart-id>/`
 
 Add New Shopping Cart for the current user:
 
-* `POST http://127.0.0.1:8000/base/currentUsersShoppingCart/ '{"name": "name", "priority": "High | Medium | Low", (optional) "communities": [
+* `POST /base/currentUsersShoppingCart/ '{"name": "name", "priority": "High | Medium | Low", (optional) "communities": [
   {"id": 2}, {"id": 3}
   ]}'` 
+  
+---------------
+USERS
+---------------
+Get Users
+
+* All users: `GET /users/`
+* Particular user: `GET /users/<id>/`
+
+
+---------------
+COMMUNITIES
+---------------
+See all communities:
+* `GET /base/communities/`
+
+Create a community:
+* `POST /base/communities/ '{"name": <community name>}'`
+
+Add a user to a community:
+* `POST /base/communities/add_user/ '{"user_id": <ID of user to add>, "community_id": <ID of Community>"}'`
+
+Remove a user from a community:
+* `POST /base/communities/remove_user/ '{"user_id": <ID of user to remove>, "community_id": <ID of Community>"}'`
+
+Delete a community:
+* `DELETE /base/communities/<community_id>/`
+
+Get communities that the current user is a member of:
+* `GET /base/communities/get_memberships/`
+
+Get communities that the current user owns:
+* `GET /base/communities/get_owned/`
