@@ -109,6 +109,8 @@ def scrape_barcode(barcode):
         except TypeError:
             jsons_type[i] = "string"
 
+    print(jsons)
+
     result = None
     try:
         for i in range(3):
@@ -185,6 +187,35 @@ def iterative_search(product_name):
 
     return product
 
+def amazon_scrape(barcode):
+    url = "https://www.amazon.com.tr/s?k=" + barcode
+
+    request = urllib.request.Request(url)
+    request.add_header("User-agent",
+                       "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+    barcodesite = urllib.request.urlopen(request)
+    print("Amazon OK")
+
+    barcodesoup = bs(barcodesite.read(), 'html.parser')
+    barcodesoup = barcodesoup.find("div", {"cel_widget_id": "MAIN-SEARCH_RESULTS-1"})
+
+    imagesoup = barcodesoup.find("span", {"data-component-type": "s-product-image"})
+    imagesoup = imagesoup.find("img")
+    photo_url = imagesoup["src"]
+
+    price = barcodesoup.find("span", {"class": "a-offscreen"}).text
+
+    return {
+            "name": product_name,
+            "store": {
+                "store_name": "amazon",
+                "price": price
+            },
+            "photo_url": photo_url,
+            "category": category,
+            "msg": "Successful."
+        }
+
 #### Old Version
 # # finding the photo which is 240px
 # photo = productsoup.find("img", {"sizes": "240px"})
@@ -222,9 +253,10 @@ def iterative_search(product_name):
 
 # TODO
 ### test - write the barcode here
-print(scrape_barcode("8690787401019"))
-print(scrape_barcode("8690555511520"))
-print(scrape_barcode("8690637035067"))
-print(scrape_barcode("8690526019949"))
-print(scrape_barcode("8690504186687"))
-print(scrape_barcode("8690637805202"))
+# print(scrape_barcode("8690787401019"))
+# print(scrape_barcode("8690555511520"))
+# print(scrape_barcode("8690637035067"))
+# print(scrape_barcode("8690526019949"))
+# print(scrape_barcode("8690504186687"))
+# print(scrape_barcode("8690637805202"))
+# amazon_scrape("8690555511520")
