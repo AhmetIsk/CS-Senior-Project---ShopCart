@@ -1,1 +1,0 @@
-print(product_image)

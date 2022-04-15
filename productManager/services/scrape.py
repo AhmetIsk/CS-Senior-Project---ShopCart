@@ -109,8 +109,6 @@ def scrape_barcode(barcode):
         except TypeError:
             jsons_type[i] = "string"
 
-    print(jsons)
-
     result = None
     try:
         for i in range(3):
@@ -118,7 +116,7 @@ def scrape_barcode(barcode):
                 category = jsons[i]["itemListElement"][2]["item"]["name"]
             elif jsons_type[i] == "product":
                 photo_url = jsons[i]["image"][0]
-                price = jsons[i]["offers"]["lowPrice"]
+                price = float(jsons[i]["offers"]["lowPrice"])
             elif jsons_type[i] == "string":
                 # this is not a correct json this is a string so we will use regex
                 # ?<= look behind, ?= look ahead, .+? is not greedy
@@ -199,11 +197,30 @@ def amazon_scrape(barcode):
     barcodesoup = bs(barcodesite.read(), 'html.parser')
     barcodesoup = barcodesoup.find("div", {"cel_widget_id": "MAIN-SEARCH_RESULTS-1"})
 
-    imagesoup = barcodesoup.find("span", {"data-component-type": "s-product-image"})
-    imagesoup = imagesoup.find("img")
+    sitesoup = barcodesoup.find("span", {"data-component-type": "s-product-image"})
+    imagesoup = sitesoup.find("img")
     photo_url = imagesoup["src"]
 
+    # the price is in format: "3,4 TL", this code will replace this with a float
     price = barcodesoup.find("span", {"class": "a-offscreen"}).text
+    price = float(price[:-3].replace(",", "."))
+
+    site = sitesoup.find("a")["href"]
+    siteurl = "https://www.amazon.com.tr" + site
+
+    request = urllib.request.Request(siteurl)
+    request.add_header("User-agent",
+                       "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+    productsite = urllib.request.urlopen(request)
+
+    productsoup = bs(productsite.read(), 'html.parser')
+    print("Amazon Product Site OK")
+
+    categorysoup = productsoup.find("div", {"data-category": "hpc"})
+    categorysoup = categorysoup.find_all("a")[-1]
+    category = categorysoup.find("span").text.strip()
+
+    product_name = productsoup.find("span", {"id": "productTitle"}).text.strip()
 
     return {
             "name": product_name,
@@ -253,10 +270,10 @@ def amazon_scrape(barcode):
 
 # TODO
 ### test - write the barcode here
-# print(scrape_barcode("8690787401019"))
-# print(scrape_barcode("8690555511520"))
-# print(scrape_barcode("8690637035067"))
+print(scrape_barcode("8690787401019"))
+print(scrape_barcode("8690555511520"))
+print(scrape_barcode("8690637035067"))
 # print(scrape_barcode("8690526019949"))
 # print(scrape_barcode("8690504186687"))
 # print(scrape_barcode("8690637805202"))
-# amazon_scrape("8690555511520")
+print(amazon_scrape("8690555511520"))
