@@ -8,7 +8,8 @@ from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.permissions import IsAuthenticated
 from .serializers import NoteSerializer, UserSerializer, GroupSerializer, ProductBaseSerializer, StoreSerializer, \
     CommunitySerializer, \
-    PriceInStoreSerializer, ProductInCartSerializer, ShoppingCartSerializer, UserMetaSerializer
+    PriceInStoreSerializer, ProductInCartSerializer, ShoppingCartSerializer, UserMetaSerializer, \
+    SimpleShoppingCartSerializer
 from .models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Community
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
@@ -133,6 +134,75 @@ class CommunityViewSet(viewsets.ModelViewSet):
             except Exception as e:
                 print(e)
                 return Response('Something is wrong. Contact Kaan', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            return Response('User does not exist',
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(methods=['post'], manual_parameters=[community_param])
+    @action(detail=False, methods=['post'], name='Add shopping cart to a community')
+    def add_cart_to_community(self, request):
+        user = request.user
+        cart_id = request.data.get('cart_id')
+        community_id = request.data.get('community_id')
+
+        if cart_id and community_id:
+            try:
+                c = Community.objects.get(id=community_id)
+                if c.community_owner != user and not c.users.filter(id=user.id).exists():
+                    return Response('You do not have access to this community.',
+                                    status=status.HTTP_400_BAD_REQUEST)
+
+                sc = ShoppingCart.objects.get(id=cart_id)
+                sc.communities.add(c)
+                sc.save()
+            except Exception as e:
+                return Response(e, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response({'status': 'Cart successfully added'})
+        else:
+            return Response('Incorrect or empty "user_id" or "cart_id"',
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(methods=['post'], manual_parameters=[community_param])
+    @action(detail=False, methods=['post'], name='Remove shopping cart to from community')
+    def remove_cart_from_community(self, request):
+        user = request.user
+        cart_id = request.data.get('cart_id')
+        community_id = request.data.get('community_id')
+
+        if cart_id and community_id:
+            try:
+                c = Community.objects.get(id=community_id)
+                if c.community_owner != user and not c.users.filter(id=user.id).exists():
+                    return Response('You do not have access to this community.',
+                                    status=status.HTTP_400_BAD_REQUEST)
+
+                sc = ShoppingCart.objects.get(id=cart_id)
+                sc.communities.remove(c)
+                sc.save()
+            except Exception as e:
+                return Response(e, status=status.HTTP_400_BAD_REQUEST)
+
+            return Response({'status': 'Cart successfully removed'})
+        else:
+            return Response('Incorrect or empty "user_id" or "cart_id"',
+                            status=status.HTTP_400_BAD_REQUEST)
+
+    @swagger_auto_schema(methods=['get'], manual_parameters=[community_param])
+    @action(detail=False, methods=['get'], name='Get shopping carts inside community')
+    def get_community_carts(self, request):
+        user = request.user
+        community_id = request.GET.get('community_id')
+
+        if user:
+            try:
+                community = Community.objects.get(id=community_id)
+                carts = ShoppingCart.objects.filter(communities__community_owner_id__exact=community.id)
+                serializer = SimpleShoppingCartSerializer(carts, many=True)
+                return Response(serializer.data)
+            except Exception as e:
+                print(e)
+                return Response('Community does not exist.', status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         else:
             return Response('User does not exist',
                             status=status.HTTP_400_BAD_REQUEST)

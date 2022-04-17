@@ -101,3 +101,12 @@ Get communities that the current user is a member of:
 
 Get communities that the current user owns:
 * `GET /base/communities/get_owned/`
+
+Add a shopping cart to a community:
+* `POST /base/communities/add_cart_to_community/ '{"community_id": <ID of community>, "cart_id": <ID of Shopping Cart to add>}'`
+
+Remove shopping cart from a community:
+* `POST /base/communities/remove_cart_from_community/ '{"community_id": <ID of community>, "cart_id": <ID of Shopping Cart to add>}'`
+
+Get all shopping carts inside a community (returns id, name and priority):
+* `GET /base/communities/get_shopping_carts/?community_id=<ID of community>`
