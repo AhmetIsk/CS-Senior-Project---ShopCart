@@ -108,5 +108,5 @@ Add a shopping cart to a community:
 Remove shopping cart from a community:
 * `POST /base/communities/remove_cart_from_community/ '{"community_id": <ID of community>, "cart_id": <ID of Shopping Cart to add>}'`
 
-Get all shopping carts inside a community (returns id, name and priority):
+Get all shopping carts inside a community (p.s., do not put a trailing slash) (returns id, name and priority):
 * `GET /base/communities/get_shopping_carts/?community_id=<ID of community>`
