@@ -1,13 +1,7 @@
-import json
-
-from drf_yasg import openapi
-from drf_yasg.utils import swagger_auto_schema
-from rest_framework.decorators import action
-from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from .models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Community
 from django.contrib.auth.models import User, Group
-from rest_framework import serializers, exceptions
+from rest_framework import serializers
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -20,6 +14,7 @@ class UserSerializerIDOnly(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ['id']
+
 
 class CommunitySerializer(serializers.HyperlinkedModelSerializer):
     users = UserSerializer(many=True, read_only=True)
@@ -67,6 +62,10 @@ class ProductInCartSerializer(serializers.HyperlinkedModelSerializer):
         model = ProductInCart
         fields = ['id', 'product', 'quantity', 'adding_date']
 
+class SimpleShoppingCartSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = ShoppingCart
+        fields = ['id', 'priority', 'name']
 
 class ShoppingCartSerializer(serializers.HyperlinkedModelSerializer):
     # user = UserSerializer()

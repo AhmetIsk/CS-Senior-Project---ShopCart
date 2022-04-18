@@ -186,41 +186,46 @@ def iterative_search(product_name):
     return product
 
 def amazon_scrape(barcode):
-    url = "https://www.amazon.com.tr/s?k=" + barcode
+    try:
+        url = "https://www.amazon.com.tr/s?k=" + barcode
 
-    request = urllib.request.Request(url)
-    request.add_header("User-agent",
-                       "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
-    barcodesite = urllib.request.urlopen(request)
-    print("Amazon OK")
+        request = urllib.request.Request(url)
+        request.add_header("User-agent",
+                           "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+        barcodesite = urllib.request.urlopen(request)
+        print("Amazon OK")
 
-    barcodesoup = bs(barcodesite.read(), 'html.parser')
-    barcodesoup = barcodesoup.find("div", {"cel_widget_id": "MAIN-SEARCH_RESULTS-1"})
+        barcodesoup = bs(barcodesite.read(), 'html.parser')
+        barcodesoup = barcodesoup.find("div", {"cel_widget_id": "MAIN-SEARCH_RESULTS-1"})
 
-    sitesoup = barcodesoup.find("span", {"data-component-type": "s-product-image"})
-    imagesoup = sitesoup.find("img")
-    photo_url = imagesoup["src"]
+        sitesoup = barcodesoup.find("span", {"data-component-type": "s-product-image"})
+        imagesoup = sitesoup.find("img")
+        photo_url = imagesoup["src"]
 
-    # the price is in format: "3,4 TL", this code will replace this with a float
-    price = barcodesoup.find("span", {"class": "a-offscreen"}).text
-    price = float(price[:-3].replace(",", "."))
+        # the price is in format: "3,4 TL", this code will replace this with a float
+        price = barcodesoup.find("span", {"class": "a-offscreen"}).text
+        price = float(price[:-3].replace(",", "."))
 
-    site = sitesoup.find("a")["href"]
-    siteurl = "https://www.amazon.com.tr" + site
+        site = sitesoup.find("a")["href"]
+        siteurl = "https://www.amazon.com.tr" + site
 
-    request = urllib.request.Request(siteurl)
-    request.add_header("User-agent",
-                       "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
-    productsite = urllib.request.urlopen(request)
+        request = urllib.request.Request(siteurl)
+        request.add_header("User-agent",
+                           "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+        productsite = urllib.request.urlopen(request)
 
-    productsoup = bs(productsite.read(), 'html.parser')
-    print("Amazon Product Site OK")
+        productsoup = bs(productsite.read(), 'html.parser')
+        print("Amazon Product Site OK")
 
     categorysoup = productsoup.find("div", {"id": "nav-subnav"})
     categorysoup = categorysoup.find_all("a")[-1]
     category = categorysoup.find("span").text.strip()
 
-    product_name = productsoup.find("span", {"id": "productTitle"}).text.strip()
+        product_name = productsoup.find("span", {"id": "productTitle"}).text.strip()
+    except Exception as e:
+        print("SCRAPER")
+        print(e)
+        return
 
     return {
             "name": product_name,
@@ -269,11 +274,12 @@ def amazon_scrape(barcode):
 # }
 
 # TODO
-### test - write the barcode here
-# print(scrape_barcode("8690787401019"))
-# print(scrape_barcode("8690555511520"))
-# print(scrape_barcode("8690637035067"))
-# print(scrape_barcode("8690526019949"))
-# print(scrape_barcode("8690504186687"))
-# print(scrape_barcode("8690637805202"))
-print(amazon_scrape("8690555511520"))
+if __name__ == '__main__':
+    ### test - write the barcode here
+    #print(scrape_barcode("8690787401019"))
+    #print(scrape_barcode("8690555511520"))
+    #print(scrape_barcode("8690637035067"))
+    # print(scrape_barcode("8690526019949"))
+    # print(scrape_barcode("8690504186687"))
+    # print(scrape_barcode("8690637805202"))
+    print(amazon_scrape("8690637035067"))
