@@ -216,7 +216,7 @@ def amazon_scrape(barcode):
     productsoup = bs(productsite.read(), 'html.parser')
     print("Amazon Product Site OK")
 
-    categorysoup = productsoup.find("div", {"data-category": "hpc"})
+    categorysoup = productsoup.find("div", {"id": "nav-subnav"})
     categorysoup = categorysoup.find_all("a")[-1]
     category = categorysoup.find("span").text.strip()
 
@@ -270,9 +270,9 @@ def amazon_scrape(barcode):
 
 # TODO
 ### test - write the barcode here
-print(scrape_barcode("8690787401019"))
-print(scrape_barcode("8690555511520"))
-print(scrape_barcode("8690637035067"))
+# print(scrape_barcode("8690787401019"))
+# print(scrape_barcode("8690555511520"))
+# print(scrape_barcode("8690637035067"))
 # print(scrape_barcode("8690526019949"))
 # print(scrape_barcode("8690504186687"))
 # print(scrape_barcode("8690637805202"))
