@@ -217,10 +217,9 @@ def amazon_scrape(barcode):
         productsoup = bs(productsite.read(), 'html.parser')
         print("Amazon Product Site OK")
 
-    categorysoup = productsoup.find("div", {"id": "nav-subnav"})
-    categorysoup = categorysoup.find_all("a")[-1]
-    category = categorysoup.find("span").text.strip()
-
+        categorysoup = productsoup.find("div", {"id": "nav-subnav"})
+        categorysoup = categorysoup.find_all("a")[-1]
+        category = categorysoup.find("span").text.strip()
         product_name = productsoup.find("span", {"id": "productTitle"}).text.strip()
     except Exception as e:
         print("SCRAPER")
@@ -274,12 +273,11 @@ def amazon_scrape(barcode):
 # }
 
 # TODO
-if __name__ == '__main__':
-    ### test - write the barcode here
-    #print(scrape_barcode("8690787401019"))
-    #print(scrape_barcode("8690555511520"))
-    #print(scrape_barcode("8690637035067"))
-    # print(scrape_barcode("8690526019949"))
-    # print(scrape_barcode("8690504186687"))
-    # print(scrape_barcode("8690637805202"))
-    print(amazon_scrape("8690637035067"))
+### test - write the barcode here
+# print(scrape_barcode("8690787401019"))
+# print(scrape_barcode("8690555511520"))
+# print(scrape_barcode("8690637035067"))
+# print(scrape_barcode("8690526019949"))
+# print(scrape_barcode("8690504186687"))
+# print(scrape_barcode("8690637805202"))
+print(amazon_scrape("8690555511520"))
