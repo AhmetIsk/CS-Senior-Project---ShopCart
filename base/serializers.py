@@ -101,7 +101,7 @@ class UserMetaSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = UserMeta
-        fields = ['id', 'user', 'communities', 'shopping_carts']
+        fields = ['id', 'avatar', 'user', 'communities', 'shopping_carts']
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):

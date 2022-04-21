@@ -61,3 +61,4 @@ class UserMeta(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     communities = models.ManyToManyField(Community)
     shopping_carts = models.ManyToManyField(ShoppingCart)
+    avatar = models.ImageField(upload_to='avatars', blank=True, null=True)
