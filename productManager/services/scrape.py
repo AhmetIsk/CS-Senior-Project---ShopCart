@@ -185,6 +185,7 @@ def iterative_search(product_name):
 
     return product
 
+# searches the amazon.com.tr site
 def amazon_scrape(barcode):
     try:
         url = "https://www.amazon.com.tr/s?k=" + barcode
@@ -237,6 +238,16 @@ def amazon_scrape(barcode):
             "msg": "Successful."
         }
 
+def google_search(barcode):
+    search_url = "https://www.google.com/search?q=" + str(barcode) + "&tbm=isch"
+    request = urllib.request.Request(search_url)
+    request.add_header("User-agent",
+                        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+    search_site = urllib.request.urlopen(request)
+    searchsoup = bs(search_site.read(), 'html.parser')
+
+    print(searchsoup.text)
+
 #### Old Version
 # # finding the photo which is 240px
 # photo = productsoup.find("img", {"sizes": "240px"})
@@ -281,4 +292,5 @@ if __name__ == '__main__':
     # print(scrape_barcode("8690526019949"))
     # print(scrape_barcode("8690504186687"))
     # print(scrape_barcode("8690637805202"))
-    print(amazon_scrape("8690555511520"))
+    # print(amazon_scrape("8690555511520"))
+    print(google_search("8690637805202"))
