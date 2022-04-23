@@ -16,7 +16,7 @@ first open an android emulator from android studio
 
 # Setup Backend
 
-1. Backend is [hosted on Heroku](https://shopcart-s.herokuapp.com/), so there is no need to run it locally.
+1. Backend is [hosted here](http://146.190.235.140/), so there is no need to run it locally.
     * Admin Username = "test", Password = "0000"
 
 -----------
