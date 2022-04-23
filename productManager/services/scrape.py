@@ -6,7 +6,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 import re
 import json
-
+import base64
 
 # returns name, store{name: price}, photo url, category, msg
 def scrape_barcode(barcode):
@@ -257,7 +257,21 @@ def google_search(barcode):
     search_site = urllib.request.urlopen(request)
     searchsoup = bs(search_site.read(), 'html.parser')
 
-    print(searchsoup.text)
+    cardsoup = searchsoup.find("div", {"data-ictx": "1"})
+    product_name = cardsoup.find("h3").text
+    base_photo_url = cardsoup.find("img")["src"]
+    print(base_photo_url)
+
+    return {
+        "name": product_name,
+        "store": {
+            "store_name": "",
+            "price": -1
+        },
+        "photo_url": photo_url,
+        "category": [],
+        "msg": "Successful."
+    }
 
 
 #### Old Version
@@ -303,6 +317,6 @@ if __name__ == '__main__':
     # print(scrape_barcode("8690637035067"))
     # print(scrape_barcode("8690526019949"))
     # print(scrape_barcode("8690504186687"))
-    print(scrape_barcode("8690637805202"))
+    # print(scrape_barcode("8690637805202"))
     #print(amazon_scrape("8690637805202"))
-    # print(google_search("8690637805202"))
+    print(google_search("8690637805202"))
