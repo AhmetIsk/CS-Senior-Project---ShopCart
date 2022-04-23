@@ -13,6 +13,10 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -123,16 +127,21 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+"""
 
+"""
 import dj_database_url
 db_from_env = dj_database_url.config(conn_max_age=600)
 DATABASES['default'].update(db_from_env)
+"""
+
 
 """
 DATABASES = {
@@ -146,6 +155,18 @@ DATABASES = {
     }
 }
 """
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ["HEROKU_DB_NAME"],
+        'USER': os.environ["HEROKU_DB_USER"],
+        'PASSWORD': os.environ["HEROKU_DB_PASSWORD"],
+        'HOST': os.environ["HEROKU_DB_HOST"],
+        'POST': '5432',
+    }
+}
 
 
 # Password validation
@@ -214,6 +235,7 @@ AWS_DEFAULT_ACL = "public-read"
 AWS_S3_REGION_NAME = "eu-central-1"
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
+
 
 
 '''
