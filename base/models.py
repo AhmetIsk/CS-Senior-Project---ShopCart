@@ -26,7 +26,7 @@ class ProductBase(models.Model):
 
 class Store(models.Model):
     name = models.TextField(max_length=50, blank=True, null=True, unique=True)
-    available_products = models.ManyToManyField(ProductBase)
+    available_products = models.ManyToManyField(ProductBase, blank=True)
 
 
 class PriceInStore(models.Model):
@@ -52,13 +52,13 @@ class ShoppingCart(models.Model):
 
     name = models.CharField(max_length=100, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    products = models.ManyToManyField(ProductInCart)
+    products = models.ManyToManyField(ProductInCart, blank=True)
     priority = models.CharField(choices=CHOICES, max_length=300)
-    communities = models.ManyToManyField(Community)
+    communities = models.ManyToManyField(Community, blank=True)
 
 
 class UserMeta(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    communities = models.ManyToManyField(Community)
-    shopping_carts = models.ManyToManyField(ShoppingCart)
+    communities = models.ManyToManyField(Community, blank=True)
+    shopping_carts = models.ManyToManyField(ShoppingCart, blank=True)
     avatar = models.ImageField(upload_to='avatars', blank=True, null=True)
