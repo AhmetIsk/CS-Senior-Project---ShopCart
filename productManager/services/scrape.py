@@ -194,6 +194,7 @@ def amazon_scrape(barcode):
         request.add_header("User-agent",
                            "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
         barcodesite = urllib.request.urlopen(request)
+        print("barcodesite: ", barcodesite)
         print("Amazon OK")
 
         barcodesoup = bs(barcodesite.read(), 'html.parser')
@@ -292,5 +293,5 @@ if __name__ == '__main__':
     # print(scrape_barcode("8690526019949"))
     # print(scrape_barcode("8690504186687"))
     # print(scrape_barcode("8690637805202"))
-    # print(amazon_scrape("8690555511520"))
-    print(google_search("8690637805202"))
+    print(amazon_scrape("8690637805202"))
+    #print(google_search("8690637805202"))
