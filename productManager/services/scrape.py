@@ -194,10 +194,12 @@ def amazon_scrape(barcode):
         request.add_header("User-agent",
                            "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
         barcodesite = urllib.request.urlopen(request)
-        print("barcodesite: ", barcodesite)
+        print("barcodesite status: ", barcodesite.status)
+
         print("Amazon OK")
 
         barcodesoup = bs(barcodesite.read(), 'html.parser')
+        print(barcodesoup)
         barcodesoup = barcodesoup.find("div", {"cel_widget_id": "MAIN-SEARCH_RESULTS-1"})
 
         sitesoup = barcodesoup.find("span", {"data-component-type": "s-product-image"})
