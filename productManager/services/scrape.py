@@ -185,21 +185,26 @@ def iterative_search(product_name):
 
     return product
 
+
 # searches the amazon.com.tr site
 def amazon_scrape(barcode):
     try:
         url = "https://www.amazon.com.tr/s?k=" + barcode
 
-        request = urllib.request.Request(url)
-        request.add_header("User-agent",
-                           "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+        headers = {
+            "User-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36",
+            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36",
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36",
+            "content-encoding": "gzip",
+        }
+        request = urllib.request.Request(url, headers=headers)
+
         barcodesite = urllib.request.urlopen(request)
-        print("barcodesite status: ", barcodesite.status)
 
-        print("Amazon OK")
+        print(barcodesite.status)
 
-        barcodesoup = bs(barcodesite.read(), 'html.parser')
-        print(barcodesoup)
+
+        barcodesoup = bs(barcodesite, 'html.parser')
         barcodesoup = barcodesoup.find("div", {"cel_widget_id": "MAIN-SEARCH_RESULTS-1"})
 
         sitesoup = barcodesoup.find("span", {"data-component-type": "s-product-image"})
@@ -208,6 +213,7 @@ def amazon_scrape(barcode):
 
         # the price is in format: "3,4 TL", this code will replace this with a float
         price = barcodesoup.find("span", {"class": "a-offscreen"}).text
+        print('Price: ', barcodesoup.find("span", {"class": "a-offscreen"}))
         price = float(price[:-3].replace(",", "."))
 
         site = sitesoup.find("a")["href"]
@@ -217,6 +223,7 @@ def amazon_scrape(barcode):
         request.add_header("User-agent",
                            "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
         productsite = urllib.request.urlopen(request)
+        print(productsite.status)
 
         productsoup = bs(productsite.read(), 'html.parser')
         print("Amazon Product Site OK")
@@ -231,25 +238,27 @@ def amazon_scrape(barcode):
         return
 
     return {
-            "name": product_name,
-            "store": {
-                "store_name": "amazon",
-                "price": price
-            },
-            "photo_url": photo_url,
-            "category": category,
-            "msg": "Successful."
-        }
+        "name": product_name,
+        "store": {
+            "store_name": "amazon",
+            "price": price
+        },
+        "photo_url": photo_url,
+        "category": category,
+        "msg": "Successful."
+    }
+
 
 def google_search(barcode):
     search_url = "https://www.google.com/search?q=" + str(barcode) + "&tbm=isch"
     request = urllib.request.Request(search_url)
     request.add_header("User-agent",
-                        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
+                       "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
     search_site = urllib.request.urlopen(request)
     searchsoup = bs(search_site.read(), 'html.parser')
 
     print(searchsoup.text)
+
 
 #### Old Version
 # # finding the photo which is 240px
@@ -294,6 +303,6 @@ if __name__ == '__main__':
     # print(scrape_barcode("8690637035067"))
     # print(scrape_barcode("8690526019949"))
     # print(scrape_barcode("8690504186687"))
-    # print(scrape_barcode("8690637805202"))
-    print(amazon_scrape("8690637805202"))
-    #print(google_search("8690637805202"))
+    print(scrape_barcode("8690637805202"))
+    #print(amazon_scrape("8690637805202"))
+    # print(google_search("8690637805202"))

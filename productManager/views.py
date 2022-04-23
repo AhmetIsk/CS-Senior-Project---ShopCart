@@ -13,7 +13,7 @@ from base.serializers import ProductBaseSerializer, ShoppingCartSerializer
 
 from base.models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Community
 from .exceptions import DoesNotExistException
-from productManager.services.scrape import amazon_scrape
+from productManager.services.scrape import amazon_scrape, scrape_barcode
 
 
 @api_view(['GET'])
@@ -80,7 +80,7 @@ def add_product_to_cart(request):
 
     if not ProductBase.objects.filter(barcode=barcode).exists():
         # Look for the barcode online!
-        product_data = amazon_scrape(barcode)
+        product_data = scrape_barcode(barcode)
         if product_data is None or product_data['msg'] != 'Successful.':
             raise DoesNotExistException(
                 "A base product with this barcode does not exist AND could not find the product online. Try to add this product manually")
