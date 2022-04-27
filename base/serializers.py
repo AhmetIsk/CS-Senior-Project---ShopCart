@@ -1,3 +1,5 @@
+import json
+
 from rest_framework.serializers import ModelSerializer
 from .models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Community
 from django.contrib.auth.models import User, Group
@@ -62,14 +64,16 @@ class ProductInCartSerializer(serializers.HyperlinkedModelSerializer):
         model = ProductInCart
         fields = ['id', 'product', 'quantity', 'adding_date']
 
+
 class SimpleShoppingCartSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = ShoppingCart
         fields = ['id', 'priority', 'name']
 
+
 class ShoppingCartSerializer(serializers.HyperlinkedModelSerializer):
     # user = UserSerializer()
-    communities = ShortCommunitySerializer(many=True, required=False, read_only=True)  # , read_only=True
+    communities = ShortCommunitySerializer(many=True, required=True, read_only=False)  # , read_only=True
     products = ProductInCartSerializer(many=True, required=False, read_only=True)
 
     class Meta:
@@ -78,16 +82,20 @@ class ShoppingCartSerializer(serializers.HyperlinkedModelSerializer):
         # read_only_fields = ['communities', ]
 
     def create(self, validated_data):
-        sc = ShoppingCart(priority=validated_data['priority'], name=validated_data['name'], user=validated_data['user'])
+        sc = ShoppingCart(priority=validated_data['priority'], name=validated_data['name'],
+                          user=self.context['request'].user)
         sc.save()
-        if validated_data['communities']:
-            for cid in validated_data['communities']:
+        print("valdata: ", validated_data)
+        if self.context['request'].data['communities']:
+            for cid in self.context['request'].data['communities']:
+                # TODO: Check user is inside this community
+                # umeta = UserMeta.objects.get(user=self.context['request'].user)
                 if Community.objects.filter(id=cid['id']).exists():
                     sc.communities.add(Community.objects.get(id=cid['id']))
                 sc.save()
 
         # Add to UserMeta too
-        um = UserMeta.objects.get(user=validated_data['user'])
+        um = UserMeta.objects.get(user=self.context['request'].user)
         um.shopping_carts.add(sc)
         um.save()
 
