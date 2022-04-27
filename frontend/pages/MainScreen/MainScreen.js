@@ -3,7 +3,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import SignUpScreen from '../SignUpScreen/SignUpScreen';
 import BarcodeScanner from '../BarcodeScanner/BarcodeScanner';
-import ShoppingListScreen from '../ShoppingListScreen/ShoppingListScreen';
 import { userToken } from '../../store/slices/token';
 import ApprovalScreen from '../BarcodeScanner/ApprovalScreen';
 import InitialScreen from '../InitialScreen/InitialScreen';
