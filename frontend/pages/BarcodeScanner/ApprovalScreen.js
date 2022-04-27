@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useRef, useState } from 'react';
 import { Animated, Text, View, TouchableOpacity, StyleSheet } from 'react-native';
@@ -37,13 +38,14 @@ export default function ApprovalScreen({ barcodeId }) {
       useNativeDriver: true,
     }).start();
     if (progress == 100) {
-      navigate('Feed');
+      navigate('My Lists');
     }
   }, [progress]);
   return (
     <View style={styles.container}>
       <LottieView
         style={styles.approvalAnimation}
+        // eslint-disable-next-line global-require
         source={require('../../images/5449-success-tick.json')}
         autoPlay
         loop
