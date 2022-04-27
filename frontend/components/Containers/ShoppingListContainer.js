@@ -7,8 +7,16 @@ import MediumPriShopList from '../../assets/MediumPriShopList.svg';
 import HighPriShopList from '../../assets/HighPriShopList.svg';
 import { colors } from '../../constants/styles';
 
-export default function ShoppingListContainer({ id, priority, communities, name, navigation }) {
+export default function ShoppingListContainer({
+  id,
+  priority,
+  communities,
+  name,
+  navigation,
+  totalItems,
+}) {
   const communityNames = communities.length === 0 ? 'Personal List' : communities.join(',');
+  console.log('these are total items', totalItems);
   if (priority === 'Low') {
     return (
       <TouchableOpacity
@@ -22,7 +30,7 @@ export default function ShoppingListContainer({ id, priority, communities, name,
       >
         <LowPriShopList />
         <View style={styles.contentContainer}>
-          <Text style={styles.items}>X Items</Text>
+          <Text style={styles.items}>{totalItems} Items</Text>
           <Text style={styles.listName}>{name}</Text>
           <View style={styles.community}>
             <Ionicons name="people" size={24} color="white" />
@@ -45,7 +53,7 @@ export default function ShoppingListContainer({ id, priority, communities, name,
       >
         <MediumPriShopList />
         <View style={styles.contentContainer}>
-          <Text style={styles.items}>X Items</Text>
+          <Text style={styles.items}>{totalItems} Items</Text>
           <Text style={styles.listName}>{name}</Text>
           <View style={styles.community}>
             <Ionicons name="people" size={24} color="white" />
@@ -68,7 +76,7 @@ export default function ShoppingListContainer({ id, priority, communities, name,
       >
         <HighPriShopList />
         <View style={styles.contentContainer}>
-          <Text style={styles.items}>X Items</Text>
+          <Text style={styles.items}>{totalItems} Items</Text>
           <Text style={styles.listName}>{name}</Text>
           <View style={styles.community}>
             <Ionicons name="people" size={24} color="white" />
