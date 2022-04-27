@@ -2,16 +2,22 @@ import React, { useEffect, useState } from 'react';
 import { Button, Text, View } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { useSelector } from 'react-redux';
+import { Entypo } from '@expo/vector-icons';
 import ApprovalScreen from './ApprovalScreen';
 import { styles } from './styles';
 import { userService } from '../../services/userService';
 import { userToken } from '../../store/slices/token';
+import { shopListId } from '../../store/slices/shopListId';
+import { commonStyles } from '../../commonStyles';
+import { colors } from '../../constants/styles';
 
-const BarcodeScanner = () => {
+const BarcodeScanner = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
   const [barcodeId, setBarcodeId] = useState('');
   const token = useSelector(userToken);
+  const id = useSelector(shopListId);
+  console.log(id, 'this is initial id');
   useEffect(() => {
     (async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
@@ -23,7 +29,8 @@ const BarcodeScanner = () => {
     setScanned(true);
     setBarcodeId(data);
     const barcode = `${data}`;
-    userService.addProduct(barcode, 1, token);
+    console.log('this is id ', id, 'this is end');
+    userService.addProduct(barcode, 1, id, token);
   };
 
   if (hasPermission === null) {
@@ -33,26 +40,36 @@ const BarcodeScanner = () => {
     return <Text>No access to camera</Text>;
   }
   if (scanned) {
-    return <ApprovalScreen barcodeId={barcodeId}/>;
+    return <ApprovalScreen barcodeId={barcodeId} />;
   }
-  
-    return (
-        <>
-          <View style={styles.headerContainer}>
-            <Text style={styles.barcodeNotifier}>Scan Barcode to Camera</Text>
-            <Button onPress={() => setScanned(true)} title='Click me'/>
-          </View>
-          <View style={styles.container}>
-              <BarCodeScanner
-                onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-                style={styles.cameraFit}
-              />
-            {scanned && <Button title="Tap to Scan Again" onPress={() => setScanned(false)} />}
-          </View>
-        </>
-    );
-  
-}
+
+  return (
+    <>
+      <View style={styles.headerContainer}>
+        <View style={commonStyles.header}>
+          <Entypo
+            name="chevron-thin-left"
+            size={26}
+            color={colors.white}
+            style={{ padding: 8 }}
+            onPress={() => navigation.goBack()}
+          />
+          <Text style={commonStyles.headerTitle}>Scan Barcode</Text>
+          <Text style={{ width: 33 }} />
+        </View>
+        <Text style={styles.text}>Show product barcode to the camera:</Text>
+      </View>
+      <>
+        <View style={styles.container}>
+          <BarCodeScanner
+            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+            style={styles.cameraFit}
+          />
+          {scanned && <Button title="Tap to Scan Again" onPress={() => setScanned(false)} />}
+        </View>
+      </>
+    </>
+  );
+};
 
 export default BarcodeScanner;
-
