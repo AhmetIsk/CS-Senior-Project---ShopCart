@@ -43,4 +43,21 @@ export const styles = StyleSheet.create({
   searchLocation: {
     marginBottom: 100,
   },
+  header: {
+    position: 'absolute',
+    top: 0,
+    width: '100%',
+    height: 85,
+    flexDirection: 'row',
+    backgroundColor: `${colors.headerOrange}`,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  headerTitle: {
+    fontSize: 21,
+    fontStyle: 'italic',
+    textAlign: 'center',
+    color: `${colors.white}`,
+    paddingBottom: 10,
+  },
 });

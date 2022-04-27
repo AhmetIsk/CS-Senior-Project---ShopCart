@@ -73,5 +73,33 @@ export const styles = StyleSheet.create({
     width: '95%',
     height: '100%',
     marginTop: -50,
+    display: 'flex',
+    alignItems: 'center',
+    flexDirection: 'column',
+  },
+  addProduct: {
+    borderRadius: 26.5,
+    backgroundColor: `${colors.white}`,
+    borderStyle: 'dashed',
+    borderWidth: 1,
+    width: 277,
+    height: 56,
+    borderColor: `${colors.headerOrange}`,
+    justifyContent: 'center',
+  },
+  addProductLabel: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    fontStyle: 'normal',
+    letterSpacing: 0.43,
+    textAlign: 'center',
+    color: `${colors.headerOrange}`,
+  },
+  itemsContainer: {
+    height: '60%',
+  },
+  buttonContainer: {
+    height: '40%',
+    flexDirection: 'row',
   },
 });

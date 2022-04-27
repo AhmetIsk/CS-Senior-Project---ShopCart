@@ -26,6 +26,8 @@ export const colors = {
   buttonLabel: '#535353',
   emptyListText: 'rgba(83, 83, 83, 0.7)',
   inputBorder: '#979797',
+  shadowColor: 'rgba(0, 0, 0, 0.1)',
+  textColor: '#404852',
 };
 export const fontWeights = {
   thin: 200,

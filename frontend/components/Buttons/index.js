@@ -55,13 +55,6 @@ export const ShoppingListButton = styled.TouchableOpacity`
   align-items: center;
   padding: 15px;
 `;
-export const AddProductButton = styled.TouchableOpacity`
-  background-color: ${(props) => props.color || '#0782F9'};
-  width: 100%;
-  border-radius: 10px;
-  align-items: center;
-  padding: 10px;
-`;
 export const DecreaseProduct = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;

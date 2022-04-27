@@ -5,16 +5,14 @@ import { colors, fontStyles } from '../../../constants/styles';
 export const styles = StyleSheet.create({
   container: {
     margin: 22,
-    flex: 1,
+    flex: 3,
     justifyContent: 'center',
     alignItems: 'center',
+    alignContent: 'center',
   },
   headerContainer: {
-    margin: 10,
-    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    height: 100,
   },
   successNotifier: {
     color: `${colors.softGreen}`,
@@ -26,7 +24,7 @@ export const styles = StyleSheet.create({
   },
   cameraFit: {
     ...StyleSheet.absoluteFillObject,
-    top: 40,
+    height: '100%',
   },
   approvalAnimation: {
     height: 200,
@@ -51,5 +49,13 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 24,
     padding: 20,
+  },
+  text: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    justifyContent: 'flex-end',
+    paddingTop: 100,
+    color: `${colors.orange}`,
+    fontSize: 16,
   },
 });
