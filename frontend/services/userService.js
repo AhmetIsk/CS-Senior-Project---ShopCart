@@ -70,15 +70,16 @@ async function logout() {
   return await resetAuthAsyncStorage();
 }
 
-function addProduct(product_id, quantity, token) {
+function addProduct(product_id, quantity, id, token) {
   return new Promise((resolve, reject) => {
-    console.log(product_id, quantity, token);
+    console.log(product_id, quantity, id, token);
     axios
       .post(
         `${API_URL}/productManager/add_product_to_cart/`,
         {
           barcode: product_id,
           quantity,
+          id,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -100,14 +101,14 @@ function addProduct(product_id, quantity, token) {
 
 function getShoppingList(id, token) {
   return new Promise((resolve, reject) => {
-    console.log(`${API_URL}/base/currentUsersShoppingCart/${id}/`, token);
+    console.log(`${API_URL}/base/shoppingCart/${id}/`, token);
     axios
-      .get(`${API_URL}/base/currentUsersShoppingCart/${id}`, {
+      .get(`${API_URL}/base/shoppingCart/${id}/`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then(async (response) => {
-        const usernameOb = JSON.stringify(response.data);
-        console.log('bu da response', usernameOb);
+        const usernameOb = JSON.stringify(response.data.products);
+        console.log('bu da responsedur', usernameOb);
         try {
           resolve(JSON.parse(usernameOb));
         } catch (e) {
@@ -201,6 +202,35 @@ function addShoppingList(name, priority, token, communities = []) {
   });
 }
 
+function changeShopListName(id, token, newName) {
+  return new Promise((resolve, reject) => {
+    console.log(`${API_URL}/base/shoppingCart/${id}/`, token);
+    axios
+      .put(
+        `${API_URL}/base/shoppingCart/${id}/`,
+        {
+          name: newName,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data.products);
+        console.log('bu da responsedur', usernameOb);
+        try {
+          resolve(JSON.parse(usernameOb));
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        reject(err);
+      });
+  });
+}
+
 export const userService = {
   login,
   logout,
@@ -210,4 +240,5 @@ export const userService = {
   removeFromList,
   getUsersShoppingCartLists,
   addShoppingList,
+  changeShopListName,
 };
