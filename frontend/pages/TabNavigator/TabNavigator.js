@@ -8,6 +8,7 @@ import { styles } from '../HomeScreen/styles';
 import { colors } from '../../constants/styles';
 import SettingsScreen from '../Settings/SettingsScreen';
 import MyListsNavigator from '../MyListsScreen/MyListsNavigator';
+import StatisticsScreen from '../StatisticsScreen/StatisticsScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -62,10 +63,10 @@ const ShopCartBottomTabs = () => (
       }}
     />
     <Tab.Screen
-      name="Notifications1"
-      component={Notifications}
+      name="Statistics"
+      component={StatisticsScreen}
       options={{
-        tabBarLabel: 'Updates1',
+        headerShown: false,
         tabBarIcon: ({ color, size }) => (
           <Ionicons name="stats-chart-outline" color={color} size={size} />
         ),

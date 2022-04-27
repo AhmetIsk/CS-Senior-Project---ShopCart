@@ -8,6 +8,8 @@ import EmptyListsScreen from './EmptyListsScreen';
 import MyListsScreen from './MyListsScreen';
 import AddShoppingListScreen from './AddShoppingListScreen';
 import ShoppingListScreen from '../ShoppingListScreen/ShoppingListScreen';
+import AddNewProductScreen from '../AddProductScreen/AddNewProductScreen';
+import BestPricesScreen from '../BestPricesScreen/BestPricesScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -43,6 +45,16 @@ const MyListsNavigator = () => {
         options={{ headerShown: false }}
         name="Shopping List"
         component={ShoppingListScreen}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Add New Product"
+        component={AddNewProductScreen}
+      />
+      <Stack.Screen
+        options={{ headerShown: false }}
+        name="Best Prices"
+        component={BestPricesScreen}
       />
     </Stack.Navigator>
   );
