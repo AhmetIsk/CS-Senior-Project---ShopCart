@@ -4,7 +4,7 @@
 /* eslint-disable react/jsx-key */
 import React, { useEffect, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Entypo } from '@expo/vector-icons';
 import { userService } from '../../services/userService';
 import { userToken } from '../../store/slices/token';
@@ -12,10 +12,13 @@ import { colors } from '../../constants/styles';
 import { styles } from './styles/index';
 import ShoppingListContainer from '../../components/Containers/ShoppingListContainer';
 import AddShopListButton from '../../components/Buttons/AddShopListButton';
+import { resetId } from '../../store/slices/shopListId';
 
 const MyListsScreen = ({ navigation }) => {
   const token = useSelector(userToken);
   const [shopLists, setShopLists] = useState([]);
+  const dispatch = useDispatch();
+  dispatch(resetId);
   const ListShopLists = () => {
     userService.getUsersShoppingCartLists(token).then((products) => {
       const mappedItems = products.map((product) => (
@@ -26,6 +29,9 @@ const MyListsScreen = ({ navigation }) => {
           name={product.name}
           communities={product.communities}
           navigation={navigation}
+          totalItems={product.products
+            .map((object) => object.quantity)
+            .reduce((prev, curr) => prev + curr, 0)}
         />
       ));
       setShopLists(mappedItems);
@@ -44,7 +50,7 @@ const MyListsScreen = ({ navigation }) => {
           size={26}
           color={colors.white}
           style={{ padding: 8 }}
-          onPress={() => navigation.navigate('Feed')}
+          onPress={() => navigation.goBack()}
         />
         <Text style={styles.headerTitle}>My Lists</Text>
         <Text style={{ width: 33 }} />
