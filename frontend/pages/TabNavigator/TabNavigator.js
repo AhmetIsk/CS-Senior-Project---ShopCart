@@ -9,6 +9,7 @@ import { colors } from '../../constants/styles';
 import SettingsScreen from '../Settings/SettingsScreen';
 import MyListsNavigator from '../MyListsScreen/MyListsNavigator';
 import StatisticsScreen from '../StatisticsScreen/StatisticsScreen';
+import SettingsNavigator from '../Settings/SettingsNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -74,7 +75,7 @@ const ShopCartBottomTabs = () => (
     />
     <Tab.Screen
       name="Profile"
-      component={SettingsScreen}
+      component={SettingsNavigator}
       options={{
         tabBarLabel: 'Profile',
         headerShown: false,
