@@ -29,14 +29,14 @@ const viewStyle = {
   alignItems: 'center',
 };
 
-const SettingsScreen = () => {
+const SettingsScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <LayoutSVG width={414} height={245} style={{ position: 'absolute', top: 0 }} />
       <ButtonContainer style={{ marginTop: 245 }}>
-        <SettingsButtons style={buttonStyle}>
+        <SettingsButtons style={buttonStyle} onPress={() => navigation.navigate('Edit Profile')}>
           <View style={viewStyle}>
             <Ionicons
               name="person"
@@ -87,7 +87,7 @@ const SettingsScreen = () => {
             style={{ paddingRight: 8 }}
           />
         </SettingsButtons>
-        <SettingsButtons style={buttonStyle}>
+        <SettingsButtons style={buttonStyle} onPress={() => navigation.navigate('Communities')}>
           <View style={viewStyle}>
             <Ionicons
               name="people"
