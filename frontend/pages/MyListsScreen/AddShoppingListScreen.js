@@ -75,7 +75,6 @@ const AddShoppingListScreen = ({ navigation }) => {
             value={community}
             onChangeText={(text) => setCommunity(text)}
             style={inputStyles.input}
-            secureTextEntry
           />
           <View style={inputStyles.checkbox}>
             <View style={inputStyles.checkboxBackground}>

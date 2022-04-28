@@ -1,7 +1,7 @@
 import { View, Text, KeyboardAvoidingView, TextInput, ScrollView, Button } from 'react-native';
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { styles } from './styles';
+import { styles } from '../CommunityScreen/styles';
 import LayoutSVG from '../../assets/layout.svg';
 import { ButtonLabel, SettingsButtons } from '../../components/Buttons';
 import { ButtonContainer } from '../../components/Containers';
