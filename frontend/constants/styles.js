@@ -28,6 +28,8 @@ export const colors = {
   inputBorder: '#979797',
   shadowColor: 'rgba(0, 0, 0, 0.1)',
   textColor: '#404852',
+  inputBackground: '#f6f6f6',
+  informativeText: '#8d91a2',
 };
 export const fontWeights = {
   thin: 200,
