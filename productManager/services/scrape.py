@@ -6,10 +6,15 @@ import requests
 from bs4 import BeautifulSoup as bs
 import re
 import json
-import base64
+
 
 # returns name, store{name: price}, photo url, category, msg
 def scrape_barcode(barcode):
+    # First scrape amazon, if DNE, scrape cimri
+    amazon_result = amazon_scrape(barcode)
+    if amazon_result is not None and amazon_result['msg'] == 'Successful.':
+        return amazon_result
+
     url = "http://m.barkodoku.com/" + barcode
 
     # scraping barkodoku.com and finding the name of the product
@@ -192,17 +197,10 @@ def amazon_scrape(barcode):
         url = "https://www.amazon.com.tr/s?k=" + barcode
 
         headers = {
-            "User-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36",
-            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36",
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36",
-            "content-encoding": "gzip",
-        }
-        request = urllib.request.Request(url, headers=headers)
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36',
+            "content-encoding": "gzip", }
 
-        barcodesite = urllib.request.urlopen(request)
-
-        print(barcodesite.status)
-
+        barcodesite = requests.get(url, headers=headers).content
 
         barcodesoup = bs(barcodesite, 'html.parser')
         barcodesoup = barcodesoup.find("div", {"cel_widget_id": "MAIN-SEARCH_RESULTS-1"})
@@ -213,7 +211,7 @@ def amazon_scrape(barcode):
 
         # the price is in format: "3,4 TL", this code will replace this with a float
         price = barcodesoup.find("span", {"class": "a-offscreen"}).text
-        print('Price: ', barcodesoup.find("span", {"class": "a-offscreen"}))
+        # print('Price: ', barcodesoup.find("span", {"class": "a-offscreen"}))
         price = float(price[:-3].replace(",", "."))
 
         site = sitesoup.find("a")["href"]
@@ -223,11 +221,7 @@ def amazon_scrape(barcode):
         request.add_header("User-agent",
                            "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
         productsite = urllib.request.urlopen(request)
-        print(productsite.status)
-
         productsoup = bs(productsite.read(), 'html.parser')
-        print("Amazon Product Site OK")
-
         categorysoup = productsoup.find("div", {"id": "nav-subnav"})
         categorysoup = categorysoup.find_all("a")[-1]
         category = categorysoup.find("span").text.strip()
@@ -319,4 +313,5 @@ if __name__ == '__main__':
     # print(scrape_barcode("8690504186687"))
     # print(scrape_barcode("8690637805202"))
     #print(amazon_scrape("8690637805202"))
-    print(google_search("8690637805202"))
+    print(amazon_scrape("8690504186687"))
+    # print(google_search("8690637805202"))
