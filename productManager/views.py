@@ -179,7 +179,7 @@ def remove_from_cart(request):
         raise DoesNotExistException("Quantity cannot be bigger than current qty in the cart")
 
     # If purchasing, add it to purchase history
-    purchase = request.data.get('id', None)
+    purchase = request.data.get('purchase', None)
     if purchase:
         PurchaseHistory.objects.create(user=user,
                                        shopping_cart=cart,
