@@ -57,7 +57,7 @@ Adding new product into shopping cart:
 
 Removing product from shopping cart:
 
- * `POST /productManager/add_product_to_cart/ '{"barcode": "12123123", "quantity": 2, "id": <id_of_shopping_cart>, [optional]"purchase": <true or false>}'`
+ * `POST /productManager/remove_from_cart/ '{"barcode": "12123123", "quantity": 2, "id": <id_of_shopping_cart>, [optional]"purchase": <true or false>}'`
 
 Getting current users' shopping cart(s):
 
