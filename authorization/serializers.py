@@ -1,11 +1,72 @@
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from base.models import ShoppingCart, UserMeta
+from base.models import ShoppingCart, UserMeta, ProductBase, PurchaseHistory
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from django.forms.models import model_to_dict
 from base.serializers import UserMetaSerializer
+from datetime import datetime, timedelta
+from django.db.models import Sum
+
+
+def get_stats(user):
+    data = {'total_expenses': {'monthly': 0, 'weekly': 0, '15-days': 0},
+            'categorical_expenses': {},
+            'total_quantities': {'monthly': 0, 'weekly': 0, '15-days': 0},
+            'categorical_quantities': {},
+            }
+
+    last_month = datetime.today() - timedelta(days=30)
+    fifteen_days = datetime.today() - timedelta(days=15)
+    last_week = datetime.today() - timedelta(days=7)
+
+    last_month_purchases = PurchaseHistory.objects.filter(user=user).filter(purchase_date__gte=last_month)
+    last_fifteen_purchases = PurchaseHistory.objects.filter(user=user).filter(purchase_date__gte=fifteen_days)
+    last_week_purchases = PurchaseHistory.objects.filter(user=user).filter(purchase_date__gte=last_week)
+
+    data['total_expenses']['monthly'] = last_month_purchases.aggregate(Sum('price_bought'))['price_bought__sum']
+    data['total_quantities']['monthly'] = last_month_purchases.aggregate(Sum('quantity'))['quantity__sum']
+
+    data['total_expenses']['15-days'] = last_fifteen_purchases.aggregate(Sum('price_bought'))['price_bought__sum']
+    data['total_quantities']['15-days'] = last_fifteen_purchases.aggregate(Sum('quantity'))['quantity__sum']
+
+    data['total_expenses']['weekly'] = last_week_purchases.aggregate(Sum('price_bought'))['price_bought__sum']
+    data['total_quantities']['weekly'] = last_week_purchases.aggregate(Sum('quantity'))['quantity__sum']
+
+    categories = ProductBase.objects.all().values_list('category').distinct()
+    for category in categories:
+        category = category[0]
+        data['categorical_expenses'][category] = {'monthly': 0, 'weekly': 0, '15-days': 0}
+        data['categorical_quantities'][category] = {'monthly': 0, 'weekly': 0, '15-days': 0}
+        last_month_c = last_month_purchases.filter(product_base__category__icontains=category)
+        data['categorical_expenses'][category]['monthly'] = \
+            last_month_c.aggregate(Sum('price_bought'))[
+                'price_bought__sum']
+
+        data['categorical_quantities'][category]['monthly'] = \
+            last_month_c.aggregate(Sum('quantity'))[
+                'quantity__sum']
+
+        last_fifteen_c = last_fifteen_purchases.filter(product_base__category__icontains=category)
+        data['categorical_expenses'][category]['15-days'] = \
+            last_fifteen_c.aggregate(Sum('price_bought'))[
+                'price_bought__sum']
+
+        data['categorical_quantities'][category]['15-days'] = \
+            last_fifteen_c.aggregate(Sum('quantity'))[
+                'quantity__sum']
+
+        last_week_c = last_week_purchases.filter(product_base__category__icontains=category)
+        data['categorical_expenses'][category]['weekly'] = \
+            last_week_c.aggregate(Sum('price_bought'))[
+                'price_bought__sum']
+
+        data['categorical_quantities'][category]['weekly'] = \
+            last_week_c.aggregate(Sum('quantity'))[
+                'quantity__sum']
+
+    return data
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -34,6 +95,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         serializer = UserMetaSerializer(qs, context={'request': self.context['request']})
 
         data['userMeta'] = {**serializer.data}
+        data['stats'] = get_stats(self.user)
 
         return data
 

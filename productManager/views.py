@@ -11,7 +11,8 @@ from django.contrib.auth.models import User
 
 from base.serializers import ProductBaseSerializer, ShoppingCartSerializer
 
-from base.models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Community
+from base.models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Community, \
+    PurchaseHistory
 from .exceptions import DoesNotExistException
 from productManager.services.scrape import amazon_scrape, scrape_barcode
 
@@ -143,7 +144,7 @@ def add_product_to_cart(request):
 @api_view(['POST'])
 @permission_classes((IsAuthenticated,))
 def remove_from_cart(request):
-    user = request.user  # User.objects.get(username='testqwerty')
+    user = request.user
     barcode = request.data.get('barcode')
     cart_id = request.data.get('id')
     quantity = int(request.data.get('quantity'))
@@ -176,5 +177,15 @@ def remove_from_cart(request):
         cart.save()
     else:
         raise DoesNotExistException("Quantity cannot be bigger than current qty in the cart")
+
+    # If purchasing, add it to purchase history
+    purchase = request.data.get('id', None)
+    if purchase:
+        PurchaseHistory.objects.create(user=user,
+                                       shopping_cart=cart,
+                                       product_base=product_base,
+                                       price_bought=product_base.min_price * quantity,
+                                       quantity=quantity,
+                                       )
 
     return Response({"Success": "Removed from cart, shopping cart updated."}, status=status.HTTP_200_OK)

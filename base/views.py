@@ -9,8 +9,9 @@ from rest_framework.permissions import IsAuthenticated
 from .serializers import NoteSerializer, UserSerializer, GroupSerializer, ProductBaseSerializer, StoreSerializer, \
     CommunitySerializer, \
     PriceInStoreSerializer, ProductInCartSerializer, ShoppingCartSerializer, UserMetaSerializer, \
-    SimpleShoppingCartSerializer
-from .models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Community
+    SimpleShoppingCartSerializer, PurchaseHistorySerializer
+from .models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Community, \
+    PurchaseHistory
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets
 from rest_framework import permissions
@@ -253,6 +254,15 @@ class ShoppingCartViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
+class PurchaseHistoryViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows products to be viewed or edited.
+    """
+    queryset = PurchaseHistory.objects.all()
+    serializer_class = PurchaseHistorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+
 class UsersShoppingCartViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows products to be viewed or edited.
@@ -264,7 +274,7 @@ class UsersShoppingCartViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         return super().get_queryset().filter(user=self.request.user)
 
-    #def perform_create(self, serializer):
+    # def perform_create(self, serializer):
     #    print(self.request.data)
     #    serializer.save(user=self.request.user, communities=self.request.data.get('communities'))
 

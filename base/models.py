@@ -62,3 +62,12 @@ class UserMeta(models.Model):
     communities = models.ManyToManyField(Community, blank=True)
     shopping_carts = models.ManyToManyField(ShoppingCart, blank=True)
     avatar = models.ImageField(upload_to='avatars', blank=True, null=True)
+
+
+class PurchaseHistory(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    shopping_cart = models.ForeignKey(ShoppingCart, on_delete=models.PROTECT)
+    product_base = models.ForeignKey(ProductBase, on_delete=models.PROTECT)
+    price_bought = models.FloatField()
+    quantity = models.PositiveIntegerField()
+    purchase_date = models.DateTimeField(auto_now_add=True)

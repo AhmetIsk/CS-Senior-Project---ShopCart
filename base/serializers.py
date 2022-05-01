@@ -1,7 +1,8 @@
 import json
 
 from rest_framework.serializers import ModelSerializer
-from .models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Community
+from .models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Community, \
+    PurchaseHistory
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 
@@ -10,6 +11,12 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'first_name', 'last_name', 'username', 'email', 'groups', 'last_login', 'date_joined']
+
+
+class PurchaseHistorySerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = PurchaseHistory
+        fields = '__all__'
 
 
 class UserSerializerIDOnly(serializers.HyperlinkedModelSerializer):
