@@ -10,11 +10,20 @@ import json
 
 # returns name, store{name: price}, photo url, category, msg
 def scrape_barcode(barcode):
-    # First scrape amazon, if DNE, scrape cimri
+    # First scrape amazon, then cimri, and then firatavm
     amazon_result = amazon_scrape(barcode)
     if amazon_result is not None and amazon_result['msg'] == 'Successful.':
         return amazon_result
 
+    cimri_result = scrape_cimri(barcode)
+    if cimri_result is not None and cimri_result['msg'] == 'Successful.':
+        return cimri_result
+
+    firat_result = firatavm_scrape(barcode)
+    return firat_result
+
+
+def scrape_cimri(barcode):
     url = "http://m.barkodoku.com/" + barcode
 
     # scraping barkodoku.com and finding the name of the product
@@ -22,10 +31,8 @@ def scrape_barcode(barcode):
     request.add_header("User-agent",
                        "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.186 Safari/537.36")
     barcodesite = urllib.request.urlopen(request)
-    print("Barcodesite OK")
-
     barcodesoup = bs(barcodesite.read(), 'html.parser')
-    print("bs OK")
+
     try:
         product_name = barcodesoup.find(id="lblSonuclar").find("a").text
     except AttributeError:
@@ -156,7 +163,7 @@ def iterative_search(product_name):
 
     product = None
     try:
-        for i in range(words_len - 1):
+        for i in range(int(words_len / 2)):
             if product is None:
                 search_product = " ".join(splitting[:(words_len - i - 1)])
                 url = "https://www.cimri.com/market/arama?q=" + urllib.parse.quote(search_product)
@@ -243,6 +250,50 @@ def amazon_scrape(barcode):
     }
 
 
+# searches firatavm as it contains barcode data
+def firatavm_scrape(barcode):
+    try:
+        url = "https://www.firatavm.com.tr/arama?k=" + barcode
+
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36',
+            "content-encoding": "gzip", }
+
+        barcodesite = requests.get(url, headers=headers).content
+
+        barcodesoup = bs(barcodesite, 'html.parser')
+        photosoup = barcodesoup.find("div", {"class": "card-product-inner"})
+        photo_url = photosoup.find("img", {"class": "lazy-load"})["data-src"]
+
+        product_name = barcodesoup.find("a", {"class": "c-p-i-link"})["title"]
+
+        product_url = barcodesoup.find("div", {"class": "image-wrapper"}).find("a", {"class": "c-p-i-link"})["href"]
+        product_site = bs(requests.get(product_url, headers=headers).content, 'html.parser')
+        category = \
+            [item.text for item in product_site.find("ul", {"class": "product-profile-info"})][2].split('Kategori: \n')[
+                1].strip()
+
+        # the price is in format: "3,4 TL", this code will replace this with a float
+        price = barcodesoup.find("div", {"class": "sale-price"}).text
+        # print('Price: ', barcodesoup.find("span", {"class": "a-offscreen"}))
+        price = float(price[:-3].replace(",", "."))
+    except Exception as e:
+        print("SCRAPER")
+        print(e)
+        return
+
+    return {
+        "name": product_name,
+        "store": {
+            "store_name": "Firat AVM",
+            "price": price
+        },
+        "photo_url": photo_url,
+        "category": category,
+        "msg": "Successful."
+    }
+
+
 def google_search(barcode):
     search_url = "https://www.google.com/search?q=" + str(barcode) + "&tbm=isch"
     request = urllib.request.Request(search_url)
@@ -312,6 +363,9 @@ if __name__ == '__main__':
     # print(scrape_barcode("8690526019949"))
     # print(scrape_barcode("8690504186687"))
     # print(scrape_barcode("8690637805202"))
-    #print(amazon_scrape("8690637805202"))
-    print(amazon_scrape("8690504186687"))
+    # print(amazon_scrape("8690637805202"))
+    # print(scrape_barcode("8690504186687"))
+    # print(scrape_barcode("8690525060010"))
+    print(scrape_barcode("8690506517663"))
+
     # print(google_search("8690637805202"))
