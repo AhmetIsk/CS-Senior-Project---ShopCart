@@ -12,15 +12,22 @@ import json
 def scrape_barcode(barcode):
     # First scrape amazon, then cimri, and then firatavm
     amazon_result = amazon_scrape(barcode)
-    if amazon_result is not None and amazon_result['msg'] == 'Successful.':
-        return amazon_result
-
+    marketkarsilastir_result = marketkarsilastir_scrape(barcode)
     cimri_result = scrape_cimri(barcode)
-    if cimri_result is not None and cimri_result['msg'] == 'Successful.':
-        return cimri_result
-
     firat_result = firatavm_scrape(barcode)
-    return firat_result
+    results = [amazon_result, marketkarsilastir_result, cimri_result, firat_result]
+    # Remove None vals
+    results = [r for r in results if r and r['msg'] == 'Successful.']
+
+    if len(results) == 0:
+        return
+
+    # Get min price
+    min_priced_item = min(results, key=lambda x: x['store']['price'])
+    if not min_priced_item['category']:
+        min_priced_item['category'] = [r for r in results if r['category'] is not None][0]['category']
+
+    return min_priced_item
 
 
 def scrape_cimri(barcode):
@@ -294,6 +301,47 @@ def firatavm_scrape(barcode):
     }
 
 
+def marketkarsilastir_scrape(barcode):
+    try:
+        url = "https://marketkarsilastir.com/ara/" + barcode
+
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36',
+            "content-encoding": "gzip", }
+
+        barcodesite = requests.get(url, headers=headers).content
+
+        barcodesoup = bs(barcodesite, 'html.parser')
+        photo_url = barcodesoup.find("a", {"class": "product-img d-flex align-items-center"}).find("img")["src"]
+
+        product_name = barcodesoup.find("a", {"class": "pi-name mt-1"}).text.strip()
+
+        product_url = "https://marketkarsilastir.com/" + \
+                      barcodesoup.find("a", {"class": "product-img d-flex align-items-center"})['href']
+        product_site = bs(requests.get(product_url, headers=headers).content, 'html.parser')
+
+        store_name = product_site.find('th', {'scope': 'row'}).find_next_sibling("td").find("img")["title"].strip()
+        category = None
+        price = float(
+            product_site.find('th', {'scope': 'row'}).find_next_sibling("td").find_next_sibling("td").find_next_sibling(
+                "td").text.strip().replace(',', '.'))
+    except Exception as e:
+        print("SCRAPER")
+        print(e)
+        return
+
+    return {
+        "name": product_name,
+        "store": {
+            "store_name": store_name,
+            "price": price
+        },
+        "photo_url": photo_url,
+        "category": category,
+        "msg": "Successful."
+    }
+
+
 def google_search(barcode):
     search_url = "https://www.google.com/search?q=" + str(barcode) + "&tbm=isch"
     request = urllib.request.Request(search_url)
@@ -366,6 +414,7 @@ if __name__ == '__main__':
     # print(amazon_scrape("8690637805202"))
     # print(scrape_barcode("8690504186687"))
     # print(scrape_barcode("8690525060010"))
+    # print(scrape_barcode("8690506517663"))
     print(scrape_barcode("8690506517663"))
 
     # print(google_search("8690637805202"))
