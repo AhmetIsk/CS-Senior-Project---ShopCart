@@ -18,9 +18,8 @@ from rest_framework import permissions
 import csv
 from productManager.services.scrape import scrape_barcode
 
-community_param = openapi.Parameter('user_id', openapi.IN_QUERY, type=openapi.TYPE_STRING,
-                                    description="Point with latitude (lat) and longitude (lng). "
-                                                "Example: {\"lat\":8.123213123,\"lng\":3.8979889}")
+community_param = openapi.Parameter('community_id', openapi.IN_QUERY, type=openapi.TYPE_STRING,
+                                    description="Id of community")
 
 
 @api_view(['GET'])
@@ -198,7 +197,7 @@ class CommunityViewSet(viewsets.ModelViewSet):
         if user:
             try:
                 community = Community.objects.get(id=community_id)
-                carts = ShoppingCart.objects.filter(communities__community_owner_id__exact=community.id)
+                carts = ShoppingCart.objects.filter(communities__id__exact=community.id)
                 serializer = SimpleShoppingCartSerializer(carts, many=True)
                 return Response(serializer.data)
             except Exception as e:
