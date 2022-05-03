@@ -37,7 +37,8 @@ class CommunitySerializer(serializers.HyperlinkedModelSerializer):
 class ShortCommunitySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Community
-        fields = ['id']
+        read_only_fields = ['name']
+        fields = ['id', 'name']
 
 
 class StoreSerializer(serializers.HyperlinkedModelSerializer):
