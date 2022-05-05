@@ -1,5 +1,6 @@
 from time import sleep
 
+from django.http import JsonResponse
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.response import Response
@@ -17,6 +18,7 @@ from rest_framework import viewsets
 from rest_framework import permissions
 import csv
 from productManager.services.scrape import scrape_barcode
+from authorization.serializers import get_stats
 
 community_param = openapi.Parameter('community_id', openapi.IN_QUERY, type=openapi.TYPE_STRING,
                                     description="Id of community")
@@ -309,6 +311,15 @@ class NoteViewSet(viewsets.ModelViewSet):
 def current_user(request):
     serializer = UserSerializer(request.user, context={'request': request})
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+def get_statistics(request):
+    if not request.user:
+        return Response({"Error": "User not found"}, status=status.HTTP_400_BAD_REQUEST)
+
+    stats = get_stats(request.user)
+    return JsonResponse(stats, safe=False)
 
 
 @api_view(['GET'])
