@@ -9,7 +9,6 @@ from base.serializers import UserMetaSerializer
 from datetime import datetime, timedelta
 from django.db.models import Sum
 
-
 def get_stats(user):
     data = {'total_expenses': {'monthly': 0, 'weekly': 0, '15-days': 0},
             'categorical_expenses': {},
@@ -65,6 +64,22 @@ def get_stats(user):
         data['categorical_quantities'][category]['weekly'] = \
             last_week_c.aggregate(Sum('quantity'))[
                 'quantity__sum']
+
+    data['percentage_categorical_expenses'] = {'monthly': {}, 'weekly': {}, '15-days': {}}
+    for category, expense in data['categorical_expenses'].items():
+        for time, val in expense.items():
+            if val is None:
+                data['categorical_expenses'][category][time] = 0
+            else:
+                data['percentage_categorical_expenses'][time][category] = 100 * (val / data['total_expenses'][time])
+
+    data['percentage_categorical_quantities'] = {'monthly': {}, 'weekly': {}, '15-days': {}}
+    for category, expense in data['categorical_quantities'].items():
+        for time, val in expense.items():
+            if val is None:
+                data['categorical_quantities'][category][time] = 0
+            else:
+                data['percentage_categorical_quantities'][time][category] = 100 * (val / data['total_quantities'][time])
 
     return data
 
