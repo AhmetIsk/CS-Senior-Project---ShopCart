@@ -114,3 +114,10 @@ Remove shopping cart from a community:
 
 Get all shopping carts inside a community (p.s., do not put a trailing slash) (returns id, name and priority):
 * `GET /base/communities/get_shopping_carts/?community_id=<ID of community>`
+
+---------------
+COMMUNITIES
+---------------
+
+Get statistics
+* `GET /base/statistics`
