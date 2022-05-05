@@ -116,7 +116,7 @@ Get all shopping carts inside a community (p.s., do not put a trailing slash) (r
 * `GET /base/communities/get_shopping_carts/?community_id=<ID of community>`
 
 ---------------
-COMMUNITIES
+STATISTICS
 ---------------
 
 Get statistics

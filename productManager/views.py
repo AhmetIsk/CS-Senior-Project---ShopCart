@@ -99,7 +99,8 @@ def add_product_to_cart(request):
                 pb = ProductBase.objects.create(barcode=barcode, name=product_data['name'],
                                                 external_photo_url=product_data['photo_url'],
                                                 category=product_data['category'],
-                                                min_price=float(product_data['store']['price']))
+                                                min_price=float(product_data['store']['price']),
+                                                product_url=product_data['product_url'])
 
             # Add product to Store (Best Price)
             if not s.available_products.filter(store__available_products__exact=pb).exists():

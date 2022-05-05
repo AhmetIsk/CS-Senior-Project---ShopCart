@@ -361,3 +361,17 @@ def add_base_products(request):
 
     serializer = UserSerializer(request.user, context={'request': request})
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+def update_base_products(request):
+    product_bases = ProductBase.objects.all()
+    for product_base in product_bases:
+        print("Updating: ", product_base.barcode)
+        new_data = scrape_barcode(product_base.barcode)
+        #product_base.min_price = new_data['store']['price']
+        product_base.product_url = new_data['product_url']
+        product_base.save()
+
+    serializer = UserSerializer(request.user, context={'request': request})
+    return Response(serializer.data)
