@@ -23,7 +23,7 @@ router.register(r'purchaseHistory', views.PurchaseHistoryViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('current_user/', views.current_user),
-    path('add_base_products/', views.add_base_products),
+    #path('add_base_products/', views.add_base_products),
     path('get_statistics/', views.get_statistics)
 ]
 
