@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { colors } from '../../constants/styles'
 import SearchOrJoinButton from '../../components/Buttons/SearchOrJoinButton'
 
-export default function JoinCommunity() {
+export default function JoinCommunity({ navigation }) {
     return (
         <View style={styles.firstContainer}>
             <View style={styles.inputContainer}>

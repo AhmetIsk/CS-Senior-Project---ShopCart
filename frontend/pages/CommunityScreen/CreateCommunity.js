@@ -1,10 +1,41 @@
+/* eslint-disable array-callback-return */
 import { StyleSheet, Text, View, TextInput } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
+import { useSelector } from 'react-redux'
 import { colors } from '../../constants/styles'
 import SearchOrJoinButton from '../../components/Buttons/SearchOrJoinButton'
+import { userService } from '../../services/userService'
+import { userToken } from '../../store/slices/token'
 
-export default function CreateCommunity() {
+export default function CreateCommunity({ navigation }) {
+    const token = useSelector(userToken);
+    const [communityName, setCommunityName] = useState('');
+    const [warning, setWarning] = useState(<Text />);
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        userService.getCommunities(token).then((response) => {
+            // eslint-disable-next-line array-callback-return
+            let exists = false;
+            const result = response.map((community) => {
+                if (community.name.toLowerCase() === communityName.toLocaleLowerCase()) {
+                    exists = true;
+                }
+            });
+            return exists;
+        }).then((result) => {
+            console.log("result", result);
+            if (!result) {
+                userService.createCommunity(communityName, token).then(() => {
+                    navigation.navigate('Communities');
+                });
+            }
+            else {
+                setWarning(<Text style={{ color: 'red', fontSize: 12, paddingVertical: 12 }}>Commmunity name {communityName} is already exist!</Text>);
+            }
+        });
+    }
     return (
         <View style={styles.firstContainer}>
             <View style={styles.inputContainer}>
@@ -14,14 +45,15 @@ export default function CreateCommunity() {
                         <Text style={styles.informative}>Enter the community name to create:</Text>
                         <TextInput
                             placeholder="xxxxx"
-                            // value={community}
-                            // onChangeText={(text) => setCommunity(text)}
+                            value={communityName}
+                            onChangeText={(text) => setCommunityName(text)}
                             style={styles.input}
                         />
                     </View>
                 </View>
+                {warning}
             </View>
-            <SearchOrJoinButton onPress={() => console.log("Hello guys")} text="Create Community" />
+            <SearchOrJoinButton onPress={handleSubmit} text="Create Community" />
         </View>
     )
 }
