@@ -108,10 +108,11 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
+    avatar = serializers.ImageField(required=False)
 
     class Meta:
         model = User
-        fields = ('username', 'password', 'password2', 'email', 'first_name', 'last_name')
+        fields = ('username', 'password', 'password2', 'email', 'first_name', 'last_name', 'avatar')
         extra_kwargs = {
             'first_name': {'required': True},
             'last_name': {'required': True}
@@ -136,7 +137,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         # Create a shopping cart for the user and save it into users' metadata
         cart = ShoppingCart.objects.create(name='My Shopping Cart', user=user, priority='Medium')
-        um = UserMeta.objects.create(user=user)
+        um = UserMeta.objects.create(user=user, avatar=validated_data['avatar'])
         um.shopping_carts.add(cart)
         um.save()
 
