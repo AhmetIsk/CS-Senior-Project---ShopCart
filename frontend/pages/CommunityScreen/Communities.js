@@ -1,12 +1,41 @@
-import React from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
+import { useSelector } from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
 import { colors } from '../../constants/styles';
 import { styles } from './styles/index';
 import AddShopListButton from '../../components/Buttons/AddShopListButton';
 import CommunityButton from '../../components/Buttons/CommunityButton';
+import { userToken } from '../../store/slices/token';
+import { userService } from '../../services/userService';
 
 export default function Communities({ navigation }) {
+    const isFocused = useIsFocused();
+    const [items, setItems] = useState([]);
+    const token = useSelector(userToken);
+    // userService.getCommunities(token);
+    const ListCommunities = () => {
+        userService.getCommunities(token).then((communities) => {
+            console.log(communities.length);
+            if (communities.length !== 0) {
+                console.log(communities);
+                const mappedItems = communities.map((community) => (
+                    <CommunityButton
+                        key={community.id}
+                        name={community.name}
+                        users={community.users}
+                        ownerName={community.community_owner.username}
+                    />
+                ));
+                setItems(mappedItems);
+            }
+        });
+    };
+    useEffect(() => {
+        ListCommunities();
+    }, [isFocused]);
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -20,7 +49,7 @@ export default function Communities({ navigation }) {
                 <Text style={styles.headerTitle}>Communities</Text>
                 <Text style={{ width: 33 }} />
             </View>
-            <ScrollView style={styles.scrollView}><CommunityButton /></ScrollView>
+            <ScrollView style={styles.scrollView}>{items}</ScrollView>
             <AddShopListButton onPress={() => navigation.navigate('Create or Search Community')} />
         </View>
     )

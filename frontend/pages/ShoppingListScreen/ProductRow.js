@@ -1,7 +1,7 @@
 /* eslint-disable global-require */
 /* eslint-disable react/prop-types */
 import React from 'react';
-import { Image, View, Text, StyleSheet } from 'react-native';
+import { Image, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useSelector } from 'react-redux';
 import { DataTable } from 'react-native-paper';
 import { userService } from '../../services/userService';
@@ -9,30 +9,53 @@ import { userToken } from '../../store/slices/token';
 import { DecreaseProduct } from '../../components/Buttons';
 import { colors } from '../../constants/styles';
 import ProductButtons from '../../assets/productButtons.svg';
+import NoNeed from '../../assets/noNeed.svg';
+import NoNeedButton from '../../components/Buttons/NoNeedButton';
+import { shopListId } from '../../store/slices/shopListId';
 
 // TODO: bu ard arda api req yollamak sikintiliydi. onun cozumune bak; ek olarak trigger seri basmalarda ise yaramiyor cozumu budur belki; degilse shopliste tasi
 export default function ProductRow({
   name,
   quantity,
-  barcode,
-  trigger,
-  value,
   imageUrl,
   bestPrice,
+  trigger,
+  value,
+  barcode
 }) {
+
   const token = useSelector(userToken);
+  const id = useSelector(shopListId);
+
+  const handleNoNeed = (e) => {
+    e.preventDefault();
+    userService.removeFromList(barcode, 1, id, token, false).then(() => trigger(!value));
+  }
+
+  const handleRemove = (e) => {
+    e.preventDefault();
+    userService.removeFromList(barcode, 1, id, token, true).then(() => trigger(!value));
+  }
+
+  const handleIncrease = (e) => {
+    e.preventDefault();
+    userService.addProduct(barcode, 1, id, token).then(() => trigger(!value));
+  }
   return (
     <View style={styles.itemContainer}>
       <View style={styles.imageContainer}>
         <Image source={{ uri: imageUrl }} style={{ width: 84, height: 84, margin: 5 }} />
         <View style={styles.infoContainer}>
-          <Text style={styles.textStyle}>{name}</Text>
+          <Text style={styles.textStyle}>{`${name.substring(0, 18)}...`}</Text>
           <Text style={styles.textStyle}>Quantity: {quantity}</Text>
           <Text>{bestPrice[0]?.name}</Text>
         </View>
       </View>
-
-      <ProductButtons />
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={handleRemove}><Text>-</Text></TouchableOpacity>
+        <NoNeedButton onPress={handleNoNeed} />
+        <TouchableOpacity onPress={handleIncrease}><Text>+</Text></TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -57,8 +80,10 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     flexDirection: 'row',
+    width: 245
   },
   infoContainer: {
+    width: 245,
     padding: 8,
   },
   textStyle: {
@@ -70,6 +95,18 @@ const styles = StyleSheet.create({
     color: `${colors.textColor}`,
     paddingTop: 10,
   },
+  buttonContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
+    width: 82,
+    height: 25,
+    borderRadius: 12.5,
+    borderStyle: "solid",
+    borderWidth: 1,
+    borderColor: "#979797"
+  }
 });
 // <DataTable.Row>
 //   <DataTable.Cell style={{ width: 300 }}>{name}</DataTable.Cell>

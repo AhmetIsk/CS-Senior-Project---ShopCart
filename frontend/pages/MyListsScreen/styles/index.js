@@ -74,4 +74,14 @@ export const styles = StyleSheet.create({
     marginTop: 100,
     height: 300,
   },
+  priceContainer: {
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    marginBottom: 80,
+  },
+  bestPrice: {
+    fontSize: 20,
+    color: `${colors.orange}`,
+    fontWeight: '500'
+  }
 });

@@ -3,7 +3,7 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Checkbox } from 'react-native-paper';
 import { Entypo } from '@expo/vector-icons';
@@ -14,15 +14,18 @@ import { setToken, userToken } from '../../store/slices/token';
 import { colors } from '../../constants/styles';
 import PriorityButton from '../../components/Buttons/radioButton';
 import { userService } from '../../services/userService';
+import Tags from './Tags';
 
 // TODO: Input alinacak kisimlar yeni bir child componentte verilecek rerender sayisini azaltmak icin
 const AddShoppingListScreen = ({ navigation }) => {
   const token = useSelector(userToken);
   const dispatch = useDispatch();
   const [listName, setListName] = useState('');
-  const [community, setCommunity] = useState('');
+  const [community, setCommunity] = useState([]);
   const [checked, setChecked] = useState(false);
   const [priority, setPriority] = useState('');
+  const [items, setItems] = useState([]);
+  const [itemNames, setItemNames] = useState([]);
 
   useEffect(() => {
     const load = async () => {
@@ -30,10 +33,42 @@ const AddShoppingListScreen = ({ navigation }) => {
       dispatch(setToken(userStorage.token));
     };
     load();
+    getCommunityList();
+    console.log('this is community ', community);
   }, []);
 
+  const getCommunityList = () => {
+    userService.getCommunities(token).then((communities) => {
+      console.log(communities.length);
+      if (communities.length !== 0) {
+        // const mappedItems = communities.map((singleCommunity) => (
+        //   <Tags
+        //     key={singleCommunity.id}
+        //     name={singleCommunity.name}
+        //     onPress={() => {
+        //       setCommunity(prev => [...prev, singleCommunity.name]);
+        //       setItemNames(itemNames.filter((prev) => prev !== singleCommunity.name));
+        //       setItems(items.filter(item => item.props.name !== singleCommunity.name));
+        //       // setSelectedItems(prev => [...prev, items.filter(item => item.props.name === singleCommunity.name)]);
+        //     }}
+        //   />
+        // ));
+        communities.map((singleCommunity) => setItemNames((prev) => [...prev, singleCommunity.name]));
+        communities.map((singleCommunity) => setItems((prev) => [...prev, { "name": singleCommunity?.name, "id": singleCommunity?.id }]));
+        // setItems(mappedItems);
+        console.log('this is items ', itemNames);
+      }
+    });
+  }
+
   const handleSubmit = () => {
-    userService.addShoppingList(listName, priority, token);
+    const commIds = [];
+    // eslint-disable-next-line array-callback-return
+    items.map((item) => {
+      if (!itemNames.includes(item.name))
+        commIds.push({ "id": item.id, "name": item.name });
+    });
+    userService.addShoppingList(listName, priority, token, commIds).then(navigation.navigate('My Lists'));
     setListName('');
     setCommunity('');
     setPriority('');
@@ -70,13 +105,15 @@ const AddShoppingListScreen = ({ navigation }) => {
             style={inputStyles.input}
           />
           <Text style={inputStyles.inputLabel}>Communities</Text>
-          <TextInput
-            placeholder="Add new community"
-            value={community}
-            onChangeText={(text) => setCommunity(text)}
-            style={inputStyles.input}
-          />
-          <View style={inputStyles.checkbox}>
+          <View style={inputStyles.commInput}>
+            <ScrollView style={inputStyles.communityContainer} horizontal >
+              {community ? community.map((one) => <Tags key={one} name={one} onPress={() => {
+                setItemNames((prev) => [...prev, one]);
+                setCommunity(community.filter(item => item !== one));
+              }} />) : <Text />}
+            </ScrollView>
+          </View>
+          {/* <View style={inputStyles.checkbox}>
             <View style={inputStyles.checkboxBackground}>
               <Checkbox
                 status={checked ? 'checked' : 'unchecked'}
@@ -87,7 +124,13 @@ const AddShoppingListScreen = ({ navigation }) => {
               />
             </View>
             <Text style={inputStyles.inputLabel}>Make it default</Text>
-          </View>
+          </View> */}
+          <ScrollView style={inputStyles.communityContainer} horizontal >
+            {itemNames ? itemNames.map((item) => <Tags key={item} name={item} onPress={() => {
+              setCommunity((prev) => [...prev, item]);
+              setItemNames(itemNames.filter(one => one !== item));
+            }} />) : <Text />}
+          </ScrollView>
         </View>
         <View>
           <Text style={inputStyles.inputLabel}>Set Priority</Text>

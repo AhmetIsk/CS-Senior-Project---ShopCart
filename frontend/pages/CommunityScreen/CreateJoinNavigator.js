@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Text, View } from 'react-native'
 import React from 'react'
 import { Entypo } from '@expo/vector-icons'
 import { colors } from '../../constants/styles'
@@ -20,7 +20,7 @@ export default function CreateJoinNavigator({ navigation }) {
                 <Text style={{ width: 33 }} />
             </View>
             <View style={styles.inputContainer}>
-                <ComCreateContainer />
+                <ComCreateContainer navigation={navigation} />
             </View>
         </View>
     )

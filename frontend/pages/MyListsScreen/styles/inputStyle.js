@@ -77,4 +77,22 @@ export const inputStyles = StyleSheet.create({
     textAlign: 'center',
     color: `${colors.gray}`,
   },
+  communityContainer: {
+    height: 50,
+    width: '100%',
+    display: 'flex',
+    // flexDirection: 'row',
+    flexGrow: 1
+  },
+  commInput: {
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    flexDirection: 'row',
+    backgroundColor: 'white',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderColor: `${colors.inputBorder}`,
+    marginTop: 10,
+  }
 });

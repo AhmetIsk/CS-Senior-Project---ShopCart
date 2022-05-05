@@ -4,7 +4,7 @@ import CreateCommunity from '../../pages/CommunityScreen/CreateCommunity';
 import JoinCommunity from '../../pages/CommunityScreen/JoinCommunity';
 import { colors } from '../../constants/styles';
 
-export default function ComCreateContainer() {
+export default function ComCreateContainer({ navigation }) {
     const [create, setCreate] = useState(true);
     return (
         <View style={styles.container}>
@@ -17,8 +17,8 @@ export default function ComCreateContainer() {
                 </TouchableOpacity>
             </View>
             {create ?
-                <CreateCommunity /> :
-                <JoinCommunity />
+                <CreateCommunity navigation={navigation} /> :
+                <JoinCommunity navigation={navigation} />
             }
         </View>
     )

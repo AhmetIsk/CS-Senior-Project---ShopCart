@@ -145,7 +145,30 @@ function getUsersShoppingCartLists(token) {
   });
 }
 
-function removeFromList(product_id, quantity, token) {
+function getShoppingListCommunities(id, token) {
+  return new Promise((resolve, reject) => {
+    console.log(`${API_URL}/base/currentUsersShoppingCart/${id}/`);
+    axios
+      .get(`${API_URL}/base/currentUsersShoppingCart/${id}/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da response', usernameOb);
+        try {
+          resolve(JSON.parse(usernameOb));
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        reject(err);
+      });
+  });
+}
+
+function removeFromList(product_id, quantity, shopcart_id, token, purchase) {
   return new Promise((resolve, reject) => {
     console.log(product_id, quantity, token);
     axios
@@ -154,6 +177,8 @@ function removeFromList(product_id, quantity, token) {
         {
           barcode: product_id,
           quantity,
+          id: shopcart_id,
+          purchase
         },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -231,6 +256,195 @@ function changeShopListName(id, token, newName) {
   });
 }
 
+function createCommunity(name, token) {
+  return new Promise((resolve, reject) => {
+    console.log(`${API_URL}/base/communities/`, name, token);
+    axios
+      .post(
+        `${API_URL}/base/communities/`,
+        {
+          name,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da responsedur', usernameOb);
+        try {
+          resolve(JSON.parse(usernameOb));
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        reject(err);
+      });
+  });
+}
+
+function getCommunities(token) {
+  return new Promise((resolve, reject) => {
+    console.log(`${API_URL}/base/communities/`, token);
+    axios
+      .get(
+        `${API_URL}/base/communities/`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da responsedur', usernameOb);
+        try {
+          resolve(JSON.parse(usernameOb));
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        reject(err);
+      });
+  });
+}
+
+function getCommunityMembership(token) {
+  return new Promise((resolve, reject) => {
+    console.log(`${API_URL}/base/communities/get_memberships`, token);
+    axios
+      .get(
+        `${API_URL}/base/communities/get_memberships/`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da responsedur', usernameOb);
+        try {
+          resolve(JSON.parse(usernameOb));
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        reject(err);
+      });
+  });
+}
+
+function getCommunityOwner(token) {
+  return new Promise((resolve, reject) => {
+    console.log(`${API_URL}/base/communities/get_owned`, token);
+    axios
+      .get(
+        `${API_URL}/base/communities/get_owned/`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da responsedur', usernameOb);
+        try {
+          resolve(JSON.parse(usernameOb));
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        reject(err);
+      });
+  });
+}
+
+function addShoppingListToCommunity(community_id, cart_id, token) {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        `${API_URL}/base/communities/add_cart_to_community/`,
+        {
+          community_id,
+          cart_id
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da responsedur', usernameOb);
+        try {
+          resolve(JSON.parse(usernameOb));
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        reject(err);
+      });
+  });
+}
+
+function removeShoppingListFromCommunity(community_id, cart_id, token) {
+  console.log("you clicked with these values ", community_id, cart_id);
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        `${API_URL}/base/communities/remove_cart_from_community/`,
+        {
+          community_id,
+          cart_id
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da responsedur', usernameOb);
+        try {
+          resolve(JSON.parse(usernameOb));
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        reject(err);
+      });
+  });
+}
+
+function deleteShoplist(id, token) {
+  return new Promise((resolve, reject) => {
+    axios
+      .delete(
+        `${API_URL}/base/currentUsersShoppingCart/${id}/`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da response', usernameOb);
+        try {
+          resolve(response);
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        reject(err);
+      });
+  });
+}
+
 export const userService = {
   login,
   logout,
@@ -241,4 +455,12 @@ export const userService = {
   getUsersShoppingCartLists,
   addShoppingList,
   changeShopListName,
+  createCommunity,
+  getCommunities,
+  getCommunityMembership,
+  getCommunityOwner,
+  addShoppingListToCommunity,
+  removeShoppingListFromCommunity,
+  getShoppingListCommunities,
+  deleteShoplist
 };
