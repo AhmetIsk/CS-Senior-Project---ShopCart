@@ -78,6 +78,42 @@ def add_product_to_cart(request):
     cart_id = request.data.get('id')
     barcode = request.data.get('barcode')
     quantity = request.data.get('quantity')
+    product_name = request.data.get('product_name', None)
+
+    if not barcode and product_name is not None:
+        # Add product base
+        if not product_name or not quantity or not cart_id:
+            raise DoesNotExistException("Product name or quantity or id DNE")
+
+        if ProductBase.objects.filter(name=product_name).exists():
+            pb = ProductBase.objects.get(barcode=barcode)
+        else:
+            pb = ProductBase.objects.create(name=product_name,
+                                            external_photo_url="https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty-300x240.jpg",
+                                            category="No product data")
+
+        cart = ShoppingCart.objects.get(id=cart_id)
+        product_in_cart = None
+        if cart.products.filter(product=pb).exists():
+            product_in_cart = cart.products.get(product=pb)
+
+        if product_in_cart:
+            product_in_cart.quantity += int(quantity)
+            product_in_cart.save()
+        else:
+            product_to_add = ProductInCart.objects.create(product=pb, quantity=quantity)
+
+            if not UserMeta.objects.filter(user=user).exists():
+                raise DoesNotExistException(
+                    "Metadata of this user does not exist. Register a new user or create metadata"
+                    " for the current one!")
+
+            # no object satisfying query exists
+            cart = ShoppingCart.objects.get(id=cart_id)
+            cart.products.add(product_to_add)
+            cart.save()
+
+        return Response({"Success": "Product added to shopping cart"}, status=status.HTTP_200_OK)
 
     if not ProductBase.objects.filter(barcode=barcode).exists():
         # Look for the barcode online!
@@ -149,12 +185,42 @@ def remove_from_cart(request):
     barcode = request.data.get('barcode')
     cart_id = request.data.get('id')
     quantity = int(request.data.get('quantity'))
+    product_name = request.data.get('product_name', None)
+
+    if not barcode and product_name is not None:
+        if not ProductBase.objects.filter(name=product_name).exists():
+            raise DoesNotExistException("A base product with this barcode does not exist.")
+
+        product_base = ProductBase.objects.get(name=product_name)
+        if not UserMeta.objects.filter(user=user.id).exists():
+            raise DoesNotExistException("Metadata of this user does not exist. Register a new user or create metadata"
+                                        " for the current one!")
+
+        # If this product is already in the cart, increase its quantity. Else, create new pic instance
+        cart = ShoppingCart.objects.get(id=cart_id)
+        if cart.products.filter(product=product_base).exists():
+            pic = cart.products.get(product=product_base)
+        else:
+            raise DoesNotExistException("No product with this barcode inside shopping cart")
+
+        if pic.quantity > quantity:
+            pic.quantity -= quantity
+            pic.save()
+        elif pic.quantity == quantity:
+            # no object satisfying query exists
+            cart = ShoppingCart.objects.get(id=cart_id)
+            cart.products.remove(pic)
+            pic.delete()
+            cart.save()
+        else:
+            raise DoesNotExistException("Quantity cannot be bigger than current qty in the cart")
+
+        return Response({"Success": "Removed from cart, shopping cart updated."}, status=status.HTTP_200_OK)
 
     if not ProductBase.objects.filter(barcode=barcode).exists():
         raise DoesNotExistException("A base product with this barcode does not exist.")
 
     product_base = ProductBase.objects.get(barcode=barcode)
-    print("Product Base: ", product_base)
 
     if not UserMeta.objects.filter(user=user.id).exists():
         raise DoesNotExistException("Metadata of this user does not exist. Register a new user or create metadata"

@@ -17,12 +17,12 @@ class Community(models.Model):
 
 class ProductBase(models.Model):
     barcode = models.CharField(max_length=200, unique=True)
-    name = models.TextField(max_length=100, blank=True, null=True)
+    name = models.TextField(max_length=100, unique=True, blank=True, null=True)
     photo = models.ImageField(upload_to='products', blank=True, null=True)
     external_photo_url = models.URLField(max_length=200, blank=True, null=True)
     product_url = models.URLField(max_length=200, blank=True, null=True)
     category = models.CharField(max_length=200, blank=True, null=True)
-    min_price = models.FloatField()
+    min_price = models.FloatField(blank=True, null=True)
 
 
 class Store(models.Model):
