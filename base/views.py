@@ -7,6 +7,8 @@ from rest_framework.response import Response
 from rest_framework import status, exceptions
 from rest_framework.decorators import api_view, permission_classes, action
 from rest_framework.permissions import IsAuthenticated
+
+from productManager.exceptions import DoesNotExistException
 from .serializers import NoteSerializer, UserSerializer, GroupSerializer, ProductBaseSerializer, StoreSerializer, \
     CommunitySerializer, \
     PriceInStoreSerializer, ProductInCartSerializer, ShoppingCartSerializer, UserMetaSerializer, \
@@ -369,9 +371,24 @@ def update_base_products(request):
     for product_base in product_bases:
         print("Updating: ", product_base.barcode)
         new_data = scrape_barcode(product_base.barcode)
-        #product_base.min_price = new_data['store']['price']
+        # product_base.min_price = new_data['store']['price']
         product_base.product_url = new_data['product_url']
         product_base.save()
 
     serializer = UserSerializer(request.user, context={'request': request})
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+def search_by_barcode(request):
+    barcode = request.query_params.get('barcode', None)
+    if not barcode:
+        return Response('Enter barcode',
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    product_data = scrape_barcode(barcode)
+    if product_data is None or product_data['msg'] != 'Successful.':
+        raise DoesNotExistException(
+            "A base product with this barcode does not exist AND could not find the product online. Try to add this product manually")
+
+    return Response(product_data)
