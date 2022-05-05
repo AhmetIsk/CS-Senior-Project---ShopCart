@@ -120,4 +120,4 @@ COMMUNITIES
 ---------------
 
 Get statistics
-* `GET /base/statistics`
+* `GET /base/get_statistics`
