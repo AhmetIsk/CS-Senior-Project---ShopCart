@@ -1,14 +1,16 @@
+/* eslint-disable react/prop-types */
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { Ionicons } from '@expo/vector-icons'
 import { colors } from '../../constants/styles'
 
-export default function CommunityButton() {
+export default function CommunityButton({ name, users, ownerName }) {
+    const usersNames = [];
     return (
         <TouchableOpacity style={styles.buttonContainer} onPress={() => console.log('hello guys')}>
             <View style={styles.infoContainer}>
-                <Text style={styles.communityName}>CommunityButton</Text>
-                <Text style={styles.communityName}>This is the date</Text>
+                <Text style={styles.communityName}>{name}</Text>
+                <Text style={styles.communityName}>{ownerName}</Text>
             </View>
             <View style={styles.people}>
                 <Ionicons
@@ -17,7 +19,7 @@ export default function CommunityButton() {
                     color={colors.white}
                     style={{ paddingLeft: 15, paddingRight: 15 }}
                 />
-                <Text>This is the comm info</Text>
+                <Text>{users.map((user) => [...usersNames, user])}</Text>
             </View>
         </TouchableOpacity>
     )
@@ -34,6 +36,7 @@ const styles = StyleSheet.create({
             width: 0,
             height: 4
         },
+        marginTop: 40
     },
     people: {
         height: '35%',
