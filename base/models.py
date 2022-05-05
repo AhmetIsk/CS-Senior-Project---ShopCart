@@ -63,6 +63,8 @@ class UserMeta(models.Model):
     communities = models.ManyToManyField(Community, blank=True)
     shopping_carts = models.ManyToManyField(ShoppingCart, blank=True)
     avatar = models.ImageField(upload_to='avatars', blank=True, null=True)
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
 
 
 class PurchaseHistory(models.Model):
