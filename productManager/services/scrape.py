@@ -155,6 +155,7 @@ def scrape_cimri(barcode):
                 "price": price
             },
             "photo_url": photo_url,
+            "product_url": product_url,
             "category": category,
             "msg": "Successful."
         }
@@ -252,6 +253,7 @@ def amazon_scrape(barcode):
             "price": price
         },
         "photo_url": photo_url,
+        "product_url": siteurl,
         "category": category,
         "msg": "Successful."
     }
@@ -296,6 +298,7 @@ def firatavm_scrape(barcode):
             "price": price
         },
         "photo_url": photo_url,
+        "product_url": product_url,
         "category": category,
         "msg": "Successful."
     }
@@ -337,6 +340,7 @@ def marketkarsilastir_scrape(barcode):
             "price": price
         },
         "photo_url": photo_url,
+        "product_url": product_url,
         "category": category,
         "msg": "Successful."
     }
@@ -416,7 +420,7 @@ if __name__ == '__main__':
     # print(scrape_barcode("8690525060010"))
     # print(scrape_barcode("8690506517663"))
     #print(scrape_barcode("90004407"))
-    print(scrape_barcode("8690637987564"))
+    print(scrape_barcode("8690637035067"))
 
 
     # print(google_search("8690637805202"))

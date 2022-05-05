@@ -20,6 +20,7 @@ class ProductBase(models.Model):
     name = models.TextField(max_length=100, blank=True, null=True)
     photo = models.ImageField(upload_to='products', blank=True, null=True)
     external_photo_url = models.URLField(max_length=200, blank=True, null=True)
+    product_url = models.URLField(max_length=200, blank=True, null=True)
     category = models.CharField(max_length=200, blank=True, null=True)
     min_price = models.FloatField()
 
