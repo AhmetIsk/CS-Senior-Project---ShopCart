@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Entypo } from '@expo/vector-icons';
+import { useIsFocused } from '@react-navigation/native';
 import { userService } from '../../services/userService';
 import { userToken } from '../../store/slices/token';
 import { colors } from '../../constants/styles';
@@ -16,6 +17,7 @@ import { resetId } from '../../store/slices/shopListId';
 
 const MyListsScreen = ({ navigation }) => {
   const token = useSelector(userToken);
+  const isFocused = useIsFocused();
   const [shopLists, setShopLists] = useState([]);
   const dispatch = useDispatch();
   dispatch(resetId);
@@ -40,7 +42,7 @@ const MyListsScreen = ({ navigation }) => {
   useEffect(() => {
     ListShopLists();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isFocused]);
   console.log('this page shows shopping lists');
   return (
     <View style={styles.container}>
