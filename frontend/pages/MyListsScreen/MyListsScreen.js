@@ -20,6 +20,7 @@ const MyListsScreen = ({ navigation }) => {
   const isFocused = useIsFocused();
   const [shopLists, setShopLists] = useState([]);
   const dispatch = useDispatch();
+  const [rerender, setRerender] = useState(false);
   dispatch(resetId);
   const ListShopLists = () => {
     userService.getUsersShoppingCartLists(token).then((products) => {
@@ -34,6 +35,8 @@ const MyListsScreen = ({ navigation }) => {
           totalItems={product.products
             .map((object) => object.quantity)
             .reduce((prev, curr) => prev + curr, 0)}
+          rerender={rerender}
+          setRerender={setRerender}
         />
       ));
       setShopLists(mappedItems);
@@ -42,7 +45,7 @@ const MyListsScreen = ({ navigation }) => {
   useEffect(() => {
     ListShopLists();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFocused]);
+  }, [isFocused, rerender]);
   console.log('this page shows shopping lists');
   return (
     <View style={styles.container}>
