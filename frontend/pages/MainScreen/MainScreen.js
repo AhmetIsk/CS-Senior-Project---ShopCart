@@ -8,6 +8,8 @@ import ApprovalScreen from '../BarcodeScanner/ApprovalScreen';
 import InitialScreen from '../InitialScreen/InitialScreen';
 import ShopCartBottomTabs from '../TabNavigator/TabNavigator';
 import EditProfile from '../EditScreens/EditProfile';
+import TypeProductBarcode from '../TypeProductBarcode/TypeProductBarcode';
+import AddProductWithVoice from '../VoiceDetector/AddProductWithVoice';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +28,16 @@ const MainScreen = () => {
             options={{ headerShown: false }}
             name="Add Product via Barcode"
             component={BarcodeScanner}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Type Product Name"
+            component={TypeProductBarcode}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Add Product with Voice"
+            component={AddProductWithVoice}
           />
           <Stack.Screen
             options={{ headerShown: false }}
