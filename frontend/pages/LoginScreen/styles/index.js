@@ -150,4 +150,14 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-start',
   },
+  pick: {
+    padding: 10,
+    backgroundColor: `${colors.orange}`,
+    borderRadius: 12,
+    marginVertical: 20
+  },
+  pickText: {
+    fontSize: 16,
+    color: `${colors.white}`
+  }
 });
