@@ -445,6 +445,92 @@ function deleteShoplist(id, token) {
   });
 }
 
+function searchBarcode(barcode, token) {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(
+        `${API_URL}/base/search_by_barcode/?barcode=${barcode}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da responsedur', usernameOb);
+        try {
+          resolve(JSON.parse(usernameOb));
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        // reject(err);
+        resolve("error");
+        // return err;
+      });
+  });
+}
+
+function updateLocationCoords(latitude, longitude, userId, token) {
+  return new Promise((resolve, reject) => {
+    axios
+      .patch(
+        `${API_URL}/base/userMeta/${userId}/`,
+        {
+          latitude,
+          longitude
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da responsedur', usernameOb);
+        try {
+          resolve(JSON.parse(usernameOb));
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        // reject(err);
+        resolve("error");
+        // return err;
+      });
+  });
+}
+
+function addManuelProduct(product_name, quantity, id, token) {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        `${API_URL}/productManager/add_product_to_cart/`,
+        {
+          product_name,
+          quantity,
+          id,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da response', usernameOb);
+        try {
+          resolve(response);
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        reject(err);
+      });
+  });
+}
+
 export const userService = {
   login,
   logout,
@@ -462,5 +548,8 @@ export const userService = {
   addShoppingListToCommunity,
   removeShoppingListFromCommunity,
   getShoppingListCommunities,
-  deleteShoplist
+  deleteShoplist,
+  searchBarcode,
+  updateLocationCoords,
+  addManuelProduct
 };
