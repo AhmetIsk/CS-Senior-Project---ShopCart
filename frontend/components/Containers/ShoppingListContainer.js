@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Text, TouchableOpacity, StyleSheet, View } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Ionicons } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
 import { useSelector } from 'react-redux';
@@ -10,6 +10,7 @@ import HighPriShopList from '../../assets/HighPriShopList.svg';
 import { colors } from '../../constants/styles';
 import { userService } from '../../services/userService';
 import { userToken } from '../../store/slices/token';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function ShoppingListContainer({
   id,
@@ -18,9 +19,14 @@ export default function ShoppingListContainer({
   name,
   navigation,
   totalItems,
+  rerender,
+  setRerender
 }) {
   const token = useSelector(userToken);
+  const isFocused = useIsFocused();
+  useEffect(() => {
 
+  }, [isFocused]);
   const rightSwipeActions = () => (
     <TouchableOpacity
       style={{
@@ -34,7 +40,7 @@ export default function ShoppingListContainer({
         top: 13,
         left: 28,
       }}
-      onPress={() => userService.deleteShoplist(id, token)}
+      onPress={() => userService.deleteShoplist(id, token).then(() => setRerender(!rerender))}
     >
       <Text
         style={{
