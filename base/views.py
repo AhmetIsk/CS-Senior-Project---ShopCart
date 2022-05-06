@@ -12,7 +12,7 @@ from productManager.exceptions import DoesNotExistException
 from .serializers import NoteSerializer, UserSerializer, GroupSerializer, ProductBaseSerializer, StoreSerializer, \
     CommunitySerializer, \
     PriceInStoreSerializer, ProductInCartSerializer, ShoppingCartSerializer, UserMetaSerializer, \
-    SimpleShoppingCartSerializer, PurchaseHistorySerializer
+    SimpleShoppingCartSerializer, PurchaseHistorySerializer, SimpleUserMetaSerializer
 from .models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Community, \
     PurchaseHistory
 from django.contrib.auth.models import User, Group
@@ -307,6 +307,7 @@ class UserMetaViewSet(viewsets.ModelViewSet):
             avatar_url = avatar.url
         return Response({"avatar_url": avatar_url})
 
+
 class GroupViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
@@ -327,7 +328,14 @@ class NoteViewSet(viewsets.ModelViewSet):
 
 @api_view(['GET'])
 def current_user(request):
-    serializer = UserSerializer(request.user, context={'request': request})
+    user = request.user
+    if not user:
+        return Response({"Error": "User not found"}, status=status.HTTP_400_BAD_REQUEST)
+
+    if not UserMeta.objects.filter(user=user).exists():
+        return Response({"Error": "UserMeta not found"}, status=status.HTTP_400_BAD_REQUEST)
+
+    serializer = SimpleUserMetaSerializer(UserMeta.objects.get(user=user), context={'request': request})
     return Response(serializer.data)
 
 

@@ -111,6 +111,13 @@ class ShoppingCartSerializer(serializers.HyperlinkedModelSerializer):
 
         return sc
 
+class SimpleUserMetaSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    avatar = Base64ImageField(required=False)
+
+    class Meta:
+        model = UserMeta
+        fields = ['id', 'avatar', 'user', 'latitude', 'longitude']
 
 class UserMetaSerializer(serializers.HyperlinkedModelSerializer):
     communities = CommunitySerializer(many=True)
