@@ -3,6 +3,7 @@ import React from 'react';
 import Communities from '../CommunityScreen/Communities';
 import CreateJoinNavigator from '../CommunityScreen/CreateJoinNavigator';
 import EditProfile from '../EditScreens/EditProfile';
+import HomeLocation from '../HomeLocation/HomeLocation';
 import SettingsScreen from './SettingsScreen';
 
 const Stack = createNativeStackNavigator();
@@ -24,6 +25,11 @@ export default function SettingsNavigator() {
                 options={{ headerShown: false }}
                 name="Communities"
                 component={Communities}
+            />
+            <Stack.Screen
+                options={{ headerShown: false }}
+                name="Home Location"
+                component={HomeLocation}
             />
             <Stack.Screen
                 options={{ headerShown: false }}
