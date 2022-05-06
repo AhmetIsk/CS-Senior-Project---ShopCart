@@ -152,7 +152,11 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         # Create a shopping cart for the user and save it into users' metadata
         cart = ShoppingCart.objects.create(name='My Shopping Cart', user=user, priority='Medium')
-        um = UserMeta.objects.create(user=user, avatar=validated_data['avatar'])
+
+        if validated_data.get('avatar', None):
+            um = UserMeta.objects.create(user=user, avatar=validated_data['avatar'])
+        else:
+            um = UserMeta.objects.create(user=user)
         um.shopping_carts.add(cart)
         um.save()
 
