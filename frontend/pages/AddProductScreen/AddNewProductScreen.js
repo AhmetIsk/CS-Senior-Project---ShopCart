@@ -33,11 +33,9 @@ export default function AddNewProductScreen({ navigation }) {
         <ScanProductButton onPress={() => console.log('you clicked me ')} />
         <ScanBarcodeButton onPress={() => navigation.navigate('Add Product via Barcode')} />
         <VoiceSearchButton
-          onPress={() => {
-            userService.addProduct('8697404970026', 1, id, token);
-          }}
+          onPress={() => navigation.navigate('Add Product with Voice')}
         />
-        <TypeProductButton onPress={() => console.log('you clicked me ')} />
+        <TypeProductButton onPress={() => navigation.navigate('Type Product Name')} />
       </View>
     </View>
   );
