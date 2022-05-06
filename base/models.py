@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from static.currencies import CURRENCIES
+from drf_extra_fields.fields import Base64ImageField
 
 
 class Note(models.Model):
@@ -62,7 +63,7 @@ class UserMeta(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     communities = models.ManyToManyField(Community, blank=True)
     shopping_carts = models.ManyToManyField(ShoppingCart, blank=True)
-    avatar = models.ImageField(upload_to='avatars', blank=True, null=True)
+    avatar = Base64ImageField()
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
 

@@ -1,5 +1,6 @@
 import json
 
+from drf_extra_fields.fields import Base64ImageField
 from rest_framework.serializers import ModelSerializer
 from .models import Note, ProductBase, Store, PriceInStore, ProductInCart, ShoppingCart, UserMeta, Community, \
     PurchaseHistory
@@ -115,6 +116,7 @@ class UserMetaSerializer(serializers.HyperlinkedModelSerializer):
     communities = CommunitySerializer(many=True)
     shopping_carts = ShoppingCartSerializer(many=True)
     user = UserSerializer()
+    avatar = Base64ImageField()
 
     class Meta:
         model = UserMeta
