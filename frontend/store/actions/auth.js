@@ -26,10 +26,10 @@ export const login = (username, password, dispatch) => {
     });
 };
 
-export const signUp = (username, password, email, firstName, lastName) => {
+export const signUp = (username, password, email, firstName, lastName, image) => {
   // dispatch(loggingIn(true));
   userService
-    .signUp(username, password, email, firstName, lastName)
+    .signUp(username, password, email, firstName, lastName, image)
     .then(async (res) => {
       // await dispatch(loggedIn(JSON.stringify(res.data)));
       console.log(' bakin bu response dur: ', JSON.stringify(res.data));
