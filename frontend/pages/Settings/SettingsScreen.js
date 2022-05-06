@@ -53,7 +53,7 @@ const SettingsScreen = ({ navigation }) => {
             style={{ paddingRight: 8 }}
           />
         </SettingsButtons>
-        <SettingsButtons style={buttonStyle}>
+        <SettingsButtons style={buttonStyle} onPress={() => navigation.navigate('Home Location')}>
           <View style={viewStyle}>
             <Entypo
               name="location"
