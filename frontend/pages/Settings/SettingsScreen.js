@@ -1,13 +1,17 @@
-import { KeyboardAvoidingView, View } from 'react-native';
-import React from 'react';
+import { KeyboardAvoidingView, View, Text, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { Ionicons, Entypo } from '@expo/vector-icons';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '../../store/actions/auth';
 import { styles } from '../LoginScreen/styles';
 import LayoutSVG from '../../assets/layout.svg';
 import { ButtonLabel, SettingsButtons } from '../../components/Buttons';
 import { ButtonContainer } from '../../components/Containers';
 import { colors } from '../../constants/styles';
+import { userInfoToken } from '../../store/slices/user';
+import { useIsFocused } from '@react-navigation/native';
+import { userService } from '../../services/userService';
+import { userToken } from '../../store/slices/token';
 
 const buttonStyle = {
   shadowColor: `${colors.borderColor}`, // IOS
@@ -30,11 +34,28 @@ const viewStyle = {
 };
 
 const SettingsScreen = ({ navigation }) => {
+  const isFocused = useIsFocused();
   const dispatch = useDispatch();
-
+  const token = useSelector(userToken);
+  const [userData, setUserData] = useState(null);
+  useEffect(() => {
+    userService.getUserData(token).then((res) => setUserData(res))
+  }, [isFocused])
   return (
     <KeyboardAvoidingView style={styles.container} behavior="padding">
       <LayoutSVG width={414} height={245} style={{ position: 'absolute', top: 0 }} />
+      {
+        userData?.avatar ? <Image
+          style={{ backgroundColor: 'white', borderRadius: 50, padding: 10, position: 'absolute', top: 100, width: 100, height: 100 }}
+          source={{
+            uri: userData.avatar,
+          }}
+        />
+          :
+          <View style={{ backgroundColor: 'white', borderRadius: 50, padding: 10, position: 'absolute', top: 100 }}>
+            <Ionicons name="person" size={64} color="black" />
+          </View>
+      }
       <ButtonContainer style={{ marginTop: 245 }}>
         <SettingsButtons style={buttonStyle} onPress={() => navigation.navigate('Edit Profile')}>
           <View style={viewStyle}>
