@@ -8,7 +8,8 @@ export default function BestPriceProductContainer({
     name,
     imageUrl,
     bestPrice,
-    minPrice
+    minPrice,
+    bestPlace
 }) {
     return (
         <View style={styles.itemContainer}>
@@ -18,7 +19,8 @@ export default function BestPriceProductContainer({
                     <Text style={styles.textStyle}>{`${name.substring(0, 18)}...`}</Text>
                     <View style={styles.marketContainer}>
                         <Entypo name="shop" size={18} color="black" />
-                        <Text style={{ paddingLeft: 5 }}>{bestPrice[0]?.name}</Text>
+                        {bestPlace ? <Text style={{ paddingLeft: 5 }}>{bestPlace}</Text> :
+                            <Text style={{ paddingLeft: 5 }}>{bestPrice[0]?.name}</Text>}
                     </View>
                     <Text style={styles.textStyle}>{`${minPrice} TL`}</Text>
                 </View>
