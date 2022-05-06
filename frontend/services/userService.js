@@ -38,9 +38,9 @@ function login(username, password) {
   });
 }
 
-function signUp(username, password, email, firstName, lastName) {
+function signUp(username, password, email, firstName, lastName, image) {
   return new Promise((resolve, reject) => {
-    console.log(username, password);
+    console.log(username, password, image);
     axios
       .post(`${API_URL}/authorization/register/`, {
         username,
@@ -49,7 +49,14 @@ function signUp(username, password, email, firstName, lastName) {
         email,
         first_name: firstName,
         last_name: lastName,
-      })
+        avatar: image
+      },
+        // {
+        //   headers: {
+        //     'content-type': 'multipart/form-data',
+        //   }
+        // }
+      )
       .then(async (response) => {
         const usernameOb = JSON.stringify(response.data);
         console.log('bu da response', usernameOb);
@@ -284,6 +291,13 @@ function createCommunity(name, token) {
       });
   });
 }
+
+
+// Get communities that the current user is a member of:
+// * `GET /base/communities/get_memberships/`
+
+// Get communities that the current user owns:
+// * `GET /base/communities/get_owned/`
 
 function getCommunities(token) {
   return new Promise((resolve, reject) => {
@@ -531,6 +545,60 @@ function addManuelProduct(product_name, quantity, id, token) {
   });
 }
 
+function getStatistics(token) {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(
+        `${API_URL}/base/get_statistics`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da responsedur', usernameOb);
+        try {
+          resolve(JSON.parse(usernameOb));
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        // reject(err);
+        resolve("error");
+        // return err;
+      });
+  });
+}
+
+function getUserData(token) {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(
+        `${API_URL}/base/current_user/`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da responsedur', usernameOb);
+        try {
+          resolve(JSON.parse(usernameOb));
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        // reject(err);
+        resolve("error");
+        // return err;
+      });
+  });
+}
+
 export const userService = {
   login,
   logout,
@@ -551,5 +619,7 @@ export const userService = {
   deleteShoplist,
   searchBarcode,
   updateLocationCoords,
-  addManuelProduct
+  addManuelProduct,
+  getStatistics,
+  getUserData
 };
