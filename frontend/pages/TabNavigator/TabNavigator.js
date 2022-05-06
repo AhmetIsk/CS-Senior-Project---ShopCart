@@ -10,16 +10,10 @@ import SettingsScreen from '../Settings/SettingsScreen';
 import MyListsNavigator from '../MyListsScreen/MyListsNavigator';
 import StatisticsScreen from '../StatisticsScreen/StatisticsScreen';
 import SettingsNavigator from '../Settings/SettingsNavigator';
+import SearchWithBarcode from '../SearchForBarcode/SearchWithBarcode';
 
 const Tab = createBottomTabNavigator();
 
-function Notifications() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Notifications!</Text>
-    </View>
-  );
-}
 const ShopCartBottomTabs = () => (
   <Tab.Navigator
     initialRouteName="Feed"
@@ -48,9 +42,10 @@ const ShopCartBottomTabs = () => (
     />
     <Tab.Screen
       comp
-      name="Notifications2"
-      component={Notifications}
+      name="Search Product with Barcode"
+      component={SearchWithBarcode}
       options={{
+        headerShown: false,
         tabBarIconStyle: {
           position: 'absolute',
           top: -30,
