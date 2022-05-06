@@ -63,7 +63,7 @@ class UserMeta(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     communities = models.ManyToManyField(Community, blank=True)
     shopping_carts = models.ManyToManyField(ShoppingCart, blank=True)
-    avatar = Base64ImageField()
+    avatar = models.ImageField(upload_to='avatars', blank=True, null=True)
     latitude = models.FloatField(blank=True, null=True)
     longitude = models.FloatField(blank=True, null=True)
 

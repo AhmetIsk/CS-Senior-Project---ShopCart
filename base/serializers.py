@@ -116,7 +116,7 @@ class UserMetaSerializer(serializers.HyperlinkedModelSerializer):
     communities = CommunitySerializer(many=True)
     shopping_carts = ShoppingCartSerializer(many=True)
     user = UserSerializer()
-    avatar = Base64ImageField()
+    avatar = Base64ImageField(required=False)
 
     class Meta:
         model = UserMeta
