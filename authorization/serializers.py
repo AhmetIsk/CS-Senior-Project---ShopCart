@@ -8,6 +8,8 @@ from django.forms.models import model_to_dict
 from base.serializers import UserMetaSerializer
 from datetime import datetime, timedelta
 from django.db.models import Sum
+from drf_extra_fields.fields import Base64ImageField
+
 
 def get_stats(user):
     data = {'total_expenses': {'monthly': 0, 'weekly': 0, '15-days': 0},
@@ -123,7 +125,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
-    avatar = serializers.ImageField(required=False)
+    avatar = Base64ImageField(required=False)
 
     class Meta:
         model = User
@@ -152,7 +154,11 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         # Create a shopping cart for the user and save it into users' metadata
         cart = ShoppingCart.objects.create(name='My Shopping Cart', user=user, priority='Medium')
-        um = UserMeta.objects.create(user=user, avatar=validated_data['avatar'])
+
+        if validated_data.get('avatar', None):
+            um = UserMeta.objects.create(user=user, avatar=validated_data['avatar'])
+        else:
+            um = UserMeta.objects.create(user=user)
         um.shopping_carts.add(cart)
         um.save()
 

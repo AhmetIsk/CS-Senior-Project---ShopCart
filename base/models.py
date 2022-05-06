@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from static.currencies import CURRENCIES
+from drf_extra_fields.fields import Base64ImageField
 
 
 class Note(models.Model):
