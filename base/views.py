@@ -290,6 +290,22 @@ class UserMetaViewSet(viewsets.ModelViewSet):
     serializer_class = UserMetaSerializer
     permission_classes = [permissions.IsAuthenticated]
 
+    @action(detail=False, methods=['get'], name='Get avatar')
+    def get_avatar(self, request):
+        user = request.user
+        if not user:
+            return Response('No user',
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        if not UserMeta.objects.filter(user=user).exists():
+            return Response('UserMeta DNE',
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        avatar = UserMeta.objects.get(user=user).avatar
+        avatar_url = None
+        if avatar:
+            avatar_url = avatar.url
+        return Response({"avatar_url": avatar_url})
 
 class GroupViewSet(viewsets.ModelViewSet):
     """
