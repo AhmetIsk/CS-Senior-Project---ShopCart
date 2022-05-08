@@ -54,7 +54,7 @@ export default function Communities({ navigation }) {
     };
     useEffect(() => {
         ListCommunities();
-    }, [isFocused]);
+    }, [isFocused, rerender]);
     return (
         <View style={styles.container}>
             <View style={styles.header}>
