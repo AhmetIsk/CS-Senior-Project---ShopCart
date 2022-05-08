@@ -10,6 +10,7 @@ import ShopCartBottomTabs from '../TabNavigator/TabNavigator';
 import EditProfile from '../EditScreens/EditProfile';
 import TypeProductBarcode from '../TypeProductBarcode/TypeProductBarcode';
 import AddProductWithVoice from '../VoiceDetector/AddProductWithVoice';
+import ScanProductImage from '../ScanProductImage/ScanProductImage';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,11 @@ const MainScreen = () => {
             options={{ headerShown: false }}
             name="Add Product via Barcode"
             component={BarcodeScanner}
+          />
+          <Stack.Screen
+            options={{ headerShown: false }}
+            name="Add Product via Image"
+            component={ScanProductImage}
           />
           <Stack.Screen
             options={{ headerShown: false }}
