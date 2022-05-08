@@ -1,10 +1,23 @@
 import { StyleSheet, Text, View, TextInput } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { Ionicons } from '@expo/vector-icons'
+import { useSelector } from 'react-redux'
 import { colors } from '../../constants/styles'
 import SearchOrJoinButton from '../../components/Buttons/SearchOrJoinButton'
+import { userService } from '../../services/userService'
+import { userToken } from '../../store/slices/token'
 
-export default function JoinCommunity({ navigation }) {
+export default function JoinCommunity({ navigation, userId }) {
+    const token = useSelector(userToken);
+    const [commId, setCommId] = useState(null);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log(userId, commId);
+        userService.joinCommunity(userId, commId, token).then(() => {
+            navigation.goBack();
+        });
+    }
     return (
         <View style={styles.firstContainer}>
             <View style={styles.inputContainer}>
@@ -14,14 +27,15 @@ export default function JoinCommunity({ navigation }) {
                         <Text style={styles.informative}>Enter the community code to join:</Text>
                         <TextInput
                             placeholder="xxxxx"
-                            // value={community}
-                            // onChangeText={(text) => setCommunity(text)}
+                            value={commId}
+                            onChangeText={(text) => setCommId(text)}
                             style={styles.input}
+                            keyboardType="numeric"
                         />
                     </View>
                 </View>
             </View>
-            <SearchOrJoinButton onPress={() => console.log("Hello guys")} text="Join Community" />
+            <SearchOrJoinButton onPress={handleSubmit} text="Join Community" />
         </View>
     )
 }

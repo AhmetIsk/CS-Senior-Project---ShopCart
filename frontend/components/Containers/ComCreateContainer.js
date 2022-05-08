@@ -1,11 +1,17 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
+import { useSelector } from 'react-redux';
 import CreateCommunity from '../../pages/CommunityScreen/CreateCommunity';
 import JoinCommunity from '../../pages/CommunityScreen/JoinCommunity';
 import { colors } from '../../constants/styles';
+import { userService } from '../../services/userService';
+import { userToken } from '../../store/slices/token';
 
 export default function ComCreateContainer({ navigation }) {
     const [create, setCreate] = useState(true);
+    const [userId, setUserId] = useState(null);
+    const token = useSelector(userToken);
+    userService.getUserData(token).then((res) => setUserId(res.user.id));
     return (
         <View style={styles.container}>
             <View style={styles.buttonContainer}>
@@ -18,7 +24,7 @@ export default function ComCreateContainer({ navigation }) {
             </View>
             {create ?
                 <CreateCommunity navigation={navigation} /> :
-                <JoinCommunity navigation={navigation} />
+                <JoinCommunity navigation={navigation} userId={userId} />
             }
         </View>
     )
