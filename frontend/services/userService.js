@@ -292,12 +292,34 @@ function createCommunity(name, token) {
   });
 }
 
-
-// Get communities that the current user is a member of:
-// * `GET /base/communities/get_memberships/`
-
-// Get communities that the current user owns:
-// * `GET /base/communities/get_owned/`
+function joinCommunity(user_id, community_id, token) {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        `${API_URL}/base/communities/add_user/`,
+        {
+          user_id,
+          community_id
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da responsedur', usernameOb);
+        try {
+          resolve(JSON.parse(usernameOb));
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        reject(err);
+      });
+  });
+}
 
 function getCommunities(token) {
   return new Promise((resolve, reject) => {
@@ -366,6 +388,29 @@ function getCommunityOwner(token) {
         console.log('bu da responsedur', usernameOb);
         try {
           resolve(JSON.parse(usernameOb));
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        reject(err);
+      });
+  });
+}
+
+function deleteCommunity(id, token) {
+  return new Promise((resolve, reject) => {
+    axios
+      .delete(
+        `${API_URL}/base/communities/${id}/`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da response', usernameOb);
+        try {
+          resolve(response);
         } catch (e) {
           reject(e);
         }
@@ -517,6 +562,37 @@ function updateLocationCoords(latitude, longitude, userId, token) {
   });
 }
 
+function setLocationCoords(latitude, longitude, userId, token) {
+  return new Promise((resolve, reject) => {
+    axios
+      .patch(
+        `${API_URL}/base/userMeta/${userId}/`,
+        {
+          latitude,
+          longitude
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da responsedur', usernameOb);
+        try {
+          resolve(JSON.parse(usernameOb));
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        // reject(err);
+        resolve("error");
+        // return err;
+      });
+  });
+}
+
 function addManuelProduct(product_name, quantity, id, token) {
   return new Promise((resolve, reject) => {
     axios
@@ -549,7 +625,7 @@ function getStatistics(token) {
   return new Promise((resolve, reject) => {
     axios
       .get(
-        `${API_URL}/base/get_statistics`,
+        `${API_URL}/base/get_statistics/`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -610,6 +686,7 @@ export const userService = {
   addShoppingList,
   changeShopListName,
   createCommunity,
+  joinCommunity,
   getCommunities,
   getCommunityMembership,
   getCommunityOwner,
@@ -621,5 +698,7 @@ export const userService = {
   updateLocationCoords,
   addManuelProduct,
   getStatistics,
-  getUserData
+  getUserData,
+  setLocationCoords,
+  deleteCommunity
 };
