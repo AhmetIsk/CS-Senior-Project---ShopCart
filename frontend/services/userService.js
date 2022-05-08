@@ -106,6 +106,35 @@ function addProduct(product_id, quantity, id, token) {
   });
 }
 
+function addAnonym(product_name, quantity, id, token) {
+  return new Promise((resolve, reject) => {
+    console.log(quantity, id, token);
+    axios
+      .post(
+        `${API_URL}/productManager/add_product_to_cart/`,
+        {
+          product_name,
+          quantity,
+          id,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da response', usernameOb);
+        try {
+          resolve(response);
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        reject(err);
+      });
+  });
+}
+
 function getShoppingList(id, token) {
   return new Promise((resolve, reject) => {
     console.log(`${API_URL}/base/shoppingCart/${id}/`, token);
@@ -186,6 +215,35 @@ function removeFromList(product_id, quantity, shopcart_id, token, purchase) {
           quantity,
           id: shopcart_id,
           purchase
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      )
+      .then(async (response) => {
+        const usernameOb = JSON.stringify(response.data);
+        console.log('bu da response', usernameOb);
+        try {
+          resolve(response);
+        } catch (e) {
+          reject(e);
+        }
+      })
+      .catch((err) => {
+        console.log('error', err);
+        reject(err);
+      });
+  });
+}
+
+function removeAnonym(product_name, quantity, shopcart_id, token) {
+  return new Promise((resolve, reject) => {
+    console.log(quantity, token);
+    axios
+      .post(
+        `${API_URL}/productManager/remove_from_cart/`,
+        {
+          product_name,
+          quantity,
+          id: shopcart_id
         },
         { headers: { Authorization: `Bearer ${token}` } }
       )
@@ -700,5 +758,7 @@ export const userService = {
   getStatistics,
   getUserData,
   setLocationCoords,
-  deleteCommunity
+  deleteCommunity,
+  addAnonym,
+  removeAnonym
 };
