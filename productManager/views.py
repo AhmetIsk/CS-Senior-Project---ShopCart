@@ -80,6 +80,9 @@ def add_product_to_cart(request):
     quantity = request.data.get('quantity')
     product_name = request.data.get('product_name', None)
 
+    if product_name and barcode:
+        return Response({"Error": "Submit only product_name or barcode"}, status=status.HTTP_400_BAD_REQUEST)
+
     if not barcode and product_name is not None:
         # Add product base
         if not product_name or not quantity or not cart_id:
