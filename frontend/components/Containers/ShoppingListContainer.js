@@ -40,7 +40,10 @@ export default function ShoppingListContainer({
         top: 13,
         left: 28,
       }}
-      onPress={() => userService.deleteShoplist(id, token).then(() => setRerender(!rerender))}
+      onPress={() => userService.deleteShoplist(id, token).then(() => {
+        setRerender(!rerender);
+        navigation.navigate('My Lists');
+      })}
     >
       <Text
         style={{
