@@ -117,7 +117,7 @@ const SignUpScreen = () => {
           />
         </View>
         <TouchableOpacity onPress={pickImage} style={styles.pick}><Text style={styles.pickText}>Select an avatar</Text></TouchableOpacity>
-        {image && <Image source={{ uri: imageUri }} style={{ width: 200, height: 200 }} />}
+        {image && <><Image source={{ uri: imageUri }} style={{ width: 200, height: 200 }} /><TouchableOpacity onPress={() => setImage(null)}><Text style={{ color: 'blue' }}>Remove</Text></TouchableOpacity></>}
         <View style={styles.registrationContainer}>
           <StyledSignInUpButton
             onPress={handleSubmit}
