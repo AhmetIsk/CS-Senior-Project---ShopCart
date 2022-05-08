@@ -24,7 +24,7 @@ export default function CommunityButton({ name, users, ownerName, navigation, re
                 top: 20,
                 left: 0,
             }}
-            onPress={() => userService.deleteShoplist(id, token).then(() => {
+            onPress={() => userService.deleteCommunity(id, token).then(() => {
                 setRerender(!rerender);
                 navigation.navigate('Communities');
             })}
