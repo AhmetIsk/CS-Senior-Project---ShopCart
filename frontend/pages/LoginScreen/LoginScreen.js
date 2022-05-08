@@ -3,7 +3,7 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
-import { KeyboardAvoidingView, Linking, Text, TextInput, View } from 'react-native';
+import { KeyboardAvoidingView, Linking, Text, TextInput, View, ActivityIndicator } from 'react-native';
 import { useDispatch } from 'react-redux';
 import SVGoogle from '../../assets/icGoogle.svg';
 import { styles } from './styles';
@@ -18,6 +18,7 @@ const LoginScreen = () => {
   const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -29,54 +30,74 @@ const LoginScreen = () => {
   }, []);
 
   const handleSubmit = () => {
-    login(username, password, dispatch);
+    setLoading(true);
+    login(username, password, dispatch, setLoading);
+    // setLoading(false);
     setUsername('');
     setPassword('');
+  };
+
+
+  const startLoading = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
   };
 
   return (
     <>
       <KeyboardAvoidingView style={styles.container} behavior="padding">
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputLabel}>Username</Text>
-          <TextInput
-            placeholder="Eg. AhmetIsk"
-            value={username}
-            onChangeText={(text) => setUsername(text)}
-            style={styles.input}
+        {loading ? (
+          <ActivityIndicator
+            //visibility of Overlay Loading Spinner
+            visible={loading}
+            size="large" color={colors.orange}
           />
-          <Text style={styles.inputLabel}>Password</Text>
-          <TextInput
-            placeholder="*** **** ***"
-            value={password}
-            onChangeText={(text) => setPassword(text)}
-            style={styles.input}
-            secureTextEntry
-          />
-          <Text style={styles.forgotPass} onPress={() => Linking.openURL('http://google.com')}>
-            Forgot Password?
-          </Text>
-        </View>
-        <View style={styles.registrationContainer}>
-          <StyledSignInUpButton
-            onPress={handleSubmit}
-            color={username && password ? colors.orange : colors.disabled}
-            disabled={!(username && password)}
-          >
-            <ButtonLabel color={username && password ? colors.white : colors.disabledText}>
-              Login
-            </ButtonLabel>
-          </StyledSignInUpButton>
-          <StyledSignInUpButton
-            onPress={handleSubmit}
-            color={username && password ? colors.orange : colors.disabled}
-          >
-            <SVGoogle width={20} height={20} />
-            <ButtonLabel color={username && password ? colors.white : colors.disabledText}>
-              Login with Google
-            </ButtonLabel>
-          </StyledSignInUpButton>
-        </View>
+        ) : (
+          <>
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Username</Text>
+              <TextInput
+                placeholder="Eg. AhmetIsk"
+                value={username}
+                onChangeText={(text) => setUsername(text)}
+                style={styles.input}
+              />
+              <Text style={styles.inputLabel}>Password</Text>
+              <TextInput
+                placeholder="*** **** ***"
+                value={password}
+                onChangeText={(text) => setPassword(text)}
+                style={styles.input}
+                secureTextEntry
+              />
+              <Text style={styles.forgotPass} onPress={() => Linking.openURL('http://google.com')}>
+                Forgot Password?
+              </Text>
+            </View>
+            <View style={styles.registrationContainer}>
+              <StyledSignInUpButton
+                onPress={handleSubmit}
+                color={username && password ? colors.orange : colors.disabled}
+                disabled={!(username && password)}
+              >
+                <ButtonLabel color={username && password ? colors.white : colors.disabledText}>
+                  Login
+                </ButtonLabel>
+              </StyledSignInUpButton>
+              <StyledSignInUpButton
+                onPress={startLoading}
+                color={username && password ? colors.orange : colors.disabled}
+              >
+                <SVGoogle width={20} height={20} />
+                <ButtonLabel color={username && password ? colors.white : colors.disabledText}>
+                  Login with Google
+                </ButtonLabel>
+              </StyledSignInUpButton>
+            </View>
+          </>
+        )}
       </KeyboardAvoidingView>
     </>
   );
