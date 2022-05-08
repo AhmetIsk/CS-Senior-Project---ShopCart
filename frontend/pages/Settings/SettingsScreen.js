@@ -125,7 +125,7 @@ const SettingsScreen = ({ navigation }) => {
             style={{ paddingRight: 8 }}
           />
         </SettingsButtons>
-        <SettingsButtons style={buttonStyle}>
+        <SettingsButtons style={buttonStyle} onPress={() => navigation.navigate('Notifications')}>
           <View style={viewStyle}>
             <Ionicons
               name="notifications"
