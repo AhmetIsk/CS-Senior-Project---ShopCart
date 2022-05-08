@@ -29,17 +29,26 @@ export default function ProductRow({
 
   const handleNoNeed = (e) => {
     e.preventDefault();
-    userService.removeFromList(barcode, 1, id, token, false).then(() => trigger(!value));
+    if (barcode)
+      userService.removeFromList(barcode, 1, id, token, true).then(() => trigger(!value));
+    else
+      userService.removeAnonym(name, 1, id, token).then(() => trigger(!value));
   }
 
   const handleRemove = (e) => {
     e.preventDefault();
-    userService.removeFromList(barcode, 1, id, token, true).then(() => trigger(!value));
+    if (barcode)
+      userService.removeFromList(barcode, 1, id, token, true).then(() => trigger(!value));
+    else
+      userService.removeAnonym(name, 1, id, token).then(() => trigger(!value));
   }
 
   const handleIncrease = (e) => {
     e.preventDefault();
-    userService.addProduct(barcode, 1, id, token).then(() => trigger(!value));
+    if (barcode)
+      userService.addProduct(barcode, 1, id, token).then(() => trigger(!value));
+    else
+      userService.addAnonym(name, 1, id, token).then(() => trigger(!value));
   }
   return (
     <View style={styles.itemContainer}>
