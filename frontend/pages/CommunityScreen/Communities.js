@@ -15,9 +15,10 @@ export default function Communities({ navigation }) {
     const isFocused = useIsFocused();
     const [items, setItems] = useState([]);
     const token = useSelector(userToken);
+    const [rerender, setRerender] = useState(false);
     // userService.getCommunities(token);
     const ListCommunities = () => {
-        userService.getCommunities(token).then((communities) => {
+        userService.getCommunityOwner(token).then((communities) => {
             console.log(communities.length);
             if (communities.length !== 0) {
                 console.log(communities);
@@ -27,11 +28,29 @@ export default function Communities({ navigation }) {
                         name={community.name}
                         users={community.users}
                         ownerName={community.community_owner.username}
+                        navigation={navigation}
+                        rerender={rerender}
+                        setRerender={setRerender}
+                        id={community.id}
                     />
                 ));
                 setItems(mappedItems);
             }
         });
+        userService.getCommunityMembership(token).then((communities) => {
+            if (communities.length !== 0) {
+                console.log("this is membership", communities);
+                const mappedItems = communities.map((community) => (
+                    <CommunityButton
+                        key={community.id}
+                        name={community.name}
+                        users={community.users}
+                        ownerName={community.community_owner.username}
+                    />
+                ));
+                setItems((prev) => [...prev, mappedItems]);
+            }
+        })
     };
     useEffect(() => {
         ListCommunities();
