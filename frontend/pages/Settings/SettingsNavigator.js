@@ -4,6 +4,7 @@ import Communities from '../CommunityScreen/Communities';
 import CreateJoinNavigator from '../CommunityScreen/CreateJoinNavigator';
 import EditProfile from '../EditScreens/EditProfile';
 import HomeLocation from '../HomeLocation/HomeLocation';
+import NotificationsScreen from '../Notifications/NotificationsScreen';
 import SettingsScreen from './SettingsScreen';
 
 const Stack = createNativeStackNavigator();
@@ -30,6 +31,11 @@ export default function SettingsNavigator() {
                 options={{ headerShown: false }}
                 name="Home Location"
                 component={HomeLocation}
+            />
+            <Stack.Screen
+                options={{ headerShown: false }}
+                name="Notifications"
+                component={NotificationsScreen}
             />
             <Stack.Screen
                 options={{ headerShown: false }}
