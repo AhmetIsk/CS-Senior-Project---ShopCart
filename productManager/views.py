@@ -89,7 +89,7 @@ def add_product_to_cart(request):
             raise DoesNotExistException("Product name or quantity or id DNE")
 
         if ProductBase.objects.filter(name=product_name).exists():
-            pb = ProductBase.objects.get(barcode=barcode)
+            pb = ProductBase.objects.get(name=product_name)
         else:
             pb = ProductBase.objects.create(name=product_name,
                                             external_photo_url="https://www.generationsforpeace.org/wp-content/uploads/2018/03/empty-300x240.jpg",
