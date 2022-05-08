@@ -66,6 +66,7 @@ export default function StatisticsScreen({ navigation }) {
   const [dataQuantity, setDataQuantity] = useState([]);
   const [isEmpty, setEmpty] = useState(true);
   const [nodata, setNodata] = useState(true);
+  const isFocused = useIsFocused();
   useEffect(() => {
     setLoading(true);
     userService.getStatistics(token).then((res) => {
@@ -144,7 +145,8 @@ export default function StatisticsScreen({ navigation }) {
         }} chartConfig={chartConfigTwo} />
       );
       const percentageExpenses = [];
-      if (!Object.keys(res.percentage_categorical_expenses[selected].length === 0)) {
+      console.log("these are keys", Object.keys(res.percentage_categorical_expenses[selected]).length);
+      if (Object.keys(res.percentage_categorical_expenses[selected]).length !== 0) {
         Object.keys(res.percentage_categorical_expenses[selected]).forEach(key => {
           const randomColor = getRandomColor();
           percentageExpenses.push({
@@ -183,11 +185,11 @@ export default function StatisticsScreen({ navigation }) {
         );
         setNodata(false);
       }
-
+      console.log(nodata);
 
     });
     setLoading(false);
-  }, [selected]);
+  }, [selected, isFocused]);
   console.log(data, dataQuantity);
   return (
     <View style={commonStyles.container}>
