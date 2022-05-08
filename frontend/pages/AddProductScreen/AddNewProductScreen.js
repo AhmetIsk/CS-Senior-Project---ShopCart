@@ -30,7 +30,7 @@ export default function AddNewProductScreen({ navigation }) {
       </View>
       <View style={styles.buttonContainer}>
         <Text style={styles.addProduct}>Select the way to add product:</Text>
-        <ScanProductButton onPress={() => console.log('you clicked me ')} />
+        <ScanProductButton onPress={() => navigation.navigate('Add Product via Image')} />
         <ScanBarcodeButton onPress={() => navigation.navigate('Add Product via Barcode')} />
         <VoiceSearchButton
           onPress={() => navigation.navigate('Add Product with Voice')}
