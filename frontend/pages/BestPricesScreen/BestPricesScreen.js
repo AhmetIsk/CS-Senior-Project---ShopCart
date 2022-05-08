@@ -28,6 +28,7 @@ export default function BestPricesScreen({ route, navigation }) {
             imageUrl={product.product.external_photo_url}
             bestPrice={product.product.store_set}
             minPrice={product.product.min_price}
+            shopURL={product.product?.product_url}
           />
         ));
         let total = 0;
