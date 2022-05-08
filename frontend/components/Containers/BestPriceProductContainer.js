@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, Linking, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { colors } from '../../constants/styles'
 import { Entypo } from '@expo/vector-icons'
@@ -9,7 +9,8 @@ export default function BestPriceProductContainer({
     imageUrl,
     bestPrice,
     minPrice,
-    bestPlace
+    bestPlace,
+    shopURL
 }) {
     return (
         <View style={styles.itemContainer}>
@@ -23,6 +24,10 @@ export default function BestPriceProductContainer({
                             <Text style={{ paddingLeft: 5 }}>{bestPrice[0]?.name}</Text>}
                     </View>
                     <Text style={styles.textStyle}>{`${minPrice} TL`}</Text>
+                    {shopURL && <Text style={{ color: 'blue', paddingTop: 5 }}
+                        onPress={() => Linking.openURL(shopURL)}>
+                        Go to product
+                    </Text>}
                 </View>
             </View>
         </View>
