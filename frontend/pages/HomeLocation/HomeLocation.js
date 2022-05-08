@@ -1,22 +1,38 @@
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { Entypo } from '@expo/vector-icons'
 import { useSelector } from 'react-redux';
 import * as Location from 'expo-location';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import { useIsFocused } from '@react-navigation/native';
 import { colors } from '../../constants/styles'
 import { userService } from '../../services/userService';
 import { userToken } from '../../store/slices/token';
-import { userInfoToken } from '../../store/slices/user';
 
 export default function HomeLocation({ navigation }) {
     const [coordinates, setCoordinates] = useState();
     const token = useSelector(userToken);
-    const userId = useSelector(userInfoToken);
-    console.log(userId);
     const [longitude, setLongitude] = useState('');
     const [latitude, setLatitude] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [userData, setUserData] = useState(null);
+    const isFocused = useIsFocused();
+    useEffect(() => {
+        userService.getUserData(token).then((res) => {
+            setUserData(res);
+            console.log(res);
+            if (res.latitude && res.longitude)
+                setCoordinates({
+                    latitude: res.latitude,
+                    longitude: res.longitude,
+                    latitudeDelta: 0.01,
+                    longitudeDelta: 0.01,
+                });
+        }
+        )
+    }, [isFocused])
     const handleMyLocation = () => {
+        setLoading(true);
         (async () => {
             let { status } = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
@@ -34,7 +50,10 @@ export default function HomeLocation({ navigation }) {
                 latitudeDelta: 0.01,
                 longitudeDelta: 0.01,
             });
-            userService.updateLocationCoords(latitude, longitude, userId.id, token);
+            if (userData.latitude && userData.longitude)
+                userService.updateLocationCoords(latitude, longitude, userData.user.id, token).then(() => setLoading(false));
+            else
+                userService.setLocationCoords(latitude, longitude, userData.user.id, token).then(() => setLoading(false));
         })();
     };
 
@@ -65,15 +84,25 @@ export default function HomeLocation({ navigation }) {
                 <Text style={styles.inputLabel}>You can update your home location to receive notifications when you leave from your home by clicking the button below:</Text>
                 <TouchableOpacity onPress={handleMyLocation} style={styles.button}><Text style={styles.buttonText}>Update My Location</Text></TouchableOpacity>
             </View>
-            {
-                coordinates &&
-                <MapView
-                    provider={PROVIDER_GOOGLE}
-                    style={styles.map}
-                    initialRegion={coordinates}>
-                    <Marker coordinate={coordinates} />
-                </MapView>
-            }
+            {loading ? (
+                <ActivityIndicator
+                    //visibility of Overlay Loading Spinner
+                    visible={loading}
+                    size="large" color={colors.orange}
+                />
+            ) : (
+                <>
+                    {
+                        coordinates &&
+                        <MapView
+                            provider={PROVIDER_GOOGLE}
+                            style={styles.map}
+                            initialRegion={coordinates}>
+                            <Marker coordinate={coordinates} />
+                        </MapView>
+                    }
+                </>
+            )}
         </View>
     )
 }
