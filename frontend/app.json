@@ -5,8 +5,13 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/logo.png",
-    "plugins": ["@react-native-voice/voice"],
-    "platforms": ["ios", "android"],
+    "plugins": [
+      "@react-native-voice/voice"
+    ],
+    "platforms": [
+      "ios",
+      "android"
+    ],
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -15,7 +20,9 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.com.ShopCart.shopcart",
