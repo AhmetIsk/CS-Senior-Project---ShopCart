@@ -26,6 +26,7 @@ const AddShoppingListScreen = ({ navigation }) => {
   const [priority, setPriority] = useState('');
   const [items, setItems] = useState([]);
   const [itemNames, setItemNames] = useState([]);
+  const [isEmpty, setIsEmpty] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -35,27 +36,18 @@ const AddShoppingListScreen = ({ navigation }) => {
     load();
     getCommunityList();
     console.log('this is community ', community);
+    userService.getUsersShoppingCartLists(token).then((products) => {
+      if (products.length === 0)
+        setIsEmpty(true);
+    });
   }, []);
 
   const getCommunityList = () => {
     userService.getCommunities(token).then((communities) => {
       console.log(communities.length);
       if (communities.length !== 0) {
-        // const mappedItems = communities.map((singleCommunity) => (
-        //   <Tags
-        //     key={singleCommunity.id}
-        //     name={singleCommunity.name}
-        //     onPress={() => {
-        //       setCommunity(prev => [...prev, singleCommunity.name]);
-        //       setItemNames(itemNames.filter((prev) => prev !== singleCommunity.name));
-        //       setItems(items.filter(item => item.props.name !== singleCommunity.name));
-        //       // setSelectedItems(prev => [...prev, items.filter(item => item.props.name === singleCommunity.name)]);
-        //     }}
-        //   />
-        // ));
         communities.map((singleCommunity) => setItemNames((prev) => [...prev, singleCommunity.name]));
         communities.map((singleCommunity) => setItems((prev) => [...prev, { "name": singleCommunity?.name, "id": singleCommunity?.id }]));
-        // setItems(mappedItems);
         console.log('this is items ', itemNames);
       }
     });
@@ -68,7 +60,7 @@ const AddShoppingListScreen = ({ navigation }) => {
       if (!itemNames.includes(item.name))
         commIds.push({ "id": item.id, "name": item.name });
     });
-    userService.addShoppingList(listName, priority, token, commIds).then(navigation.navigate('My Lists'));
+    userService.addShoppingList(listName, priority, token, commIds).then(() => navigation.navigate('My Lists'));
     setListName('');
     setCommunity('');
     setPriority('');
