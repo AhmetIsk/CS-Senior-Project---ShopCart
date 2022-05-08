@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { Entypo } from '@expo/vector-icons'
 import { useSelector } from 'react-redux';
@@ -12,8 +12,11 @@ export default function SearchWithBarcode({ navigation }) {
     const [product, setProduct] = useState('');
     const [errorMsg, setErrorMsg] = useState();
     const [productBarcode, setProductBarcode] = useState('');
+    const [loading, setLoading] = useState(false);
     const handleSubmit = () => {
+        setLoading(true);
         userService.searchBarcode(productBarcode, token).then((response) => {
+            setLoading(false);
             if (response === "error") {
                 setErrorMsg(<Text style={{ color: 'red', fontSize: 15 }}>The product with the given barcode cannot be found!</Text>)
             }
@@ -58,16 +61,27 @@ export default function SearchWithBarcode({ navigation }) {
                         <Text style={{ color: productBarcode ? colors.white : colors.disabledText }} >Search Product</Text>
                     </TouchableOpacity>
                 </View>
-                {product ?
-                    <BestPriceProductContainer
-                        key={product.name}
-                        name={product.name}
-                        imageUrl={product.photo_url}
-                        bestPrice={product.store.price}
-                        minPrice={product.store.price}
-                        bestPlace={product.store.store_name}
-                    /> :
-                    errorMsg}
+                {loading ? (
+                    <ActivityIndicator
+                        //visibility of Overlay Loading Spinner
+                        visible={loading}
+                        size="large" color={colors.orange}
+                    />
+                ) : (
+                    <>
+                        {product ?
+                            <BestPriceProductContainer
+                                key={product.name}
+                                name={product.name}
+                                imageUrl={product.photo_url}
+                                bestPrice={product.store.price}
+                                minPrice={product.store.price}
+                                bestPlace={product.store.store_name}
+                                shopURL={product.product_url}
+                            /> :
+                            errorMsg}
+                    </>
+                )}
             </KeyboardAvoidingView>
         </View>
     )
