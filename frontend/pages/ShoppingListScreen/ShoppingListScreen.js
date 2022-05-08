@@ -5,7 +5,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/jsx-key */
 import React, { useEffect, useState } from 'react';
-import { Alert, Modal, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Modal, Text, TouchableOpacity, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import { AntDesign } from '@expo/vector-icons';
@@ -35,8 +35,11 @@ const ShoppingListScreen = ({ route, navigation }) => {
   const [comName, setComName] = useState([]);
   const id = useSelector(shopListId);
   const [rerender, setRerender] = useState(false);
+  const [loading, setLoading] = useState(false);
   const ListShopLists = () => {
+    setLoading(true);
     userService.getShoppingListCommunities(id, token).then((products) => {
+      setLoading(false);
       const comms = [];
       console.log("look at here ", products.communities);
       products.communities.map((product) => {
@@ -139,46 +142,58 @@ const ShoppingListScreen = ({ route, navigation }) => {
         </View>
       </Modal>
       <ShopListHeader priority={priority} listName={listName} navigation={navigation} />
-      {items.length === 0 ? (
-        <View style={styles.contentContainer}>
-          <View style={styles.communityContainer}>
-            <ScrollView horizontal>
-              <TouchableOpacity onPress={() => setModalVisible(true)} style={{ backgroundColor: 'orange', padding: 5, borderRadius: 10, justifyContent: 'center', margin: 5 }}><Text style={{ color: 'white' }}>Add Community</Text></TouchableOpacity>
-              {communities && communities.map(community => <Tags key={community.name} name={community.name} onPress={() => {
-                userService.removeShoppingListFromCommunity(community.id, id, token).then(() => ListShopLists());
-              }} />)}
-            </ScrollView>
-          </View>
-          <View>
-            <ListIsEmptyImage />
-          </View>
-          <TouchableOpacity
-            style={styles.addProduct}
-            onPress={() => navigation.navigate('Add New Product')}
-          >
-            <Text style={styles.addProductLabel}>Add Product</Text>
-          </TouchableOpacity>
+      {loading ? (
+        <View style={{ marginTop: 200 }}>
+          <ActivityIndicator
+            //visibility of Overlay Loading Spinner
+            visible={loading}
+            size="large" color={colors.orange}
+          />
         </View>
       ) : (
-        <View style={styles.contentContainer}>
-          <View style={styles.communityContainer}>
-            <ScrollView horizontal>
-              <TouchableOpacity onPress={() => setModalVisible(true)} style={{ backgroundColor: 'orange', padding: 5, borderRadius: 10, justifyContent: 'center', margin: 5 }}><Text style={{ color: 'white' }}>Add Community</Text></TouchableOpacity>
-              {communities && communities.map(community => <Tags key={community.name} name={community.name} onPress={() => {
-                userService.removeShoppingListFromCommunity(community.id, id, token).then(() => ListShopLists());
-              }} />)}
-            </ScrollView>
-          </View>
-          <ScrollView style={styles.itemsContainer}>{items}</ScrollView>
-          <View style={styles.buttonContainer}>
-            <AddProductButton onPress={() => navigation.navigate('Add New Product')} />
-            <BestPricesButton onPress={() => navigation.navigate('Best Prices', {
-              itemId,
-              listName,
-              priority,
-            })} />
-          </View>
-        </View>
+        <>
+          {items.length === 0 ? (
+            <View style={styles.contentContainer}>
+              <View style={styles.communityContainer}>
+                <ScrollView horizontal>
+                  <TouchableOpacity onPress={() => setModalVisible(true)} style={{ backgroundColor: 'orange', padding: 5, borderRadius: 10, justifyContent: 'center', margin: 5 }}><Text style={{ color: 'white' }}>Add Community</Text></TouchableOpacity>
+                  {communities && communities.map(community => <Tags key={community.name} name={community.name} onPress={() => {
+                    userService.removeShoppingListFromCommunity(community.id, id, token).then(() => ListShopLists());
+                  }} />)}
+                </ScrollView>
+              </View>
+              <View>
+                <ListIsEmptyImage />
+              </View>
+              <TouchableOpacity
+                style={styles.addProduct}
+                onPress={() => navigation.navigate('Add New Product')}
+              >
+                <Text style={styles.addProductLabel}>Add Product</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <View style={styles.contentContainer}>
+              <View style={styles.communityContainer}>
+                <ScrollView horizontal>
+                  <TouchableOpacity onPress={() => setModalVisible(true)} style={{ backgroundColor: 'orange', padding: 5, borderRadius: 10, justifyContent: 'center', margin: 5 }}><Text style={{ color: 'white' }}>Add Community</Text></TouchableOpacity>
+                  {communities && communities.map(community => <Tags key={community.name} name={community.name} onPress={() => {
+                    userService.removeShoppingListFromCommunity(community.id, id, token).then(() => ListShopLists());
+                  }} />)}
+                </ScrollView>
+              </View>
+              <ScrollView style={styles.itemsContainer}>{items}</ScrollView>
+              <View style={styles.buttonContainer}>
+                <AddProductButton onPress={() => navigation.navigate('Add New Product')} />
+                <BestPricesButton onPress={() => navigation.navigate('Best Prices', {
+                  itemId,
+                  listName,
+                  priority,
+                })} />
+              </View>
+            </View>
+          )}
+        </>
       )}
     </View>
   );
