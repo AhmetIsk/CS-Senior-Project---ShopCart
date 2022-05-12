@@ -54,12 +54,14 @@ const ShoppingListScreen = ({ route, navigation }) => {
   const getCommunities = () => {
     const commIds = [];
     userService.getCommunityMembership(token).then((community) => {
+      console.log("tese are memberships ", community);
       community.map((item) => {
         commIds.push({ "id": item.id, "name": item.name });
       });
       // console.log("these are ", community);
     });
     userService.getCommunityOwner(token).then((community) => {
+      console.log("hese are owneers ", community);
       community.map((item) => {
         commIds.push({ "id": item.id, "name": item.name });
       });

@@ -1,6 +1,6 @@
-import { ActivityIndicator, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
-import { Entypo } from '@expo/vector-icons'
+import { ActivityIndicator, Alert, KeyboardAvoidingView, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { AntDesign, Entypo } from '@expo/vector-icons'
 import { useSelector } from 'react-redux';
 import { colors } from '../../constants/styles'
 import { userService } from '../../services/userService';
@@ -12,6 +12,13 @@ export default function SearchWithBarcode({ navigation }) {
     const [product, setProduct] = useState('');
     const [errorMsg, setErrorMsg] = useState();
     const [productBarcode, setProductBarcode] = useState('');
+    const [shopLists, setShopLists] = useState([]);
+    // const [userId, setUserId] = useState(null);
+    const [selectedShopList, setSelectedShopList] = useState('');
+    // useEffect(() => {
+    //     userService.getUserData(token).then((res) => setUserId(res.user.id))
+    // }, []);
+    const [modalVisible, setModalVisible] = useState(false);
     const [loading, setLoading] = useState(false);
     const handleSubmit = () => {
         setLoading(true);
@@ -21,12 +28,71 @@ export default function SearchWithBarcode({ navigation }) {
                 setErrorMsg(<Text style={{ color: 'red', fontSize: 15 }}>The product with the given barcode cannot be found!</Text>)
             }
             else {
-                setProduct(response)
+                setProduct(response);
+                userService.getUsersShoppingCartLists(token).then((products) => {
+                    if (products.length === 0) {
+                        setShopLists(
+                            <Text style={{ color: 'red', fontSize: 15 }}>
+                                Please create a shopping list first!
+                            </Text>
+                        );
+                    }
+                    else {
+                        products.map((list) => (
+                            setShopLists((prev => [...prev, { "shopListId": list.id, "ShopListName": list.name }]))
+                        ));
+                    }
+                })
             }
         });
     };
     return (
         <View style={styles.container}>
+            <Modal
+                animationType="slide"
+                transparent
+                visible={modalVisible}
+                onRequestClose={() => {
+                    Alert.alert('Modal has been closed.');
+                    setModalVisible(!modalVisible);
+                }}
+            >
+                <View style={styles.centeredView}>
+                    <View style={styles.modalView}>
+                        <TouchableOpacity
+                            style={styles.closeButton}
+                            onPress={() => setModalVisible(!modalVisible)}
+                        >
+                            <AntDesign name="closecircle" size={30} color={`${colors.orange}`} />
+                        </TouchableOpacity>
+                        <Text style={styles.changeNameHeader}>Select the shop lists you want to add:</Text>
+                        <View style={styles.comContainer}>
+                            <ScrollView horizontal>
+                                {shopLists.map((item) =>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            if (selectedShopList === { "id": item.shopListId })
+                                                setSelectedShopList('')
+                                            else
+                                                setSelectedShopList({ "id": item.shopListId });
+                                        }}
+                                        style={[styles.comButton, selectedShopList.id === item.shopListId ? { backgroundColor: `${colors.buttonOrange}`, } : { backgroundColor: `${colors.gray}`, }]} key={item.ShopListName}
+                                    >
+                                        <Text id={item.id} style={{ color: 'white' }}>{item.ShopListName}</Text>
+                                    </TouchableOpacity>
+                                )}
+                            </ScrollView>
+                        </View>
+                        <TouchableOpacity
+                            style={styles.buttonClose}
+                            onPress={() => userService
+                                .addProduct(productBarcode, 1, selectedShopList.id, token)}
+                        >
+                            <Text style={styles.textStyle}>Add to Shop List</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
             <View style={styles.header}>
                 <Entypo
                     name="chevron-thin-left"
@@ -70,15 +136,18 @@ export default function SearchWithBarcode({ navigation }) {
                 ) : (
                     <>
                         {product ?
-                            <BestPriceProductContainer
-                                key={product.name}
-                                name={product.name}
-                                imageUrl={product.photo_url}
-                                bestPrice={product.store.price}
-                                minPrice={product.store.price}
-                                bestPlace={product.store.store_name}
-                                shopURL={product.product_url}
-                            /> :
+                            <>
+                                <BestPriceProductContainer
+                                    key={product.name}
+                                    name={product.name}
+                                    imageUrl={product.photo_url}
+                                    bestPrice={product.store.price}
+                                    minPrice={product.store.price}
+                                    bestPlace={product.store.store_name}
+                                    shopURL={product.product_url}
+                                />
+                                <TouchableOpacity onPress={() => setModalVisible(true)} style={{ backgroundColor: 'orange', padding: 15, borderRadius: 10, justifyContent: 'center', margin: 5 }}><Text style={{ color: 'white' }}>Add to Shop List</Text></TouchableOpacity>
+                            </> :
                             errorMsg}
                     </>
                 )}
@@ -172,4 +241,83 @@ const styles = StyleSheet.create({
         fontWeight: '700',
         fontSize: 16,
     },
+    listName: {
+        fontSize: 30,
+        fontWeight: '600',
+        fontStyle: 'normal',
+        lineHeight: 41,
+        letterSpacing: 0.36,
+        color: `${colors.white}`,
+    },
+    textContainer: {
+        position: 'absolute',
+        top: 150,
+        left: 50,
+        zIndex: 1,
+        width: 300,
+    },
+    inlineTextContainer: {
+        display: 'flex',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    centeredView: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 22,
+    },
+    modalView: {
+        margin: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    buttonClose: {
+        width: 200,
+        height: 50,
+        borderRadius: 12,
+        justifyContent: 'center',
+        backgroundColor: `${colors.orange}`,
+        margin: 20,
+    },
+    textStyle: {
+        fontSize: 18,
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    modalText: {
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+    changeNameHeader: {
+        fontSize: 20,
+        paddingBottom: 20,
+        color: `${colors.orange}`,
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 5,
+        right: 5,
+    },
+    comButton: {
+        padding: 8,
+        borderRadius: 8,
+        marginRight: 5,
+    },
+    comContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+    }
 })
